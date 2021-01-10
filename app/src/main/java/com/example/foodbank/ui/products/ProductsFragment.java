@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.categories;
+package com.example.foodbank.ui.products;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.foodbank.R;
 
-public class CategoriesFragment extends Fragment {
+public class ProductsFragment extends Fragment {
 
-    private CategoriesViewModel categoriesViewModel;
+    private ProductsViewModel productsViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        categoriesViewModel =
-                new ViewModelProvider(this).get(CategoriesViewModel.class);
+        productsViewModel =
+                new ViewModelProvider(this).get(ProductsViewModel.class);
         View root = inflater.inflate(R.layout.a2_fragment_categories, container, false);
         final TextView textView = root.findViewById(R.id.text_categories);
-        categoriesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        productsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

@@ -11,4 +11,12 @@
     <string name="menu_categories">Categories</string>
     <string name="menu_products">Products</string>
     <string name="menu_add_product">Add Product</string>
+    <string name="menu_favorites">Favorites</string>
+    <string name="menu_healthy">Healthy</string>
+    <string name="menu_avoid">Avoid</string>
+    <string name="menu_share">Share</string>
+
+    <string name="nav_lists_title">Lists</string>
+    <string name="nav_social_media_title">Social Media</string>
+
 </resources>

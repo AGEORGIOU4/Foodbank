@@ -12,5 +12,48 @@
             android:id="@+id/nav_categories"
             android:icon="@drawable/ic_menu_categories"
             android:title="@string/menu_categories" />
+
+        <item
+            android:id="@+id/nav_products"
+            android:icon="@drawable/ic_menu_products"
+            android:title="@string/menu_products" />
+
+        <item
+            android:id="@+id/nav_add_product"
+            android:icon="@drawable/ic_menu_add"
+            android:title="@string/menu_add_product" />
     </group>
+
+    <item android:title="@string/nav_lists_title">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_favorites"
+                    android:icon="@drawable/ic_menu_star"
+                    android:title="@string/menu_favorites" />
+
+                <item
+                    android:id="@+id/nav_healthy"
+                    android:icon="@drawable/ic_menu_healthy"
+                    android:title="@string/menu_healthy" />
+
+                <item
+                    android:id="@+id/nav_avoid"
+                    android:icon="@drawable/ic_menu_warning"
+                    android:title="@string/menu_avoid" />
+            </group>
+        </menu>
+
+    </item>
+
+    <item android:title="@string/nav_social_media_title">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_share"
+                    android:icon="@drawable/ic_menu_share"
+                    android:title="@string/menu_share" />
+            </group>
+        </menu>
+    </item>
 </menu>
