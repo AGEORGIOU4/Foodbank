@@ -11,7 +11,6 @@ public class CategoriesViewModel extends ViewModel {
     public CategoriesViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is categories fragment");
-
     }
 
     public LiveData<String> getText() {

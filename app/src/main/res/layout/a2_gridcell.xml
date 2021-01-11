@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/gridView_categories_btn"
-    android:backgroundTint="@color/grey_300"
-    android:textStyle="bold"
-    android:textSize="15sp"
-    style="@style/CardView"
-    android:layout_width="140dp"
-    android:layout_height="140dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:textColor="@color/grey_700"
-    android:layout_gravity="center_horizontal|center_vertical"
-    android:gravity="center_horizontal|center_vertical"
-    android:clickable="true"
-    android:focusable="true" />
+    android:id="@+id/list_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:id="@+id/list_item_relative_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:paddingBottom="0dp">
+
+            <Button
+                android:id="@+id/gridView_categories_btn"
+                style="@style/CardView"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:backgroundTint="@color/grey_300"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="CATEGORY 1"
+                android:textColor="@color/grey_700"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
