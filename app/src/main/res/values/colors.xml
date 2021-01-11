@@ -15,6 +15,7 @@
 
     <color name="thirdVariant">#FF03DAC5</color>
 
+    <color name="grey_300">#CCCCCC</color>
     <color name="grey_500">#A1A1A1</color>
     <color name="grey_700">#FF4D4D4D</color>
 

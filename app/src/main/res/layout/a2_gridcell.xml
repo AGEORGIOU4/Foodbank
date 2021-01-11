@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/gridView_categories_btn"
-    android:backgroundTint="@color/white"
+    android:backgroundTint="@color/grey_300"
+    android:textStyle="bold"
+    android:textSize="15sp"
     style="@style/CardView"
     android:layout_width="140dp"
     android:layout_height="140dp"
