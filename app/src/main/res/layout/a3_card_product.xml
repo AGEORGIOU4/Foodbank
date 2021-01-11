@@ -20,21 +20,24 @@
             android:padding="16dp">
 
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageViewImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:src="@color/cyan_700" />
+                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
+                android:src="@color/grey_700"
+                app:shapeAppearanceOverlay="@style/Circular"/>
 
             <TextView
                 android:id="@+id/textViewTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="20dp"
-                android:layout_toStartOf="@id/imageViewImage"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@id/imageViewImage"
+                android:layout_toStartOf="@id/starredCheckBox"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="Title"
@@ -47,8 +50,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewTitle"
                 android:layout_marginTop="8dp"
-                android:layout_marginRight="20dp"
-                android:layout_toStartOf="@id/imageViewImage"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@id/imageViewImage"
+                android:layout_toStartOf="@id/starredCheckBox"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="Grade"
@@ -60,8 +64,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewGrade"
                 android:layout_marginTop="8dp"
-                android:layout_marginRight="20dp"
-                android:layout_toStartOf="@id/imageViewImage"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@id/imageViewImage"
+                android:layout_toStartOf="@id/starredCheckBox"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="Nova Group"
@@ -72,11 +77,10 @@
                 android:id="@+id/starredCheckBox"
                 style="?android:attr/starStyle"
                 android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/imageViewImage"
-                android:gravity="bottom|end"
-                android:layout_alignParentRight="true" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
