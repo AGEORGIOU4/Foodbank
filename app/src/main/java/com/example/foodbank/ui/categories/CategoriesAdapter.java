@@ -1,6 +1,5 @@
 package com.example.foodbank.ui.categories;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        // each data item has a 1 string
+        // each data item has a 1 title (string)
         public Button gridView_categories_btn;
 
         public ViewHolder(View itemView) {
@@ -41,7 +40,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public CategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.a2_gridcell, parent, false);
+                .inflate(R.layout.a2_card_category, parent, false);
         return new ViewHolder(v);
     }
 
@@ -49,11 +48,10 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         String listItem = listItems.get(position);
 
-        //Convert System.currentTimeMillis to Date
-
         // - get element from your data set at this position
         // - replace the contents of the view with that element
         holder.gridView_categories_btn.setText(listItem);
+        holder.gridView_categories_btn.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem));
     }
 
     @Override

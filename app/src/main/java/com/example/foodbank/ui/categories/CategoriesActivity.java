@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.ui.categories;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +10,5 @@ public class CategoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        System.out.println("Categories Activity");
     }
 }

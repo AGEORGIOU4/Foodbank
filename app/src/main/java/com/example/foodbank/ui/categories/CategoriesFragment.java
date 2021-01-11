@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
@@ -21,9 +20,10 @@ import java.util.Vector;
 
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, CategoriesAdapter.OnItemLongClickListener {
 
-    // Recycler View
-    public Vector<String> categoriesList = new Vector<>();
     private CategoriesViewModel categoriesViewModel;
+
+    // Recycler View
+    private Vector<String> categoriesList = new Vector<>();
     private RecyclerView recyclerView;
     private CategoriesAdapter adapter;
     private GridLayoutManager gridLayoutManager;
@@ -42,16 +42,15 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         });
 
 
-        String[] hardCodedItems = {"HELLO", "WORLD", "THIS", "IS", "ME"};
+        String[] categories = {"VEGETARIAN", "NON VEGETARIAN", "BEST NUTRI-SCORE", "FOOD PROCESSING FREE", "VEGAN", "ORGANIC"};
 
         recyclerView = root.findViewById(R.id.categories_rv);
         // Initialize each note from the db to the notesList
-        for (int i = 0; i < hardCodedItems.length; i++) {
-            categoriesList.add(hardCodedItems[i]);
-            System.out.println("item is "  + hardCodedItems[i]);
+        for (int i = 0; i < categories.length; i++) {
+            categoriesList.add(categories[i]);
         }
 
-        // Get Recycler from activity_main and set parameters
+        // Set Recycler View parameters
         recyclerView.setHasFixedSize(true);
 
         gridLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -60,12 +59,12 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         adapter = new CategoriesAdapter(categoriesList, this, this);
         recyclerView.setAdapter(adapter);
 
-
         return root;
     }
 
     @Override
     public void itemClicked(View v, int pos, String value) {
+        System.out.println("You clicked item in position " + pos + " with value " + value);
     }
 
     @Override

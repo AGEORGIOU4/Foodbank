@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_products"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20sp"
+        app:cardCornerRadius="20dp">
+
+        <RelativeLayout
+            android:id="@+id/list_item_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+
+            <ImageView
+                android:id="@+id/imageViewImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@color/cyan_700" />
+
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:layout_toStartOf="@id/imageViewImage"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Title"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewGrade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewTitle"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="20dp"
+                android:layout_toStartOf="@id/imageViewImage"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Grade"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewNovaGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewGrade"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="20dp"
+                android:layout_toStartOf="@id/imageViewImage"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Nova Group"
+                android:textColor="@color/cyan_700"
+                android:textSize="16sp" />
+
+            <CheckBox
+                android:id="@+id/starredCheckBox"
+                style="?android:attr/starStyle"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageViewImage"
+                android:gravity="bottom|end"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

@@ -11,12 +11,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.foodbank.Product;
 import com.example.foodbank.R;
+import com.example.foodbank.db.ProductsRoomDatabase;
 
-public class ProductsFragment extends Fragment {
+import java.util.List;
+import java.util.Vector;
+
+public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener {
 
     private ProductsViewModel productsViewModel;
+
+    // Recycler View
+    public Vector<Product> productsList = new Vector<>();
+    private RecyclerView recyclerView;
+    private ProductsAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,6 +43,38 @@ public class ProductsFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+
+        recyclerView = root.findViewById(R.id.products_rv);
+
+        // Initialize each note from the db to the notesList
+        for (int i = 0; i <= getAllProductsSortedByTitle().size() - 1; i++) {
+            productsList.add(getAllProductsSortedByTitle().get(i));
+        }
+
+        // Get Recycler from activity_main and set parameters
+        recyclerView.setHasFixedSize(true);
+
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        adapter = new ProductsAdapter(productsList, this, this);
+        recyclerView.setAdapter(adapter);
+
         return root;
+    }
+
+    List<Product> getAllProductsSortedByTitle() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
+    }
+
+    @Override
+    public void itemClicked(View v, int pos, String value) {
+
+    }
+
+    @Override
+    public boolean itemLongClicked(View v, int pos, String value) {
+        return false;
     }
 }
