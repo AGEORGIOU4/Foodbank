@@ -17,4 +17,14 @@
 
     <color name="grey_500">#A1A1A1</color>
     <color name="grey_700">#FF4D4D4D</color>
+
+
+
+    //All colors
+    <color name="red">#D32F2F</color>
+    <color name="blue">#303F9F</color>
+    <color name="green">#00796B</color>
+    <color name="orange">#F57C00</color>
+    <color name="yellow">#FBC02D</color>
+
 </resources>

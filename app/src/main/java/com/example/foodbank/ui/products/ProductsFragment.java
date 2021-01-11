@@ -22,8 +22,8 @@ public class ProductsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         productsViewModel =
                 new ViewModelProvider(this).get(ProductsViewModel.class);
-        View root = inflater.inflate(R.layout.a2_fragment_categories, container, false);
-        final TextView textView = root.findViewById(R.id.text_categories);
+        View root = inflater.inflate(R.layout.a3_fragment_products, container, false);
+        final TextView textView = root.findViewById(R.id.text_products);
         productsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

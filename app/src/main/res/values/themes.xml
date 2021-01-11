@@ -15,7 +15,6 @@
 
         <!-- Customize your theme here. -->
     </style>
-
     <style name="Theme.Foodbank.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -24,4 +23,13 @@
     <style name="Theme.Foodbank.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Foodbank.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <attr format="reference" name="cardStyle"/>
+
+
+
+    <style name="Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="cardStyle">@style/CardView.Dark</item>
+    </style>
 </resources>

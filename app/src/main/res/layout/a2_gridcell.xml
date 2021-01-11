@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gridView_categories_btn"
+    android:backgroundTint="@color/white"
+    style="@style/CardView"
+    android:layout_width="140dp"
+    android:layout_height="140dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:textColor="@color/grey_700"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:gravity="center_horizontal|center_vertical"
+    android:clickable="true"
+    android:focusable="true" />

@@ -8,10 +8,11 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/purple_200</item>
         <item name="colorSecondaryVariant">@color/purple_700</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/cyan_200</item>
 
         <!-- Customize your theme here. -->
+
     </style>
 </resources>
