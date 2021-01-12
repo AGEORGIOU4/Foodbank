@@ -19,16 +19,12 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
         // each data item has an image title, grade, nova group and star
         public TextView textViewTitle;
-        public TextView textViewGrade;
-        public TextView textViewNovaGroup;
         public CheckBox starredCheckBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             this.textViewTitle = itemView.findViewById(R.id.textViewTitle);
-            this.textViewGrade = itemView.findViewById(R.id.textViewGrade);
-            this.textViewNovaGroup = itemView.findViewById(R.id.textViewNovaGroup);
             this.starredCheckBox = itemView.findViewById(R.id.starredCheckBox);
         }
     }
@@ -60,9 +56,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         // - replace the contents of the view with that element
 
         holder.textViewTitle.setText(listItem.getTitle());
-//        holder.textViewGrade.setText(listItem.getGrade());
-//        holder.textViewNovaGroup.setText(listItem.getNovaGroup());
-//        holder.starredCheckBox.setChecked(listItem.isStarred());
     }
 
     @Override

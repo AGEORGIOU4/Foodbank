@@ -11,10 +11,11 @@
     <color name="cyan_500">#30B5D1</color>
     <color name="cyan_700">#1F7688</color>
     <color name="cyan_900">#FF175A68</color>
-    <color name="cyan_1100">#123953</color>
+    <color name="cyan_1100">#FF123953</color>
 
     <color name="thirdVariant">#FF03DAC5</color>
 
+    <color name="grey_100">#E8E8E8</color>
     <color name="grey_300">#CCCCCC</color>
     <color name="grey_500">#A1A1A1</color>
     <color name="grey_700">#FF4D4D4D</color>

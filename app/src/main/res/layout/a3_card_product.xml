@@ -20,59 +20,60 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageViewImage"
-                android:layout_width="90dp"
-                android:layout_height="64dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/a3_ic_ecoscore_a_foreground"
-                app:shapeAppearanceOverlay="@style/Circular" />
-
             <TextView
                 android:id="@+id/textViewTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_toStartOf="@id/imageViewImage"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/starredCheckBox"
+                android:layout_marginRight="10dp"
                 android:text="Title"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textViewGrade"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageViewGrade"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
                 android:layout_below="@id/textViewTitle"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:layout_toStartOf="@id/textViewNovaGroup"
-                android:text="Grade: A"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentLeft="true"
+                android:background="#00FFFFFF"
+                android:src="@drawable/a3_img_nutriscore_a"
                 android:textColor="@color/cyan_700"
-                android:textSize="16sp" />
+                app:shapeAppearanceOverlay="@style/Circular" />
 
-            <TextView
-                android:id="@+id/textViewNovaGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_ecoScore"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_below="@id/textViewTitle"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:layout_toStartOf="@id/imageViewImage"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/imageViewGrade"
+                android:background="#00FFFFFF"
+                android:src="@drawable/a3_img_ecoscore_a"
                 android:text="Nova: 4"
-                android:textColor="@color/cyan_700"
-                android:textSize="16sp" />
+                app:shapeAppearanceOverlay="@style/Circular" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_novaGroup"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/textViewTitle"
+                android:layout_toEndOf="@id/imageView_ecoScore"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/a3_img_novagroup_a"
+                app:shapeAppearanceOverlay="@style/Circular" />
+
 
             <CheckBox
                 android:id="@+id/starredCheckBox"
                 style="?android:attr/starStyle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_below="@id/textViewTitle"
-                android:layout_marginTop="6dp" />
+                android:layout_alignParentRight="true"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
