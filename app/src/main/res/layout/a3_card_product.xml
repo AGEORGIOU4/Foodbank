@@ -9,8 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="4dp"
+        android:layout_margin="10dp"
         app:cardCornerRadius="20dp">
 
         <RelativeLayout
@@ -25,8 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toStartOf="@id/starredCheckBox"
                 android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/starredCheckBox"
                 android:text="@string/title"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -36,9 +35,9 @@
                 android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_below="@id/textViewTitle"
-                android:layout_marginTop="10dp"
                 android:layout_alignParentStart="true"
                 android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
                 android:background="#00FFFFFF"
                 android:src="@drawable/a3_img_nutriscore_a"
                 android:textColor="@color/cyan_700"
@@ -62,9 +61,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_below="@id/textViewTitle"
-                android:layout_toEndOf="@id/imageView_ecoScore"
-                android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/imageView_ecoScore"
                 android:src="@drawable/a3_img_novagroup_a"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
@@ -74,7 +73,7 @@
                 style="?android:attr/starStyle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

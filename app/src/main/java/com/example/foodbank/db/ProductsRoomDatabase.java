@@ -44,7 +44,7 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
     }
 
     private static final Product[] INITIAL_PRODUCTS = new Product[]{
-            new Product("A test product", "Grade", 5, "Ingredients", "Nutrients", false),
+            new Product("737628064502","A test product", "Grade", 5, "Ingredients", "Nutrients", false, System.currentTimeMillis()),
 
     };
 }

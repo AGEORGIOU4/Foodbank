@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Query;
 
 import com.example.foodbank.Product;
 import com.example.foodbank.R;
@@ -40,7 +41,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         productsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                textView.setText("");
             }
         });
 
@@ -48,8 +49,8 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         recyclerView = root.findViewById(R.id.products_rv);
 
         // Initialize each note from the db to the notesList
-        for (int i = 0; i <= getAllProductsSortedByTitle().size() - 1; i++) {
-            productsList.add(getAllProductsSortedByTitle().get(i));
+        for (int i = 0; i <= getAllProductsSortedByTimestamp().size() - 1; i++) {
+            productsList.add(getAllProductsSortedByTimestamp().get(i));
         }
 
         // Get Recycler from activity_main and set parameters
@@ -66,6 +67,10 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
     List<Product> getAllProductsSortedByTitle() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
+    }
+
+    List<Product> getAllProductsSortedByTimestamp() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
     }
 
     @Override

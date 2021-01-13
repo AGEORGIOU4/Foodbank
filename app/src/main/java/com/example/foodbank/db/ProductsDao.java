@@ -26,6 +26,9 @@ public interface ProductsDao {
     @Query("SELECT * FROM products ORDER BY grade DESC")
     List<Product> getProductsSortedByGrade();
 
+    @Query("SELECT * FROM products ORDER BY timestamp DESC")
+    List<Product> getProductsSortedByTimestamp();
+
     @Delete
     void delete(Product product);
 }

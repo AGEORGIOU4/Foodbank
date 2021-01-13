@@ -9,31 +9,37 @@ public class Product {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private String barcode;
     private String title;
     private String grade;
     private int novaGroup;
     private String ingredients;
     private String nutrients;
     private boolean starred;
+    private long timestamp;
 
-    public Product(int id, String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred) {
+    public Product(int id, String barcode, String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred, long timestamp) {
         this.id = id;
+        this.barcode = barcode;
         this.title = title;
         this.grade = grade;
         this.novaGroup = novaGroup;
         this.ingredients = ingredients;
         this.nutrients = nutrients;
         this.starred = starred;
+        this.timestamp = timestamp;
     }
 
     @Ignore
-    public Product(String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred) {
+    public Product(String barcode, String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred, long timestamp) {
         this.title = title;
+        this.barcode = barcode;
         this.grade = grade;
         this.novaGroup = novaGroup;
         this.ingredients = ingredients;
         this.nutrients = nutrients;
         this.starred = starred;
+        this.timestamp = timestamp;
     }
 
     public int getId() {
@@ -43,6 +49,8 @@ public class Product {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getBarcode() { return barcode; }
 
     public String getTitle() {
         return title;
@@ -63,5 +71,7 @@ public class Product {
     public boolean isStarred() {
         return starred;
     }
+
+    public long getTimestamp() { return timestamp; }
 
 }
