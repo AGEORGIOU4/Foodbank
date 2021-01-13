@@ -22,5 +22,11 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="trouble_scanning_enter_barcode">Trouble Scanning? Enter barcode</string>
+    <string name="align_the_bar_code_within_frame_to_scan_the_product">Align the Bar Code within frame to scan the product</string>
+    <string name="ok">OK</string>
+    <string name="foodbank_cover">foodbank cover</string>
+    <string name="title">Title</string>
+    <string name="nova_4">Nova: 4</string>
 
 </resources>
