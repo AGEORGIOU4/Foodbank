@@ -23,13 +23,7 @@ public class AddProductFragment extends Fragment {
         addProductViewModel =
                 new ViewModelProvider(this).get(AddProductViewModel.class);
         View root = inflater.inflate(R.layout.a4_fragment_add_product, container, false);
-        final TextView textView = root.findViewById(R.id.text_add_product);
-        addProductViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        addProductViewModel.getText().observe(getViewLifecycleOwner(), s -> { });
         return root;
     }
 }

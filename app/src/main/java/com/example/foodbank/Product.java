@@ -12,21 +12,27 @@ public class Product {
     private String title;
     private String grade;
     private int novaGroup;
+    private String ingredients;
+    private String nutrients;
     private boolean starred;
 
-    public Product(int id, String title, String grade, int novaGroup, boolean starred) {
+    public Product(int id, String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred) {
         this.id = id;
         this.title = title;
         this.grade = grade;
         this.novaGroup = novaGroup;
+        this.ingredients = ingredients;
+        this.nutrients = nutrients;
         this.starred = starred;
     }
 
     @Ignore
-    public Product(String title, String grade, int novaGroup, boolean starred) {
+    public Product(String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred) {
         this.title = title;
         this.grade = grade;
         this.novaGroup = novaGroup;
+        this.ingredients = ingredients;
+        this.nutrients = nutrients;
         this.starred = starred;
     }
 
@@ -49,6 +55,10 @@ public class Product {
     public int getNovaGroup() {
         return novaGroup;
     }
+
+    public String getIngredients() { return ingredients; }
+
+    public String getNutrients() { return nutrients; }
 
     public boolean isStarred() {
         return starred;

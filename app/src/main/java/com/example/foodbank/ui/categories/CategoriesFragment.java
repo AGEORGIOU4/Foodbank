@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
 
+import java.util.Collections;
 import java.util.Vector;
 
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, CategoriesAdapter.OnItemLongClickListener {
@@ -33,22 +34,14 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         categoriesViewModel =
                 new ViewModelProvider(this).get(CategoriesViewModel.class);
         View root = inflater.inflate(R.layout.a2_fragment_categories, container, false);
-        final TextView textView = root.findViewById(R.id.text_categories);
-        categoriesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        categoriesViewModel.getText().observe(getViewLifecycleOwner(), s -> { });
 
 
         String[] categories = {"VEGETARIAN", "NON VEGETARIAN", "BEST NUTRI-SCORE", "FOOD PROCESSING FREE", "VEGAN", "ORGANIC"};
 
         recyclerView = root.findViewById(R.id.categories_rv);
         // Initialize each note from the db to the notesList
-        for (int i = 0; i < categories.length; i++) {
-            categoriesList.add(categories[i]);
-        }
+        Collections.addAll(categoriesList, categories);
 
         // Set Recycler View parameters
         recyclerView.setHasFixedSize(true);

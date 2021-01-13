@@ -6,13 +6,14 @@
         <item name="colorPrimaryVariant">@color/cyan_500</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/purple_200</item>
-        <item name="colorSecondaryVariant">@color/purple_700</item>
+        <item name="colorSecondary">@color/cyan_200</item>
+        <item name="colorSecondaryVariant">@color/cyan_500</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/cyan_200</item>
 
         <!-- Customize your theme here. -->
-
+        <item name="android:textColorHint">@color/grey_300</item>
+        <item name="android:windowBackground">@drawable/main_bg_night</item>
     </style>
 </resources>

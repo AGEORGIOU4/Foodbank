@@ -44,31 +44,7 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
     }
 
     private static final Product[] INITIAL_PRODUCTS = new Product[]{
-            new Product("A test product", "This is the grade.", 5, false),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
-            new Product("Another test product", "This is the grade ", 3, true),
+            new Product("A test product", "Grade", 5, "Ingredients", "Nutrients", false),
+
     };
 }
