@@ -12,30 +12,34 @@ public class Product {
     private String barcode;
     private String title;
     private String grade;
-    private int novaGroup;
+    private String novaGroup;
+    private String ecoScore;
     private String ingredients;
     private String nutrients;
     private boolean starred;
     private long timestamp;
 
-    public Product(int id, String barcode, String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred, long timestamp) {
+    public Product(int id, String barcode, String title, String grade, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
         this.id = id;
         this.barcode = barcode;
         this.title = title;
         this.grade = grade;
         this.novaGroup = novaGroup;
+        this.ecoScore = ecoScore;
         this.ingredients = ingredients;
         this.nutrients = nutrients;
         this.starred = starred;
         this.timestamp = timestamp;
     }
 
+
     @Ignore
-    public Product(String barcode, String title, String grade, int novaGroup, String ingredients, String nutrients, boolean starred, long timestamp) {
+    public Product(String barcode, String title, String grade, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
         this.title = title;
         this.barcode = barcode;
         this.grade = grade;
         this.novaGroup = novaGroup;
+        this.ecoScore = ecoScore;
         this.ingredients = ingredients;
         this.nutrients = nutrients;
         this.starred = starred;
@@ -60,9 +64,11 @@ public class Product {
         return grade;
     }
 
-    public int getNovaGroup() {
+    public String getNovaGroup() {
         return novaGroup;
     }
+
+    public String getEcoScore() { return ecoScore; }
 
     public String getIngredients() { return ingredients; }
 

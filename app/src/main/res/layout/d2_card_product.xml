@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -20,7 +21,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/textViewTitle"
+                android:id="@+id/textView_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -31,10 +32,10 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageViewGrade"
+                android:id="@+id/imageView_grade"
                 android:layout_width="80dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/textViewTitle"
+                android:layout_below="@id/textView_title"
                 android:layout_alignParentStart="true"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
@@ -47,10 +48,10 @@
                 android:id="@+id/imageView_ecoScore"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/textViewTitle"
+                android:layout_below="@id/textView_title"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_toEndOf="@id/imageViewGrade"
+                android:layout_toEndOf="@id/imageView_grade"
                 android:background="#00FFFFFF"
                 android:src="@drawable/d_img_ecoscore_a"
                 android:text="@string/nova_4"
@@ -60,11 +61,11 @@
                 android:id="@+id/imageView_novaGroup"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/textViewTitle"
+                android:layout_below="@id/textView_title"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@id/imageView_ecoScore"
-                android:src="@drawable/d_img_novagroup_a"
+                android:src="@drawable/d_img_novagroup_1"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
 
