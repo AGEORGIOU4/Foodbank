@@ -29,5 +29,7 @@
     <string name="title">Title</string>
     <string name="nova_4">Nova: 4</string>
     <string name="add_product">ADD PRODUCT</string>
+    <string name="floating_button">floating button</string>
+    <string name="category">CATEGORY</string>
 
 </resources>
