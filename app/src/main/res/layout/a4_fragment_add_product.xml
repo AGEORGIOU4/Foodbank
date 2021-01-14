@@ -32,5 +32,12 @@
         android:layout_below="@id/textInputEnterBarcode"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
-        android:text="@string/ok" />
+        android:text="@string/add_product" />
+
+    <TextView
+        android:id="@+id/textViewFetchedData"
+        android:layout_marginHorizontal="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonAddProduct" />
 </RelativeLayout>

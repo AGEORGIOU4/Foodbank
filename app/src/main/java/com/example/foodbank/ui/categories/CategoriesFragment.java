@@ -26,9 +26,7 @@ import java.util.Vector;
 
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, CategoriesAdapter.OnItemLongClickListener {
 
-    private CategoriesViewModel categoriesViewModel;
-
-    // Recycler View
+    // Recycler View elements
     private Vector<Category> categoriesList = new Vector<>();
     private RecyclerView recyclerView;
     private CategoriesAdapter adapter;
@@ -36,8 +34,8 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        categoriesViewModel =
-                new ViewModelProvider(this).get(CategoriesViewModel.class);
+        CategoriesViewModel categoriesViewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
+
         View root = inflater.inflate(R.layout.a2_fragment_categories, container, false);
         categoriesViewModel.getText().observe(getViewLifecycleOwner(), s -> { });
 
