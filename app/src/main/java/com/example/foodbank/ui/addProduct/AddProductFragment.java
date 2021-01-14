@@ -21,9 +21,8 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     private AddProductViewModel addProductViewModel;
 
-    private EditText add_Title;
-    private CheckBox add_Starred;
-    private Button insert_note_btn;
+    private EditText textInputEnterBarcode;
+    private Button buttonAddProduct;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -31,11 +30,10 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 new ViewModelProvider(this).get(AddProductViewModel.class);
         View root = inflater.inflate(R.layout.a4_fragment_add_product, container, false);
 
-        add_Title = root.findViewById(R.id.add_Title);
-        add_Starred = root.findViewById(R.id.add_Starred);
-        insert_note_btn = root.findViewById(R.id.insert_note_btn);
+        textInputEnterBarcode = root.findViewById(R.id.textInputEnterBarcode);
+        buttonAddProduct = root.findViewById(R.id.buttonAddProduct);
 
-        insert_note_btn.setOnClickListener(new View.OnClickListener() {
+        buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addProduct(root);
@@ -53,13 +51,12 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     // Add note
     public void addProduct(View view) {
-        add_Title = view.findViewById(R.id.add_Title);
-        add_Starred = view.findViewById(R.id.add_Starred);
+        textInputEnterBarcode = view.findViewById(R.id.textInputEnterBarcode);
 
-        if (add_Title.getText().toString().matches("")) {
+        if (textInputEnterBarcode.getText().toString().matches("")) {
             Toast.makeText(getContext(), "Enter Title", Toast.LENGTH_SHORT).show();
         } else {
-            Product testProduct = new Product("737628064502", add_Title.getText().toString(), "A", 4, "Salt", "Pepper", add_Starred.isChecked(), System.currentTimeMillis());
+            Product testProduct = new Product("737628064502", textInputEnterBarcode.getText().toString(), "A", 4, "Salt", "Pepper", false, System.currentTimeMillis());
             insert(testProduct);
             Toast.makeText(getContext(), "Added", Toast.LENGTH_LONG).show();
         }

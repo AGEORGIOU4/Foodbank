@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.foodbank.Category;
 import com.example.foodbank.R;
 
 import java.util.Vector;
@@ -25,11 +26,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         }
     }
 
-    private Vector<String> listItems;
+    private Vector<Category> listItems;
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
 
-    public CategoriesAdapter(final Vector<String> listItems, OnItemClickListener onItemClickListener, OnItemLongClickListener onItemLongClickListener) {
+    public CategoriesAdapter(final Vector<Category> listItems, OnItemClickListener onItemClickListener, OnItemLongClickListener onItemLongClickListener) {
         this.listItems = listItems;
         this.onItemClickListener = onItemClickListener;
         this.onItemLongClickListener = onItemLongClickListener;
@@ -46,12 +47,13 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        String listItem = listItems.get(position);
+        Category listItem = listItems.get(position);
 
         // - get element from your data set at this position
         // - replace the contents of the view with that element
-        holder.gridView_categories_btn.setText(listItem);
-        holder.gridView_categories_btn.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem));
+        holder.gridView_categories_btn.setText(listItem.getTitle());
+
+        //holder.gridView_categories_btn.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem));
     }
 
     @Override

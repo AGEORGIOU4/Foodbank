@@ -37,21 +37,16 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         productsViewModel =
                 new ViewModelProvider(this).get(ProductsViewModel.class);
         View root = inflater.inflate(R.layout.a3_fragment_products, container, false);
-        final TextView textView = root.findViewById(R.id.text_products);
         productsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText("");
-            }
+            public void onChanged(@Nullable String s) { }
         });
 
 
         recyclerView = root.findViewById(R.id.products_rv);
 
         // Initialize each note from the db to the notesList
-        for (int i = 0; i <= getAllProductsSortedByTimestamp().size() - 1; i++) {
-            productsList.add(getAllProductsSortedByTimestamp().get(i));
-        }
+        productsList.addAll(getAllProductsSortedByTimestamp());
 
         // Get Recycler from activity_main and set parameters
         recyclerView.setHasFixedSize(true);

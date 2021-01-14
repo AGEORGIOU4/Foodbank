@@ -14,9 +14,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.foodbank.Category;
+import com.example.foodbank.Product;
 import com.example.foodbank.R;
+import com.example.foodbank.db.CategoriesRoomDatabase;
+import com.example.foodbank.db.ProductsRoomDatabase;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, CategoriesAdapter.OnItemLongClickListener {
@@ -24,7 +29,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     private CategoriesViewModel categoriesViewModel;
 
     // Recycler View
-    private Vector<String> categoriesList = new Vector<>();
+    private Vector<Category> categoriesList = new Vector<>();
     private RecyclerView recyclerView;
     private CategoriesAdapter adapter;
     private GridLayoutManager gridLayoutManager;
@@ -36,12 +41,12 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         View root = inflater.inflate(R.layout.a2_fragment_categories, container, false);
         categoriesViewModel.getText().observe(getViewLifecycleOwner(), s -> { });
 
+        recyclerView = root.findViewById(R.id.categories_rv);
 
-        String[] categories = {"VEGETARIAN", "NON VEGETARIAN", "BEST NUTRI-SCORE", "FOOD PROCESSING FREE", "VEGAN", "ORGANIC"};
+        // Initialize each note from the db to the notesList
+        categoriesList.addAll(getAllCategoriesSortedByTitle());
 
         recyclerView = root.findViewById(R.id.categories_rv);
-        // Initialize each note from the db to the notesList
-        Collections.addAll(categoriesList, categories);
 
         // Set Recycler View parameters
         recyclerView.setHasFixedSize(true);
@@ -53,6 +58,10 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         recyclerView.setAdapter(adapter);
 
         return root;
+    }
+
+    List<Category> getAllCategoriesSortedByTitle() {
+        return CategoriesRoomDatabase.getDatabase(getContext()).categoriesDao().getCategoriesSortedByTitle();
     }
 
     @Override
