@@ -45,5 +45,6 @@ public abstract class CategoriesRoomDatabase extends RoomDatabase {
 
     private static final Category[] INITIAL_CATEGORIES = new Category[]{
             new Category("Snacks", System.currentTimeMillis()),
+            new Category("Drinks", System.currentTimeMillis()),
     };
 }

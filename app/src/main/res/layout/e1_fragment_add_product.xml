@@ -6,7 +6,7 @@
     tools:context=".ui.addProduct.AddProductFragment">
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textInputEnterBarcode"
+        android:id="@+id/textInput_enterBarcode"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginHorizontal="20dp"
@@ -16,7 +16,7 @@
         android:textColor="@color/grey_700" />
 
     <TextView
-        android:id="@+id/textViewAddProductGuideline"
+        android:id="@+id/textView_addProductGuideline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -26,18 +26,18 @@
         android:textSize="16sp" />
 
     <Button
-        android:id="@+id/buttonAddProduct"
+        android:id="@+id/button_addProduct"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@id/textInputEnterBarcode"
+        android:layout_below="@id/textInput_enterBarcode"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
         android:text="@string/add_product" />
 
     <TextView
-        android:id="@+id/textViewFetchedData"
+        android:id="@+id/textView_fetchedData"
         android:layout_marginHorizontal="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonAddProduct" />
+        android:layout_below="@id/button_addProduct" />
 </RelativeLayout>

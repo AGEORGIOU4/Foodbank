@@ -39,7 +39,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
                 android:background="#00FFFFFF"
-                android:src="@drawable/a3_img_nutriscore_a"
+                android:src="@drawable/d_img_nutriscore_a"
                 android:textColor="@color/cyan_700"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
@@ -52,7 +52,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@id/imageViewGrade"
                 android:background="#00FFFFFF"
-                android:src="@drawable/a3_img_ecoscore_a"
+                android:src="@drawable/d_img_ecoscore_a"
                 android:text="@string/nova_4"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
@@ -64,7 +64,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@id/imageView_ecoScore"
-                android:src="@drawable/a3_img_novagroup_a"
+                android:src="@drawable/d_img_novagroup_a"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
 

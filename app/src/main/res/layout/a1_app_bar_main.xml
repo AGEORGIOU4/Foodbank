@@ -20,7 +20,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/a2_content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -29,6 +29,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_menu_add"
-        android:backgroundTint="@color/cyan_700"/>
+        android:backgroundTint="@color/cyan_700"
+        android:contentDescription="@string/floating_button"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

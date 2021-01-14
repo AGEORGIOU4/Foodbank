@@ -22,7 +22,7 @@
             android:paddingBottom="0dp">
 
             <Button
-                android:id="@+id/gridView_categories_btn"
+                android:id="@+id/button_gridView_categories"
                 style="@style/CardView"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
@@ -31,7 +31,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="CATEGORY 1"
+                android:text="@string/category"
                 android:textColor="@color/grey_700"
                 android:textSize="15sp"
                 android:textStyle="bold" />

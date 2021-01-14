@@ -10,23 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodbank.Category;
 import com.example.foodbank.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Vector;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    private final Vector<Category> listItems;
 
-        // each data item has a 1 title (string)
-        public Button gridView_categories_btn;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            this.gridView_categories_btn = itemView.findViewById(R.id.gridView_categories_btn);
-        }
-    }
-
-    private Vector<Category> listItems;
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
 
@@ -36,12 +27,25 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         this.onItemLongClickListener = onItemLongClickListener;
     }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        // Each category item has a title and a timestamp (Button, long)
+        public Button button_gridView_categories;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            this.button_gridView_categories = itemView.findViewById(R.id.button_gridView_categories);
+        }
+    }
+
     // Create new views (invoked by the layout manager)
+    @NotNull
     @Override
     public CategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.a2_card_category, parent, false);
+                .inflate(R.layout.c2_card_category, parent, false);
         return new ViewHolder(v);
     }
 
@@ -49,10 +53,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Category listItem = listItems.get(position);
 
-        // - get element from your data set at this position
-        // - replace the contents of the view with that element
-        holder.gridView_categories_btn.setText(listItem.getTitle());
-
+        // Get element from your data set at this position
+        // Replace the contents of the view with that element
+        holder.button_gridView_categories.setText(listItem.getTitle());
         //holder.gridView_categories_btn.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem));
     }
 
