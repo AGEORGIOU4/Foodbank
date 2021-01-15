@@ -31,11 +31,11 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView_product"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="2dp"
         app:cardCornerRadius="4dp"
-        android:layout_below="@id/button_addProduct">
+        android:layout_below="@id/button_addProduct"
+        android:visibility="invisible">
 
         <RelativeLayout
             android:id="@+id/list_item_relative_layout"
@@ -111,4 +111,15 @@
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/button_scanProduct"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:layout_below="@id/cardView_product"
+        android:text="@string/scan_product"
+        android:backgroundTint="@color/grey_700"/>
 </RelativeLayout>

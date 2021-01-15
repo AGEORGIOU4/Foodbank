@@ -1,6 +1,9 @@
 package com.example.foodbank.ui.addProduct;
 
 import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +39,16 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     RequestQueue mQueue;
 
     // Layout elements
+    private ToneGenerator toneGen1;
     private EditText textInput_enterBarcode;
 
+    // Product attributes
     private String code = "";
     private String title = "";
     private String nutriScore = "";
     private String novaGroup = "";
     private String ecoScore = "";
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,15 +57,25 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
         // Layout elements
         Button buttonAddProduct = root.findViewById(R.id.button_addProduct);
-
-
-       // TextView textView_fetchedData = root.findViewById(R.id.textView_fetchedData);
+        Button button_scanProduct = root.findViewById(R.id.button_scanProduct);
 
         // Implements an HTTP request using Volley library
-        this.mQueue = Volley.newRequestQueue(requireContext());
+        this.mQueue = Volley.newRequestQueue(getContext());
+
+        // QR / Barcode reader elements
+        toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+
+        CardView cardView_product = root.findViewById(R.id.cardView_product);
 
         // Barcode input checks (not empty), and jsonParsing
         buttonAddProduct.setOnClickListener(view -> barcodeHandler(root));
+
+        button_scanProduct.setOnClickListener(v -> {
+            cardView_product.setVisibility(View.INVISIBLE);
+
+            Intent intent = new Intent(getActivity(), ScanProductActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }
@@ -98,6 +114,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
                         addProduct();
 
+                        toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
                         Toast.makeText(getContext(), "Added", Toast.LENGTH_LONG).show();
 
                         // Try on array
@@ -143,9 +160,9 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         ImageView imageView_grade = view.findViewById(R.id.imageView_nutriScore);
         ImageView imageView_ecoScore = view.findViewById(R.id.imageView_ecoScore);
         ImageView imageView_novaGroup = view.findViewById(R.id.imageView_novaGroup);
+
         CheckBox starredCheckBox = view.findViewById(R.id.checkBox_star);
 
-        CardView cardView_product = view.findViewById(R.id.cardView_product);
 
         textView_title.setText(title);
 
@@ -214,9 +231,9 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 break;
         }
 
+        CardView cardView_product = view.findViewById(R.id.cardView_product);
         cardView_product.setVisibility(View.VISIBLE);
     }
-
 }
 
 

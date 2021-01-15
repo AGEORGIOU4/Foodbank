@@ -15,5 +15,8 @@
         <!-- Customize your theme here. -->
         <item name="android:textColorHint">@color/grey_300</item>
         <item name="android:windowBackground">@drawable/main_bg</item>
+
+
+
     </style>
 </resources>
