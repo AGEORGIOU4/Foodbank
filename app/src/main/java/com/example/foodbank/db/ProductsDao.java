@@ -23,7 +23,7 @@ public interface ProductsDao {
     @Query("SELECT * FROM products ORDER BY title ASC")
     List<Product> getProductsSortedByTitle();
 
-    @Query("SELECT * FROM products ORDER BY grade DESC")
+    @Query("SELECT * FROM products ORDER BY nutriScore DESC")
     List<Product> getProductsSortedByGrade();
 
     @Query("SELECT * FROM products ORDER BY timestamp DESC")

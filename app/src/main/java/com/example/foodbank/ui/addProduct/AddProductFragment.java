@@ -40,7 +40,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     private String code = "";
     private String title = "";
-    private String grade = "";
+    private String nutriScore = "";
     private String novaGroup = "";
     private String ecoScore = "";
 
@@ -51,7 +51,9 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
         // Layout elements
         Button buttonAddProduct = root.findViewById(R.id.button_addProduct);
-        TextView textView_fetchedData = root.findViewById(R.id.textView_fetchedData);
+
+
+       // TextView textView_fetchedData = root.findViewById(R.id.textView_fetchedData);
 
         // Implements an HTTP request using Volley library
         this.mQueue = Volley.newRequestQueue(requireContext());
@@ -84,9 +86,11 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     try {
                         // if the response is successful we get useful data from the JSON file
                         JSONObject productObject = response.getJSONObject("product");
-                        code = productObject.getString("code").toUpperCase();
-                        title = productObject.getString("product_name").toUpperCase();
-                        grade = productObject.getString("nutriscore_grade").toUpperCase();
+                        code = productObject.getString("code");
+                        title = productObject.getString("product_name");
+
+                        // Safe check and change (for switch cases)
+                        nutriScore = productObject.getString("nutriscore_grade").toUpperCase();
                         novaGroup = productObject.getString("nova_group").toUpperCase();
                         ecoScore = productObject.getString("ecoscore_grade").toUpperCase();
                         // String ingredients_text_en = productObject.getString("ingredients_text_en");
@@ -115,7 +119,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     // Add the scanned product on products list
     public void addProduct() {
-        Product testProduct = new Product(code, title, grade, novaGroup, ecoScore, "Ingredients", "Nutrients", false, System.currentTimeMillis());
+        Product testProduct = new Product(code, title, nutriScore, novaGroup, ecoScore, "Ingredients", "Nutrients", false, System.currentTimeMillis());
         insert(testProduct);
     }
 
@@ -136,16 +140,16 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     public void setProductCard(View view) {
         TextView textView_title = view.findViewById(R.id.textView_title);
-        ImageView imageView_grade = view.findViewById(R.id.imageView_grade);
+        ImageView imageView_grade = view.findViewById(R.id.imageView_nutriScore);
         ImageView imageView_ecoScore = view.findViewById(R.id.imageView_ecoScore);
         ImageView imageView_novaGroup = view.findViewById(R.id.imageView_novaGroup);
-        CheckBox starredCheckBox = view.findViewById(R.id.starredCheckBox);
+        CheckBox starredCheckBox = view.findViewById(R.id.checkBox_star);
 
         CardView cardView_product = view.findViewById(R.id.cardView_product);
 
         textView_title.setText(title);
 
-        switch (grade) {
+        switch (nutriScore) {
             case "A":
                 imageView_grade.setImageResource(R.drawable.d_img_nutriscore_a);
                 break;

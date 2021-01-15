@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_below="@id/textInput_enterBarcode"
+        android:layout_alignParentEnd="true"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
         android:text="@string/add_product" />
@@ -31,37 +32,47 @@
         android:id="@+id/cardView_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button_addProduct"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="2dp"
         app:cardCornerRadius="4dp"
-        android:visibility="invisible">
+        android:layout_below="@id/button_addProduct">
 
         <RelativeLayout
             android:id="@+id/list_item_relative_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="10dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_productImage"
+                android:layout_width="65dp"
+                android:layout_height="77dp"
+                android:layout_alignParentStart="true"
+                android:background="@color/cyan_500"
+                android:backgroundTint="@color/grey_700"
+                app:shapeAppearanceOverlay="@style/Circular" />
 
             <TextView
                 android:id="@+id/textView_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@id/starredCheckBox"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/imageView_productImage"
+                android:layout_toStartOf="@id/checkBox_star"
                 android:text="@string/title"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView_grade"
+                android:id="@+id/imageView_nutriScore"
                 android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_below="@id/textView_title"
-                android:layout_alignParentStart="true"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/imageView_productImage"
                 android:background="#00FFFFFF"
                 android:src="@drawable/d_img_nutriscore_a"
                 android:textColor="@color/cyan_700"
@@ -74,7 +85,7 @@
                 android:layout_below="@id/textView_title"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_toEndOf="@id/imageView_grade"
+                android:layout_toEndOf="@id/imageView_nutriScore"
                 android:background="#00FFFFFF"
                 android:src="@drawable/d_img_ecoscore_a"
                 android:text="@string/nova_4"
@@ -91,26 +102,13 @@
                 android:src="@drawable/d_img_novagroup_1"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
-
             <CheckBox
-                android:id="@+id/starredCheckBox"
+                android:id="@+id/checkBox_star"
                 style="?android:attr/starStyle"
-                android:layout_width="30dp"
+                android:layout_width="33dp"
                 android:layout_height="30dp"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
-
-
-
-    <TextView
-        android:id="@+id/textView_fetchedData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_addProduct"
-        android:layout_marginHorizontal="10dp" />
-
-
-
 </RelativeLayout>

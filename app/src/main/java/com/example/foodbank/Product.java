@@ -11,7 +11,7 @@ public class Product {
     private int id;
     private String barcode;
     private String title;
-    private String grade;
+    private String nutriScore;
     private String novaGroup;
     private String ecoScore;
     private String ingredients;
@@ -19,11 +19,11 @@ public class Product {
     private boolean starred;
     private long timestamp;
 
-    public Product(int id, String barcode, String title, String grade, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
+    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
         this.id = id;
         this.barcode = barcode;
         this.title = title;
-        this.grade = grade;
+        this.nutriScore = nutriScore;
         this.novaGroup = novaGroup;
         this.ecoScore = ecoScore;
         this.ingredients = ingredients;
@@ -34,10 +34,10 @@ public class Product {
 
 
     @Ignore
-    public Product(String barcode, String title, String grade, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
+    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
         this.title = title;
         this.barcode = barcode;
-        this.grade = grade;
+        this.nutriScore = nutriScore;
         this.novaGroup = novaGroup;
         this.ecoScore = ecoScore;
         this.ingredients = ingredients;
@@ -60,8 +60,8 @@ public class Product {
         return title;
     }
 
-    public String getGrade() {
-        return grade;
+    public String getNutriScore() {
+        return nutriScore;
     }
 
     public String getNovaGroup() {
@@ -79,5 +79,4 @@ public class Product {
     }
 
     public long getTimestamp() { return timestamp; }
-
 }
