@@ -1,11 +1,15 @@
 package com.example.foodbank.ui.addProduct;
 
+import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -27,21 +32,37 @@ import com.android.volley.toolbox.Volley;
 import com.example.foodbank.Product;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class AddProductFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "test";
 
-    RequestQueue mQueue;
+    // QR Code Scanner Elements
+    private static final int REQUEST_CAMERA_PERMISSION = 201;
+    private static boolean isScanned;
 
+    // JSON Request Controller
+    private static boolean productFound;
+    // Barcode
+    private static String BARCODE;
+    RequestQueue mQueue;
+    private SurfaceView surfaceView_camera;
+    private BarcodeDetector barcodeDetector;
+    private CameraSource cameraSource;
+    private TextView textView_barcodeResult;
+    private String barcodeData;
     // Layout elements
     private ToneGenerator toneGen1;
     private EditText textInput_enterBarcode;
-
     // Product attributes
     private String code = "";
     private String title = "";
@@ -49,6 +70,29 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private String novaGroup = "";
     private String ecoScore = "";
 
+    private static boolean isIsScanned() {
+        return isScanned;
+    }
+
+    private static void setIsScanned(boolean isScanned) {
+        AddProductFragment.isScanned = isScanned;
+    }
+
+    public static String getBARCODE() {
+        return BARCODE;
+    }
+
+    public static void setBARCODE(String BARCODE) {
+        AddProductFragment.BARCODE = BARCODE;
+    }
+
+    public static boolean isProductFound() {
+        return productFound;
+    }
+
+    public static void setProductFound(boolean productFound) {
+        AddProductFragment.productFound = productFound;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,25 +103,91 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         Button buttonAddProduct = root.findViewById(R.id.button_addProduct);
         Button button_scanProduct = root.findViewById(R.id.button_scanProduct);
 
-        // Implements an HTTP request using Volley library
+        // Implement an HTTP request using Volley library
         this.mQueue = Volley.newRequestQueue(getContext());
+        setProductFound(false);
 
-        // QR / Barcode reader elements
+        textInput_enterBarcode = root.findViewById(R.id.textInput_enterBarcode);
+
+        // QR Code Scanner
         toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        surfaceView_camera = root.findViewById(R.id.surfaceView_camera);
+        textView_barcodeResult = root.findViewById(R.id.textView_barcodeResult);
+        setIsScanned(false);
+        initialiseDetectorsAndSources();
 
-        CardView cardView_product = root.findViewById(R.id.cardView_product);
-
-        // Barcode input checks (not empty), and jsonParsing
+        // Barcode input checks (not empty), adding a product if found and jsonParsing and
         buttonAddProduct.setOnClickListener(view -> barcodeHandler(root));
-
-        button_scanProduct.setOnClickListener(v -> {
-            cardView_product.setVisibility(View.INVISIBLE);
-
-            Intent intent = new Intent(getActivity(), ScanProductActivity.class);
-            startActivity(intent);
-        });
+        // Scan Again
+        button_scanProduct.setOnClickListener(v -> scanAgain());
 
         return root;
+    }
+
+    private void initialiseDetectorsAndSources() {
+
+        barcodeDetector = new BarcodeDetector.Builder(getContext())
+                .setBarcodeFormats(Barcode.ALL_FORMATS)
+                .build();
+
+        cameraSource = new CameraSource.Builder(getContext(), barcodeDetector)
+                .setRequestedPreviewSize(1920, 1080)
+                .setAutoFocusEnabled(true) //you should add this feature
+                .build();
+
+        surfaceView_camera.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                try {
+                    // maybe activity check about activity combat000000000000000000000
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        cameraSource.start(surfaceView_camera.getHolder());
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(), new
+                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                cameraSource.stop();
+            }
+        });
+
+
+        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+            @Override
+            public void release() {
+                // Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void receiveDetections(Detector.Detections<Barcode> detections) {
+
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+
+                if (barcodes.size() != 0) {
+                    textView_barcodeResult.post(() -> {
+
+                        // Get Barcode data from Scanner
+                        if (!isIsScanned()) {
+                            barcodeData = barcodes.valueAt(0).displayValue;
+                            textView_barcodeResult.setText(barcodeData);
+                            setIsScanned(true);
+                            setBARCODE(barcodeData);
+                            jsonParse();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void barcodeHandler(View view) {
@@ -86,6 +196,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         if (textInput_enterBarcode.getText().toString().matches("")) {
             Toast.makeText(getContext(), "Please enter barcode", Toast.LENGTH_SHORT).show();
         } else {
+            setBARCODE(textInput_enterBarcode.getText().toString());
             jsonParse();
         }
     }
@@ -93,8 +204,9 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private void jsonParse() {
         hideKeyboard();
 
+        String barcode = getBARCODE();
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
-        String apiURL = mainURL + textInput_enterBarcode.getText().toString();
+        String apiURL = mainURL + barcode;
 
         // The user's input is concatenated with the main URL and the program makes a request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null,
@@ -102,28 +214,23 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     try {
                         // if the response is successful we get useful data from the JSON file
                         JSONObject productObject = response.getJSONObject("product");
+
                         code = productObject.getString("code");
                         title = productObject.getString("product_name");
-
-                        // Safe check and change (for switch cases)
                         nutriScore = productObject.getString("nutriscore_grade").toUpperCase();
                         novaGroup = productObject.getString("nova_group").toUpperCase();
                         ecoScore = productObject.getString("ecoscore_grade").toUpperCase();
-                        // String ingredients_text_en = productObject.getString("ingredients_text_en");
-                        setProductCard(getView());
 
-                        addProduct();
-
+                        // Set product found controller / Show product card / Hide Surface View
                         toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+                        setProductFound(true);
+                        setProductCard(getView());
+                        showProductCardHideSurfaceView();
+
+                        // Add product on Products database
+                        addProduct();
                         Toast.makeText(getContext(), "Added", Toast.LENGTH_LONG).show();
 
-                        // Try on array
-                        JSONArray traces_tags = productObject.getJSONArray("traces_tags");
-
-                        for (int i = 0; i < traces_tags.length(); i++) {
-                            JSONObject object = traces_tags.getJSONObject(i);
-
-                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -161,8 +268,8 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         ImageView imageView_ecoScore = view.findViewById(R.id.imageView_ecoScore);
         ImageView imageView_novaGroup = view.findViewById(R.id.imageView_novaGroup);
 
-        CheckBox starredCheckBox = view.findViewById(R.id.checkBox_star);
 
+        CheckBox starredCheckBox = view.findViewById(R.id.checkBox_star);
 
         textView_title.setText(title);
 
@@ -230,9 +337,28 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_unknown);
                 break;
         }
+    }
 
-        CardView cardView_product = view.findViewById(R.id.cardView_product);
-        cardView_product.setVisibility(View.VISIBLE);
+    public void showProductCardHideSurfaceView() {
+        CardView cardView_product = getView().findViewById(R.id.cardView_product);
+        SurfaceView surfaceView_camera = getView().findViewById(R.id.surfaceView_camera);
+
+        if (isProductFound()) {
+            cardView_product.setVisibility(View.VISIBLE);
+            surfaceView_camera.setVisibility(View.INVISIBLE);
+        } else {
+            cardView_product.setVisibility(View.INVISIBLE);
+            surfaceView_camera.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void scanAgain() {
+        textInput_enterBarcode.setText("");
+        setBARCODE("");
+        textView_barcodeResult.setText(getBARCODE());
+        setIsScanned(false);
+        setProductFound(false);
+        showProductCardHideSurfaceView();
     }
 }
 

@@ -33,6 +33,7 @@
     <string name="category">CATEGORY</string>
     <string name="add_to_list">Add to List</string>
     <string name="pop_up_menu">Pop up Menu</string>
-    <string name="scan_product">Scan Product</string>
+    <string name="scan_product">Scan Again</string>
+    <string name="barcode_text">Barcode Text</string>
 
 </resources>

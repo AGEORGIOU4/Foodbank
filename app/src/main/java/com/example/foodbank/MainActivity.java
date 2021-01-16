@@ -50,11 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Hide keyboard
         hideKeyboard(drawer);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -65,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
+        InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
