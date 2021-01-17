@@ -413,7 +413,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 break;
         }
     }
-
+    
     public void showProductCardHideSurfaceView() {
         CardView cardView_product = getView().findViewById(R.id.cardView_product);
         SurfaceView surfaceView_camera = getView().findViewById(R.id.surfaceView_camera);
