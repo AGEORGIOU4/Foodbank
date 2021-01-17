@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.Product;
 import com.example.foodbank.R;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,8 @@ import java.util.Vector;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
-    private static final String TAG = "testing";
-
     private final Vector<Product> listItems;
+    private Context context;
 
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
@@ -39,15 +39,14 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
-        public ImageView imageView_productImage;
         public TextView textView_title;
         public ImageView imageView_nutriScore;
         public ImageView imageView_ecoScore;
         public ImageView imageView_novaGroup;
-        public ImageView imageView_popupMenu;
+        public ImageView imageView_productImage;
         public CheckBox checkBox_star;
+        public ImageView imageView_popupMenu;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -76,21 +75,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Product listItem = listItems.get(position);
 
-        String title = listItem.getTitle();
-        String nutriScore = listItem.getNutriScore().toUpperCase();
-        String novaGroup = listItem.getNovaGroup().toUpperCase();
-        String ecoScore = listItem.getEcoScore().toUpperCase();
-
-        Log.d(TAG, title);
-        Log.d(TAG, nutriScore);
-        Log.d(TAG, novaGroup);
-        Log.d(TAG, ecoScore);
-
+        // Capitalize First letter
+        String title = listItem.getTitle().substring(0, 1).toUpperCase() + listItem.getTitle().substring(1);
+        String nutriScore = listItem.getNutriScore();
+        String novaGroup = listItem.getNovaGroup();
+        String ecoScore = listItem.getEcoScore();
+        String imageUrl = listItem.getImageUrl();
 
         // Set listener on Action Bar Menu
         holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position));
-
-
 
         // Get element from your data set at this position
         // Replace the contents of the view with that element
@@ -151,6 +144,12 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
             default:
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_unknown);
                 break;
+        }
+
+        try {
+            Picasso.get().load(imageUrl).resize(66, 75).centerCrop().into(holder.imageView_productImage);
+        } catch (Exception e) {
+            Toast.makeText(context, "Oops. Something went wrong. Please check your internet connection", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -2,7 +2,6 @@ package com.example.foodbank.ui.addProduct;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -40,14 +39,13 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 public class AddProductFragment extends Fragment implements View.OnClickListener {
-
-    private static final String TAG = "test";
 
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
@@ -57,7 +55,6 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     RequestQueue mQueue;
 
     private SurfaceView surfaceView_camera;
-    private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private TextView textView_barcodeResult;
     private String barcodeData;
@@ -73,6 +70,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private String nutriScore;
     private String novaGroup;
     private String ecoScore;
+    private String imageUrl;
 
     // Control the surface view/product card visibility
     private boolean productFound;
@@ -117,6 +115,10 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     public void setInputBarcode(String inputBarcode) { this.inputBarcode = inputBarcode; }
 
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
     /*------------------------------------------------------------------------------------------------------------*/
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,7 +129,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         clearProductData();
 
         // Implement an HTTP request using Volley library
-        this.mQueue = Volley.newRequestQueue(getContext());
+        this.mQueue = Volley.newRequestQueue(requireContext());
 
         // QR Code Scanner
         toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
@@ -163,17 +165,17 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     }
 
     private void initialiseDetectorsAndSources() {
-        barcodeDetector = new BarcodeDetector.Builder(getContext()).setBarcodeFormats(Barcode.ALL_FORMATS).build();
-        cameraSource = new CameraSource.Builder(getContext(), barcodeDetector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true) //you should add this feature
+        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(requireContext()).setBarcodeFormats(Barcode.ALL_FORMATS).build();
+        cameraSource = new CameraSource.Builder(requireContext(), barcodeDetector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true) //you should add this feature
                 .build();
         surfaceView_camera.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 try {
-                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         cameraSource.start(surfaceView_camera.getHolder());
                     } else {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -193,7 +195,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
             }
 
             @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
+            public void receiveDetections(@NotNull Detector.Detections<Barcode> detections) {
 
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
@@ -268,6 +270,11 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     setNutriScore(productObject.getString("nutriscore_grade"));
                 if(productObject.has("ecoscore_grade"))
                 setEcoScore(productObject.getString("ecoscore_grade"));
+                if(productObject.has("image_front_small_url")) {
+                    setImageUrl(productObject.getString("image_front_small_url"));
+                } else {
+                  setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
+                }
 
                 // Add product on Products database
                 addProduct();
@@ -288,7 +295,8 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     // Add the scanned product on products list
     public void addProduct() {
-        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), "Ingredients", "Nutrients", false, System.currentTimeMillis());
+        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), "Ingredients", "Nutrients",
+                false, System.currentTimeMillis(), getImageUrl());
         insert(testProduct);
     }
 
@@ -306,11 +314,11 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     }
 
     public void alertDialogBox() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Product not found. Do you want to scan again?");
         builder.setTitle("Scanning Result");
         builder.setPositiveButton("Try Again", (dialog, which) -> scanAgain()).setNegativeButton("Finish", (dialog, which) -> {
-            getActivity().finish();
+            requireActivity().finish();
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
 
@@ -321,8 +329,8 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     }
 
     public void hideKeyboard() {
-        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
     }
 
     public void clearProductData() {
@@ -333,6 +341,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         setNutriScore("");
         setEcoScore("");
         setNovaGroup("");
+        setImageUrl("");
     }
 
     @Override
@@ -407,8 +416,8 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     }
 
     public void showProductCardHideSurfaceView() {
-        CardView cardView_product = getView().findViewById(R.id.cardView_product);
-        SurfaceView surfaceView_camera = getView().findViewById(R.id.surfaceView_camera);
+        CardView cardView_product = requireView().findViewById(R.id.cardView_product);
+        SurfaceView surfaceView_camera = requireView().findViewById(R.id.surfaceView_camera);
 
         if (isProductFound()) {
             cardView_product.setVisibility(View.VISIBLE);

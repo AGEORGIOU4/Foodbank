@@ -44,6 +44,7 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
     }
 
     private static final Product[] INITIAL_PRODUCTS = new Product[]{
-            new Product("737628064502","Product", "A", "4", "1", "Ingredients", "Nutrients", false, System.currentTimeMillis()),
+            new Product("0737628064502","Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning", "C", "4", "Unknown", "Ingredients", "Nutrients", false, System.currentTimeMillis(),
+                    "https://static.openfoodfacts.org/images/products/073/762/806/4502/front_en.6.200.jpg"),
     };
 }

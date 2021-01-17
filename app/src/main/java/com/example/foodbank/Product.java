@@ -4,6 +4,9 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+
+
+
 @Entity(tableName = "products")
 public class Product {
 
@@ -18,8 +21,10 @@ public class Product {
     private String nutrients;
     private boolean starred;
     private long timestamp;
+    private String imageUrl;
 
-    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
+    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp,
+                   String imageUrl) {
         this.id = id;
         this.barcode = barcode;
         this.title = title;
@@ -30,11 +35,13 @@ public class Product {
         this.nutrients = nutrients;
         this.starred = starred;
         this.timestamp = timestamp;
+        this.imageUrl = imageUrl;
     }
 
 
     @Ignore
-    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp) {
+    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp,
+                   String imageUrl) {
         this.title = title;
         this.barcode = barcode;
         this.nutriScore = nutriScore;
@@ -44,6 +51,7 @@ public class Product {
         this.nutrients = nutrients;
         this.starred = starred;
         this.timestamp = timestamp;
+        this.imageUrl = imageUrl;
     }
 
     public int getId() {
@@ -79,4 +87,6 @@ public class Product {
     }
 
     public long getTimestamp() { return timestamp; }
+
+    public String getImageUrl() { return imageUrl; }
 }
