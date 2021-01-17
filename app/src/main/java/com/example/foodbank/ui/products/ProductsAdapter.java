@@ -97,19 +97,19 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         holder.textView_title.setText(title);
 
         switch (nutriScore) {
-            case "A": case "a":
+            case "1": case "A": case "a":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
                 break;
-            case "B": case "b":
+            case "2": case "B": case "b":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
                 break;
-            case "C": case "c":
+            case "3": case "C": case "c":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
                 break;
-            case "D": case "d":
+            case "4": case "D": case "d":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
                 break;
-            case "E": case "e":
+            case "5": case "E": case "e":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
                 break;
             default:

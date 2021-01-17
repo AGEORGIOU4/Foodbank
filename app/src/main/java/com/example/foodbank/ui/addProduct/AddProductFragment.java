@@ -349,19 +349,19 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         textView_title.setText(title);
 
         switch (nutriScore) {
-            case "A":
+            case "1": case "A": case "a":
                 imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
                 break;
-            case "B":
+            case "2": case "B": case "b":
                 imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
                 break;
-            case "C":
+            case "3": case "C": case "c":
                 imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
                 break;
-            case "D":
+            case "4": case "D": case "d":
                 imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
                 break;
-            case "E":
+            case "5": case "E": case "e":
                 imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
                 break;
             default:
@@ -370,20 +370,16 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         }
 
         switch (ecoScore) {
-            case "1":
-            case "A":
+            case "1": case "A": case "a":
                 imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_a);
                 break;
-            case "2":
-            case "B":
+            case "2": case "B": case "b":
                 imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_b);
                 break;
-            case "3":
-            case "C":
+            case "3": case "C": case "c":
                 imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_c);
                 break;
-            case "4":
-            case "D":
+            case "4": case "D": case "d":
                 imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_d);
                 break;
             default:
@@ -392,20 +388,16 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         }
 
         switch (novaGroup) {
-            case "1":
-            case "A":
+            case "1": case "A": case "a":
                 imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_1);
                 break;
-            case "2":
-            case "B":
+            case "2": case "B": case "b":
                 imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_2);
                 break;
-            case "3":
-            case "C":
+            case "3": case "C": case "c":
                 imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_3);
                 break;
-            case "4":
-            case "D":
+            case "4": case "D": case "d":
                 imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_4);
                 break;
             default:
