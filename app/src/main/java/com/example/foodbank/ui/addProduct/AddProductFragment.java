@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -38,12 +41,15 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class AddProductFragment extends Fragment implements View.OnClickListener {
 
@@ -78,7 +84,6 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private boolean isScanned;
 
     // Getters & Setters
-
     public boolean isProductFound() { return productFound; }
 
     public void setProductFound(boolean productFound) { this.productFound = productFound; }
@@ -277,8 +282,12 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 }
 
                 // Add product on Products database
+                setProductFound(true);
                 addProduct();
                 Toast.makeText(getContext(), "Added to your products!", Toast.LENGTH_LONG).show();
+
+                setProductCard(requireView());
+                showProductCardHideSurfaceView();
                 clearProductData();
 
             } catch (JSONException e) {
@@ -311,6 +320,8 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
         setInputBarcode("");
         setIsScanned(false);
+
+        showProductCardHideSurfaceView();
     }
 
     public void alertDialogBox() {
@@ -350,81 +361,93 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     }
 
     public void setProductCard(View view) {
-        TextView textView_title = view.findViewById(R.id.textView_title);
-        ImageView imageView_nutriScore = view.findViewById(R.id.imageView_nutriScore);
-        ImageView imageView_ecoScore = view.findViewById(R.id.imageView_ecoScore);
-        ImageView imageView_novaGroup = view.findViewById(R.id.imageView_novaGroup);
+        TextView textView_addedProductTitle = view.findViewById(R.id.textView_addedProductTitle);
+        ImageView imageView_addedProductNutriScore = view.findViewById(R.id.imageView_addedProductNutriScore);
+        ImageView imageView_addedProductEcoScore = view.findViewById(R.id.imageView_addedProductEcoScore);
+        ImageView imageView_addedNovaGroup = view.findViewById(R.id.imageView_addedNovaGroup);
+        ImageView imageView_addedProductImage = view.findViewById(R.id.imageView_addedProductImage);
 
-        textView_title.setText(title);
+
+        textView_addedProductTitle.setText(title);
+
+
+        try {
+            Picasso.get().load(getImageUrl()).resize(66, 75).centerCrop().into(imageView_addedProductImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Oops, something is wrong with the photo " + getImageUrl() , Toast.LENGTH_SHORT).show();
+        }
 
         switch (nutriScore) {
             case "1": case "A": case "a":
-                imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
+                imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
                 break;
             case "2": case "B": case "b":
-                imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
+                imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
                 break;
             case "3": case "C": case "c":
-                imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
+                imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
                 break;
             case "4": case "D": case "d":
-                imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
+                imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
                 break;
             case "5": case "E": case "e":
-                imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
+                imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
                 break;
             default:
-                imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_unknown);
+                imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_unknown);
                 break;
         }
 
         switch (ecoScore) {
             case "1": case "A": case "a":
-                imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_a);
+                imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_a);
                 break;
             case "2": case "B": case "b":
-                imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_b);
+                imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_b);
                 break;
             case "3": case "C": case "c":
-                imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_c);
+                imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_c);
                 break;
             case "4": case "D": case "d":
-                imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_d);
+                imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_d);
                 break;
             default:
-                imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_unknown);
+                imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_unknown);
                 break;
         }
 
         switch (novaGroup) {
             case "1": case "A": case "a":
-                imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_1);
+                imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_1);
                 break;
             case "2": case "B": case "b":
-                imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_2);
+                imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_2);
                 break;
             case "3": case "C": case "c":
-                imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_3);
+                imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_3);
                 break;
             case "4": case "D": case "d":
-                imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_4);
+                imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_4);
                 break;
             default:
-                imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_unknown);
+                imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_unknown);
                 break;
         }
+
     }
 
     public void showProductCardHideSurfaceView() {
-        CardView cardView_product = requireView().findViewById(R.id.cardView_product);
+        CardView cardView_addedProduct = requireView().findViewById(R.id.cardView_addedProduct);
         SurfaceView surfaceView_camera = requireView().findViewById(R.id.surfaceView_camera);
 
         if (isProductFound()) {
-            cardView_product.setVisibility(View.VISIBLE);
+            cardView_addedProduct.setVisibility(View.VISIBLE);
             surfaceView_camera.setVisibility(View.INVISIBLE);
+
             setProductFound(false);
         } else {
-            cardView_product.setVisibility(View.INVISIBLE);
+            cardView_addedProduct.setVisibility(View.INVISIBLE);
             surfaceView_camera.setVisibility(View.VISIBLE);
         }
     }

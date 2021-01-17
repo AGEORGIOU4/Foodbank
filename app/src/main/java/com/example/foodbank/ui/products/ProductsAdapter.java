@@ -1,7 +1,6 @@
 package com.example.foodbank.ui.products;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
             this.textView_title = itemView.findViewById(R.id.textView_title);
             this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
@@ -149,7 +147,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         try {
             Picasso.get().load(imageUrl).resize(66, 75).centerCrop().into(holder.imageView_productImage);
         } catch (Exception e) {
-            Toast.makeText(context, "Oops. Something went wrong. Please check your internet connection", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            Toast.makeText(context, "Oops, this should happened.", Toast.LENGTH_SHORT).show();
         }
     }
 

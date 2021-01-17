@@ -29,7 +29,7 @@
         android:text="@string/add_product" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_product"
+        android:id="@+id/cardView_addedProduct"
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:layout_below="@id/button_addProduct"
@@ -39,14 +39,14 @@
         app:cardCornerRadius="4dp">
 
         <RelativeLayout
-            android:id="@+id/list_item_relative_layout"
+            android:id="@+id/added_list_item_relative_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView_productImage"
+                android:id="@+id/imageView_addedProductImage"
                 android:layout_width="65dp"
                 android:layout_height="77dp"
                 android:layout_alignParentStart="true"
@@ -55,51 +55,51 @@
                 app:shapeAppearanceOverlay="@style/Circular" />
 
             <TextView
-                android:id="@+id/textView_title"
+                android:id="@+id/textView_addedProductTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
                 android:layout_toStartOf="@id/checkBox_star"
-                android:layout_toEndOf="@id/imageView_productImage"
+                android:layout_toEndOf="@id/imageView_addedProductImage"
                 android:text="@string/title"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView_nutriScore"
+                android:id="@+id/imageView_addedProductNutriScore"
                 android:layout_width="80dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/textView_title"
+                android:layout_below="@id/textView_addedProductTitle"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_toEndOf="@id/imageView_productImage"
+                android:layout_toEndOf="@id/imageView_addedProductImage"
                 android:background="#00FFFFFF"
                 android:src="@drawable/d_img_nutriscore_a"
                 android:textColor="@color/cyan_700"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView_ecoScore"
+                android:id="@+id/imageView_addedProductEcoScore"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/textView_title"
+                android:layout_below="@id/textView_addedProductTitle"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_toEndOf="@id/imageView_nutriScore"
+                android:layout_toEndOf="@id/imageView_addedProductNutriScore"
                 android:background="#00FFFFFF"
                 android:src="@drawable/d_img_ecoscore_a"
                 android:text="@string/nova_4"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView_novaGroup"
+                android:id="@+id/imageView_addedNovaGroup"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/textView_title"
+                android:layout_below="@id/textView_addedProductTitle"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_toEndOf="@id/imageView_ecoScore"
+                android:layout_toEndOf="@id/imageView_addedProductEcoScore"
                 android:src="@drawable/d_img_novagroup_1"
                 app:shapeAppearanceOverlay="@style/Circular" />
 
