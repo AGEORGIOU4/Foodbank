@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -28,7 +26,6 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -48,8 +45,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 
 public class AddProductFragment extends Fragment implements View.OnClickListener {
 
@@ -76,7 +71,17 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private String nutriScore;
     private String novaGroup;
     private String ecoScore;
+    private String ingredients;
+    private String categoriesImported;
     private String imageUrl;
+
+    public String getIngredients() { return ingredients; }
+
+    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
+
+    public String getCategoriesImported() { return categoriesImported; }
+
+    public void setCategoriesImported(String categoriesImported) { this.categoriesImported = categoriesImported; }
 
     // Control the surface view/product card visibility
     private boolean productFound;
@@ -210,7 +215,6 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                         if (!isIsScanned()) {
                             barcodeData = barcodes.valueAt(0).displayValue;
                             setInputBarcode(barcodeData);
-                            textView_barcodeResult.setText(barcodeData);
                             setIsScanned(true);
                             getResponse();
                         }
@@ -275,10 +279,17 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     setNutriScore(productObject.getString("nutriscore_grade"));
                 if(productObject.has("ecoscore_grade"))
                 setEcoScore(productObject.getString("ecoscore_grade"));
+                if(productObject.has("ingredients_text"))
+                    setIngredients(productObject.getString("ingredients_text"));
+                if(productObject.has("categories_imported"))
+                    setCategoriesImported(productObject.getString("categories_imported"));
+
+
                 if(productObject.has("image_front_small_url")) {
                     setImageUrl(productObject.getString("image_front_small_url"));
                 } else {
-                  setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
+                // If image is not found set an unknown image as default
+                setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
                 }
 
                 // Add product on Products database
@@ -304,7 +315,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     // Add the scanned product on products list
     public void addProduct() {
-        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), "Ingredients", "Nutrients",
+        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), getIngredients(), getCategoriesImported(),
                 false, System.currentTimeMillis(), getImageUrl());
         insert(testProduct);
     }
@@ -352,7 +363,10 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         setNutriScore("");
         setEcoScore("");
         setNovaGroup("");
+        setIngredients("");
+        setCategoriesImported("");
         setImageUrl("");
+
     }
 
     @Override
@@ -365,18 +379,13 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         ImageView imageView_addedProductNutriScore = view.findViewById(R.id.imageView_addedProductNutriScore);
         ImageView imageView_addedProductEcoScore = view.findViewById(R.id.imageView_addedProductEcoScore);
         ImageView imageView_addedNovaGroup = view.findViewById(R.id.imageView_addedNovaGroup);
+        TextView textView_addedProductIngredients = view.findViewById(R.id.textView_addedProductIngredients);
+        TextView textView_addedProductCategoriesImported = view.findViewById(R.id.textView_addedProductCategoriesImported);
         ImageView imageView_addedProductImage = view.findViewById(R.id.imageView_addedProductImage);
+        TextView textView_barcodeResult = view.findViewById(R.id.textView_barcodeResult);
 
-
+        // Initialize values on card
         textView_addedProductTitle.setText(title);
-
-
-        try {
-            Picasso.get().load(getImageUrl()).resize(66, 75).centerCrop().into(imageView_addedProductImage);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "Oops, something is wrong with the photo " + getImageUrl() , Toast.LENGTH_SHORT).show();
-        }
 
         switch (nutriScore) {
             case "1": case "A": case "a":
@@ -435,6 +444,17 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 break;
         }
 
+        if(!ingredients.equals("")){ textView_addedProductIngredients.setText("Ingredients: " + ingredients) ;}
+        if(!categoriesImported.equals("")) { textView_addedProductCategoriesImported.setText("Categories: " + categoriesImported); }
+
+        textView_barcodeResult.setText("Barcode: " + inputBarcode);
+
+        try {
+            Picasso.get().load(getImageUrl()).resize(66, 75).centerCrop().into(imageView_addedProductImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Oops, something is wrong with the photo " + getImageUrl() , Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void showProductCardHideSurfaceView() {

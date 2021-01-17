@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".ui.addProduct.AddProductFragment">
 
@@ -28,12 +28,14 @@
         android:layout_marginVertical="10dp"
         android:text="@string/add_product" />
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView_addedProduct"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/button_addProduct"
-        android:layout_marginHorizontal="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="10dp"
         android:visibility="invisible"
         app:cardCornerRadius="4dp">
@@ -62,6 +64,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_toStartOf="@id/checkBox_star"
                 android:layout_toEndOf="@id/imageView_addedProductImage"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/title"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -110,6 +114,39 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true" />
 
+            <TextView
+                android:id="@+id/textView_addedProductIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageView_addedProductImage"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:ellipsize="end"
+                android:maxLines="8"
+                android:text="Ingredients" />
+
+            <TextView
+                android:id="@+id/textView_addedProductCategoriesImported"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_addedProductIngredients"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:text="Categories" />
+
+            <TextView
+                android:id="@+id/textView_barcodeResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_addedProductCategoriesImported"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Barcode" />
+
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -119,23 +156,12 @@
         android:layout_height="300dp"
         android:layout_below="@id/button_addProduct" />
 
-    <TextView
-        android:id="@+id/textView_barcodeResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/surfaceView_camera"
-        android:layout_centerHorizontal="true"
-        android:layout_marginVertical="10dp"
-        android:padding="5dp"
-        android:textColor="@color/grey_700"
-        android:textSize="25sp" />
-
     <Button
         android:id="@+id/button_scanProduct"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@id/textView_barcodeResult"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="20dp"
         android:backgroundTint="@color/grey_700"
         android:text="@string/scan_product" />

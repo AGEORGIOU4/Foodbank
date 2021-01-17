@@ -18,12 +18,12 @@ public class Product {
     private String novaGroup;
     private String ecoScore;
     private String ingredients;
-    private String nutrients;
+    private String categoriesImported;
     private boolean starred;
     private long timestamp;
     private String imageUrl;
 
-    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp,
+    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String categoriesImported, boolean starred, long timestamp,
                    String imageUrl) {
         this.id = id;
         this.barcode = barcode;
@@ -32,7 +32,7 @@ public class Product {
         this.novaGroup = novaGroup;
         this.ecoScore = ecoScore;
         this.ingredients = ingredients;
-        this.nutrients = nutrients;
+        this.categoriesImported = categoriesImported;
         this.starred = starred;
         this.timestamp = timestamp;
         this.imageUrl = imageUrl;
@@ -40,7 +40,7 @@ public class Product {
 
 
     @Ignore
-    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutrients, boolean starred, long timestamp,
+    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String categoriesImported, boolean starred, long timestamp,
                    String imageUrl) {
         this.title = title;
         this.barcode = barcode;
@@ -48,7 +48,7 @@ public class Product {
         this.novaGroup = novaGroup;
         this.ecoScore = ecoScore;
         this.ingredients = ingredients;
-        this.nutrients = nutrients;
+        this.categoriesImported = categoriesImported;
         this.starred = starred;
         this.timestamp = timestamp;
         this.imageUrl = imageUrl;
@@ -80,7 +80,7 @@ public class Product {
 
     public String getIngredients() { return ingredients; }
 
-    public String getNutrients() { return nutrients; }
+    public String getCategoriesImported() { return categoriesImported; }
 
     public boolean isStarred() {
         return starred;

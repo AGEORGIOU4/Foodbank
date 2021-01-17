@@ -125,7 +125,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
                 holder.imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_unknown);
                 break;
         }
-
         switch (novaGroup) {
             case "1": case "A": case "a":
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_1);
@@ -145,7 +144,14 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         }
 
         try {
+            if(!listItem.getImageUrl().equals(""))
             Picasso.get().load(imageUrl).resize(66, 75).centerCrop().into(holder.imageView_productImage);
+            else {
+
+            // Set default photo in case no photo is found (cross check with API call)
+            Picasso.get().load("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png")
+                    .resize(66, 75).centerCrop().into(holder.imageView_productImage);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(context, "Oops, this should happened.", Toast.LENGTH_SHORT).show();

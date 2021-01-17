@@ -35,5 +35,6 @@
     <string name="pop_up_menu">Pop up Menu</string>
     <string name="scan_product">Scan Again</string>
     <string name="barcode_text">Barcode Text</string>
+    <string name="view_product">View Product</string>
 
 </resources>
