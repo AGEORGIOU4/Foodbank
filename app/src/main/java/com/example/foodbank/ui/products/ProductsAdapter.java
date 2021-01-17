@@ -97,19 +97,19 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         holder.textView_title.setText(title);
 
         switch (nutriScore) {
-            case "A":
+            case "A": case "a":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
                 break;
-            case "B":
+            case "B": case "b":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
                 break;
-            case "C":
+            case "C": case "c":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
                 break;
-            case "D":
+            case "D": case "d":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
                 break;
-            case "E":
+            case "E": case "e":
                 holder.imageView_nutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
                 break;
             default:
@@ -118,20 +118,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         }
 
         switch (ecoScore) {
-            case "1":
-            case "A":
+            case "1": case "A": case "a":
                 holder.imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_a);
                 break;
-            case "2":
-            case "B":
+            case "2": case "B": case "b":
                 holder.imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_b);
                 break;
-            case "3":
-            case "C":
+            case "3": case "C": case "c":
                 holder.imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_c);
                 break;
-            case "4":
-            case "D":
+            case "4": case "D": case "d":
                 holder.imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_d);
                 break;
             default:
@@ -140,20 +136,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         }
 
         switch (novaGroup) {
-            case "1":
-            case "A":
+            case "1": case "A": case "a":
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_1);
                 break;
-            case "2":
-            case "B":
+            case "2": case "B": case "b":
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_2);
                 break;
-            case "3":
-            case "C":
+            case "3": case "C": case "c":
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_3);
                 break;
-            case "4":
-            case "D":
+            case "4": case "D": case "d":
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_4);
                 break;
             default:

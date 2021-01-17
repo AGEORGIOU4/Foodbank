@@ -127,7 +127,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginVertical="10dp"
         android:padding="5dp"
-        android:text="@string/barcode_text"
+        android:textColor="@color/grey_700"
         android:textSize="25sp" />
 
     <Button
@@ -139,4 +139,5 @@
         android:layout_marginHorizontal="20dp"
         android:backgroundTint="@color/grey_700"
         android:text="@string/scan_product" />
+
 </RelativeLayout>
