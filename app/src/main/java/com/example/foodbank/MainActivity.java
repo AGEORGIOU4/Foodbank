@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Hide keyboard
         hideKeyboard(drawer);
-
     }
 
     @Override

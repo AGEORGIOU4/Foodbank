@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/button_addProduct"
         android:layout_centerHorizontal="true"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
         android:visibility="invisible"
         app:cardCornerRadius="4dp">

@@ -5,8 +5,6 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
-
-
 @Entity(tableName = "products")
 public class Product {
 
@@ -18,13 +16,16 @@ public class Product {
     private String novaGroup;
     private String ecoScore;
     private String ingredients;
+    private String nutriments;
+    private String vegan;
+    private String vegetarian;
     private String categoriesImported;
     private boolean starred;
     private long timestamp;
     private String imageUrl;
 
-    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String categoriesImported, boolean starred, long timestamp,
-                   String imageUrl) {
+    public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutriments,
+                   String vegan, String vegetarian, String categoriesImported, boolean starred, long timestamp, String imageUrl) {
         this.id = id;
         this.barcode = barcode;
         this.title = title;
@@ -38,10 +39,9 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-
     @Ignore
-    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String categoriesImported, boolean starred, long timestamp,
-                   String imageUrl) {
+    public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutriments,
+                   String vegan, String vegetarian, String categoriesImported, boolean starred, long timestamp, String imageUrl) {
         this.title = title;
         this.barcode = barcode;
         this.nutriScore = nutriScore;
@@ -79,6 +79,12 @@ public class Product {
     public String getEcoScore() { return ecoScore; }
 
     public String getIngredients() { return ingredients; }
+
+    public String getNutriments() { return nutriments; }
+
+    public String getVegan() { return vegan; }
+
+    public String getVegetarian() { return vegetarian; }
 
     public String getCategoriesImported() { return categoriesImported; }
 

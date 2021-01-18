@@ -1,6 +1,7 @@
 package com.example.foodbank.ui.addProduct;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,8 +52,6 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
 
-    // Barcode
-
     RequestQueue mQueue;
 
     private SurfaceView surfaceView_camera;
@@ -64,34 +63,33 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private ToneGenerator toneGen1;
     private EditText textInput_enterBarcode;
 
-    // Product attributes
+    // Barcode
     private String inputBarcode;
+
+    // Product attributes
     private String code;
     private String title;
     private String nutriScore;
     private String novaGroup;
     private String ecoScore;
     private String ingredients;
+    private String nutriments;
+    private String vegan;
+    private String vegetarian;
     private String categoriesImported;
     private String imageUrl;
 
-    public String getIngredients() { return ingredients; }
-
-    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
-
-    public String getCategoriesImported() { return categoriesImported; }
-
-    public void setCategoriesImported(String categoriesImported) { this.categoriesImported = categoriesImported; }
-
-    // Control the surface view/product card visibility
+    // Control the surface view/product card visibility, and each scan
     private boolean productFound;
-    // Control each scan
     private boolean isScanned;
 
-    // Getters & Setters
-    public boolean isProductFound() { return productFound; }
 
-    public void setProductFound(boolean productFound) { this.productFound = productFound; }
+    // Getters & Setters
+    public String getInputBarcode() {
+        return inputBarcode;
+    }
+
+    public void setInputBarcode(String inputBarcode) { this.inputBarcode = inputBarcode; }
 
     public String getCode() { return code; }
 
@@ -113,21 +111,40 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     public void setEcoScore(String ecoScore) { this.ecoScore = ecoScore; }
 
+    public String getIngredients() { return ingredients; }
+
+    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
+
+    public String getNutriments() { return nutriments; }
+
+    public void setNutriments(String nutriments) { this.nutriments = nutriments; }
+
+    public String getVegan() { return vegan; }
+
+    public void setVegan(String vegan) { this.vegan = vegan; }
+
+    public String getVegetarian() { return vegetarian; }
+
+    public void setVegetarian(String vegetarian) { this.vegetarian = vegetarian; }
+
+    public String getCategoriesImported() { return categoriesImported; }
+
+    public void setCategoriesImported(String categoriesImported) { this.categoriesImported = categoriesImported; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public boolean isProductFound() { return productFound; }
+
+    public void setProductFound(boolean productFound) { this.productFound = productFound; }
+
     private boolean isIsScanned() {
         return isScanned;
     }
 
     private void setIsScanned(boolean isScanned) { this.isScanned = isScanned; }
 
-    public String getInputBarcode() {
-        return inputBarcode;
-    }
-
-    public void setInputBarcode(String inputBarcode) { this.inputBarcode = inputBarcode; }
-
-    public String getImageUrl() { return imageUrl; }
-
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     /*------------------------------------------------------------------------------------------------------------*/
 
@@ -233,6 +250,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         String barcode = getInputBarcode();
         String apiURL = mainURL + barcode;
 
+
         // The user's input is concatenated with the main URL and the program makes a request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
             try {
@@ -264,6 +282,16 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
         String apiURL = mainURL + barcode;
 
+        // Set up progress bar before call
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Loading....");
+        progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // Show it
+        progressDialog.show();
+
         // The user's input is concatenated with the main URL and the program makes a request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
             try {
@@ -271,25 +299,32 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 setCode(productObject.getString("code"));
                 setTitle(productObject.getString("product_name"));
 
-                if(productObject.has("nutriscore_grade"))
+                // Check and get the available data
+                if (productObject.has("nutriscore_grade"))
                     setNutriScore(productObject.getString("nutriscore_grade"));
-                if(productObject.has("nova_group"))
+                if (productObject.has("nova_group"))
                     setNovaGroup(productObject.getString("nova_group"));
-                if(productObject.has("nutriscore_grade"))
+                if (productObject.has("nutriscore_grade"))
                     setNutriScore(productObject.getString("nutriscore_grade"));
-                if(productObject.has("ecoscore_grade"))
-                setEcoScore(productObject.getString("ecoscore_grade"));
-                if(productObject.has("ingredients_text"))
+                if (productObject.has("ecoscore_grade"))
+                    setEcoScore(productObject.getString("ecoscore_grade"));
+                if (productObject.has("ingredients_text"))
                     setIngredients(productObject.getString("ingredients_text"));
-                if(productObject.has("categories_imported"))
+                if (productObject.has("nutriments"))
+                    setNutriments(productObject.getString("nutriments"));
+                if (productObject.has("vegan"))
+                    setVegan(productObject.getString("vegan"));
+                if (productObject.has("vegetarian"))
+                    setVegetarian(productObject.getString("vegetarian"));
+                if (productObject.has("categories_imported"))
                     setCategoriesImported(productObject.getString("categories_imported"));
 
-
-                if(productObject.has("image_front_small_url")) {
+                // Set default image if not found
+                if (productObject.has("image_front_small_url")) {
                     setImageUrl(productObject.getString("image_front_small_url"));
                 } else {
-                // If image is not found set an unknown image as default
-                setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
+
+                    setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
                 }
 
                 // Add product on Products database
@@ -300,10 +335,12 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 setProductCard(requireView());
                 showProductCardHideSurfaceView();
                 clearProductData();
+                progressDialog.dismiss();
 
             } catch (JSONException e) {
                 e.printStackTrace();
                 alertDialogBox();
+                progressDialog.dismiss();
             }
         }, error -> {
             // If during the request or response an error is occurred, a Toast message will pop up
@@ -315,7 +352,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     // Add the scanned product on products list
     public void addProduct() {
-        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), getIngredients(), getCategoriesImported(),
+        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), getIngredients(), getNutriments(), getVegan(), getVegetarian(), getCategoriesImported(),
                 false, System.currentTimeMillis(), getImageUrl());
         insert(testProduct);
     }
@@ -388,19 +425,29 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         textView_addedProductTitle.setText(title);
 
         switch (nutriScore) {
-            case "1": case "A": case "a":
+            case "1":
+            case "A":
+            case "a":
                 imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
                 break;
-            case "2": case "B": case "b":
+            case "2":
+            case "B":
+            case "b":
                 imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
                 break;
-            case "3": case "C": case "c":
+            case "3":
+            case "C":
+            case "c":
                 imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
                 break;
-            case "4": case "D": case "d":
+            case "4":
+            case "D":
+            case "d":
                 imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
                 break;
-            case "5": case "E": case "e":
+            case "5":
+            case "E":
+            case "e":
                 imageView_addedProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
                 break;
             default:
@@ -409,16 +456,24 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         }
 
         switch (ecoScore) {
-            case "1": case "A": case "a":
+            case "1":
+            case "A":
+            case "a":
                 imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_a);
                 break;
-            case "2": case "B": case "b":
+            case "2":
+            case "B":
+            case "b":
                 imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_b);
                 break;
-            case "3": case "C": case "c":
+            case "3":
+            case "C":
+            case "c":
                 imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_c);
                 break;
-            case "4": case "D": case "d":
+            case "4":
+            case "D":
+            case "d":
                 imageView_addedProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_d);
                 break;
             default:
@@ -427,16 +482,24 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         }
 
         switch (novaGroup) {
-            case "1": case "A": case "a":
+            case "1":
+            case "A":
+            case "a":
                 imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_1);
                 break;
-            case "2": case "B": case "b":
+            case "2":
+            case "B":
+            case "b":
                 imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_2);
                 break;
-            case "3": case "C": case "c":
+            case "3":
+            case "C":
+            case "c":
                 imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_3);
                 break;
-            case "4": case "D": case "d":
+            case "4":
+            case "D":
+            case "d":
                 imageView_addedNovaGroup.setImageResource(R.drawable.d_img_novagroup_4);
                 break;
             default:
@@ -444,8 +507,16 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                 break;
         }
 
-        if(!ingredients.equals("")){ textView_addedProductIngredients.setText("Ingredients: " + ingredients) ;}
-        if(!categoriesImported.equals("")) { textView_addedProductCategoriesImported.setText("Categories: " + categoriesImported); }
+        if (!ingredients.equals("")) {
+            textView_addedProductIngredients.setText("Ingredients: " + ingredients);
+        } else {
+            textView_addedProductIngredients.setText("");
+        }
+        if (!categoriesImported.equals("")) {
+            textView_addedProductCategoriesImported.setText("Categories: " + categoriesImported);
+        } else {
+            textView_addedProductCategoriesImported.setText("");
+        }
 
         textView_barcodeResult.setText("Barcode: " + inputBarcode);
 
@@ -453,7 +524,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
             Picasso.get().load(getImageUrl()).resize(66, 75).centerCrop().into(imageView_addedProductImage);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "Oops, something is wrong with the photo " + getImageUrl() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Oops, something is wrong with the photo " + getImageUrl(), Toast.LENGTH_SHORT).show();
         }
     }
 
