@@ -1,9 +1,9 @@
 package com.example.foodbank.ui.products;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -19,13 +19,14 @@ import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
 ProductsAdapter.OnActionBarMenuClickListener {
 
     // Recycler View
-    public Vector<Product> productsList = new Vector<>();
+    private Vector<Product> productsList = new Vector<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +57,9 @@ ProductsAdapter.OnActionBarMenuClickListener {
 
     @Override
     public void itemClicked(View v, int pos, String value) {
-
+        Intent intent = new Intent(getActivity(), ViewProductActivity.class);
+        intent.putExtra("product_barcode_products",  value);
+        startActivity(intent);
     }
 
     @Override
@@ -67,7 +70,7 @@ ProductsAdapter.OnActionBarMenuClickListener {
     @Override
     public void onPopupMenuClick(View view, int pos) {
         Product listItem = productsList.get(pos);
-        PopupMenu popup = new PopupMenu(getContext(), view);
+        PopupMenu popup = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_product_card, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {

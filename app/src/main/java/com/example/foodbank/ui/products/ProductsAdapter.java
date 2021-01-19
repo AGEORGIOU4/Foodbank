@@ -80,7 +80,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         String ecoScore = listItem.getEcoScore();
         String imageUrl = listItem.getImageUrl();
 
-        // Set listener on Action Bar Menu
+        // Set listener on Click, Action Bar Menu
+        holder.itemView.setOnClickListener(v->onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
+
         holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position));
 
         // Get element from your data set at this position
@@ -125,6 +127,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
                 holder.imageView_ecoScore.setImageResource(R.drawable.d_img_ecoscore_unknown);
                 break;
         }
+
         switch (novaGroup) {
             case "1": case "A": case "a":
                 holder.imageView_novaGroup.setImageResource(R.drawable.d_img_novagroup_1);

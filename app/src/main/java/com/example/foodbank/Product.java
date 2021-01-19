@@ -33,6 +33,9 @@ public class Product {
         this.novaGroup = novaGroup;
         this.ecoScore = ecoScore;
         this.ingredients = ingredients;
+        this.nutriments = nutriments;
+        this.vegan = vegan;
+        this.vegetarian = vegetarian;
         this.categoriesImported = categoriesImported;
         this.starred = starred;
         this.timestamp = timestamp;
@@ -48,6 +51,9 @@ public class Product {
         this.novaGroup = novaGroup;
         this.ecoScore = ecoScore;
         this.ingredients = ingredients;
+        this.nutriments = nutriments;
+        this.vegan = vegan;
+        this.vegetarian = vegetarian;
         this.categoriesImported = categoriesImported;
         this.starred = starred;
         this.timestamp = timestamp;

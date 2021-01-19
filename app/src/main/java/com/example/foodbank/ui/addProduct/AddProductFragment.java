@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.foodbank.MainActivity;
 import com.example.foodbank.Product;
 import com.example.foodbank.R;
+import com.example.foodbank.ui.products.ViewProductActivity;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -46,8 +47,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
 
-public class AddProductFragment extends Fragment implements View.OnClickListener {
+public class AddProductFragment extends Fragment {
 
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
@@ -65,6 +68,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     // Barcode
     private String inputBarcode;
+    private String inputBarcodePutExtra;
 
     // Product attributes
     private String code;
@@ -83,6 +87,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
     private boolean productFound;
     private boolean isScanned;
 
+    private Vector<Product> productsList = new Vector<>();
 
     // Getters & Setters
     public String getInputBarcode() {
@@ -145,7 +150,6 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
 
     private void setIsScanned(boolean isScanned) { this.isScanned = isScanned; }
 
-
     /*------------------------------------------------------------------------------------------------------------*/
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -153,7 +157,7 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         View root = inflater.inflate(R.layout.e1_fragment_add_product, container, false);
 
         // Set product attributes on create
-        clearProductData();
+        clearData();
 
         // Implement an HTTP request using Volley library
         this.mQueue = Volley.newRequestQueue(requireContext());
@@ -171,11 +175,12 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         // Layout elements
         Button buttonAddProduct = root.findViewById(R.id.button_addProduct);
         Button button_scanProduct = root.findViewById(R.id.button_scanProduct);
-        buttonAddProduct.setOnClickListener(view -> checkBarcodeOnInput(root));
+        buttonAddProduct.setOnClickListener(v -> checkBarcodeOnInput(root));
         button_scanProduct.setOnClickListener(v -> scanAgain());
 
         initialiseDetectorsAndSources();
 
+        viewProduct(root);
         return root;
     }
 
@@ -234,13 +239,14 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                             setInputBarcode(barcodeData);
                             setIsScanned(true);
                             getResponse();
+                            barcodeData = "";
+                            barcodes.valueAt(0).displayValue = "";
                         }
                     });
                 }
             }
         });
     }
-    /*--------------------------------------------------------------------------*/
 
     /*-------------------------------RESPONSE-----------------------------------*/
     private void getResponse() {
@@ -260,14 +266,14 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     jsonParseTitleAndCode();
                     // Show alert dialog on if status is 0
                 } else {
-                    alertDialogBox();
-                    clearProductData();
+                    alertFailDialogBox();
+                    clearData();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
                 // Show alert dialog on if status is not found
-                alertDialogBox();
-                clearProductData();
+                alertFailDialogBox();
+                clearData();
             }
         }, error -> {
             // If during the request or response an error is occurred, a Toast message will pop up
@@ -304,8 +310,6 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     setNutriScore(productObject.getString("nutriscore_grade"));
                 if (productObject.has("nova_group"))
                     setNovaGroup(productObject.getString("nova_group"));
-                if (productObject.has("nutriscore_grade"))
-                    setNutriScore(productObject.getString("nutriscore_grade"));
                 if (productObject.has("ecoscore_grade"))
                     setEcoScore(productObject.getString("ecoscore_grade"));
                 if (productObject.has("ingredients_text"))
@@ -327,19 +331,22 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
                     setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
                 }
 
-                // Add product on Products database
                 setProductFound(true);
-                addProduct();
-                Toast.makeText(getContext(), "Added to your products!", Toast.LENGTH_LONG).show();
+                inputBarcodePutExtra = getCode();
 
+                // Check if the product is not already included on the Database and add it
+                addProduct();
+
+                // Set and show Products card
                 setProductCard(requireView());
                 showProductCardHideSurfaceView();
-                clearProductData();
+                clearData();
+                textInput_enterBarcode.setText("");
                 progressDialog.dismiss();
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                alertDialogBox();
+                alertFailDialogBox();
                 progressDialog.dismiss();
             }
         }, error -> {
@@ -348,20 +355,41 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         });
         mQueue.add(request);
     }
-    /*--------------------------------------------------------------------------*/
 
+    /*-------------------------------DATABASE-----------------------------------*/
     // Add the scanned product on products list
     public void addProduct() {
-        Product testProduct = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), getIngredients(), getNutriments(), getVegan(), getVegetarian(), getCategoriesImported(),
+        Product product = new Product(getCode(), getTitle(), getNutriScore(), getNovaGroup(), getEcoScore(), getIngredients(), getNutriments(), getVegan(), getVegetarian(), getCategoriesImported(),
                 false, System.currentTimeMillis(), getImageUrl());
-        insert(testProduct);
+
+        productsList.addAll(getAllProductsSortedByTitle());
+
+        // Check if the product is not already included on the Database
+        boolean newProduct = true;
+        for (int i = 0; i < productsList.size(); i++) {
+            if (productsList.get(i).getBarcode().equals(getCode())) {
+                newProduct = false;
+            }
+        }
+
+        if (newProduct) {
+            alertAddProductDialogBox(product);
+        } else {
+            Toast.makeText(getContext(), "This item is already added to your products", Toast.LENGTH_LONG).show();
+        }
     }
 
     // Insert product on products db
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
+        Toast.makeText(getContext(), "New item added to your products", Toast.LENGTH_LONG).show();
     }
 
+    List<Product> getAllProductsSortedByTitle() {
+        return ProductsRoomDatabase.getDatabase(getActivity()).productsDao().getProductsSortedByTitle();
+    }
+
+    /*--------------------FUNCTIONS FOR REPEATING A SCAN------------------------*/
     public void scanAgain() {
         textInput_enterBarcode.setText("");
         textView_barcodeResult.setText("");
@@ -372,45 +400,23 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
         showProductCardHideSurfaceView();
     }
 
-    public void alertDialogBox() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setMessage("Product not found. Do you want to scan again?");
-        builder.setTitle("Scanning Result");
-        builder.setPositiveButton("Try Again", (dialog, which) -> scanAgain()).setNegativeButton("Finish", (dialog, which) -> {
-            requireActivity().finish();
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-
-            dialog.cancel();
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    public void hideKeyboard() {
-        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
-    }
-
-    public void clearProductData() {
-        setInputBarcode("");
-
+    public void clearData() {
         setCode("");
         setTitle("");
         setNutriScore("");
         setEcoScore("");
         setNovaGroup("");
         setIngredients("");
+        setNutriments("");
+        setVegan("");
+        setVegetarian("");
         setCategoriesImported("");
         setImageUrl("");
 
+        setInputBarcode("");
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
-
+    /*-------------------FUNCTIONS WHEN PRODUCT IS FOUND-----------------------*/
     public void setProductCard(View view) {
         TextView textView_addedProductTitle = view.findViewById(R.id.textView_addedProductTitle);
         ImageView imageView_addedProductNutriScore = view.findViewById(R.id.imageView_addedProductNutriScore);
@@ -542,6 +548,47 @@ public class AddProductFragment extends Fragment implements View.OnClickListener
             surfaceView_camera.setVisibility(View.VISIBLE);
         }
     }
+
+    public void viewProduct(View view) {
+        CardView cardView = view.findViewById(R.id.cardView_addedProduct);
+        cardView.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ViewProductActivity.class);
+            intent.putExtra("product_barcode_add_product",  inputBarcodePutExtra);
+            startActivity(intent);
+        });
+    }
+
+    public void hideKeyboard() {
+        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
+    }
+    /*--------------------------------------------------------------------------*/
+
+    public void alertFailDialogBox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage("Product not found. Do you want to scan again?");
+        builder.setTitle("Scanning Result");
+        builder.setPositiveButton("Try Again", (dialog, which) -> scanAgain()).setNegativeButton("Finish", (dialog, which) -> {
+            requireActivity().finish();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+
+            dialog.cancel();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void alertAddProductDialogBox(Product product) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage("Product found! Do you want to add this product to your list?");
+        builder.setTitle("Scanning Result");
+        builder.setPositiveButton("Add", (dialog, which) -> insert(product)).setNegativeButton("Finish", (dialog, which) -> dialog.cancel());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
 }
 
 

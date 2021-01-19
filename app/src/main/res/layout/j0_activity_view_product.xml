@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/root"
+    tools:context=".ui.products.ViewProductActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_viewProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:visibility="visible"
+            app:cardCornerRadius="4dp">
+
+            <RelativeLayout
+                android:id="@+id/view_list_item_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView_viewProductImage"
+                    android:layout_width="65dp"
+                    android:layout_height="77dp"
+                    android:layout_alignParentStart="true"
+                    android:background="@color/cyan_500"
+                    android:backgroundTint="@color/grey_700"
+                    app:shapeAppearanceOverlay="@style/Circular" />
+
+                <TextView
+                    android:id="@+id/textView_viewProductTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_toStartOf="@id/checkBox_star"
+                    android:layout_toEndOf="@id/imageView_viewProductImage"
+                    android:ellipsize="end"
+                    android:maxLines="4"
+                    android:text="@string/title"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView_viewProductNutriScore"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/textView_viewProductTitle"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@id/imageView_viewProductImage"
+                    android:background="#00FFFFFF"
+                    android:src="@drawable/d_img_nutriscore_a"
+                    android:textColor="@color/cyan_700"
+                    app:shapeAppearanceOverlay="@style/Circular" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView_viewProductEcoScore"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/textView_viewProductTitle"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@id/imageView_viewProductNutriScore"
+                    android:background="#00FFFFFF"
+                    android:src="@drawable/d_img_ecoscore_a"
+                    android:text="@string/nova_4"
+                    app:shapeAppearanceOverlay="@style/Circular" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView_viewNovaGroup"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/textView_viewProductTitle"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@id/imageView_viewProductEcoScore"
+                    android:src="@drawable/d_img_novagroup_1"
+                    app:shapeAppearanceOverlay="@style/Circular" />
+
+                <CheckBox
+                    android:id="@+id/checkBox_star"
+                    style="?android:attr/starStyle"
+                    android:layout_width="33dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:id="@+id/textView_viewProductIngredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imageView_viewProductNutriScore"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Ingredients" />
+
+                <TextView
+                    android:id="@+id/textView_viewProductVegan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_viewProductIngredients"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Vegan" />
+
+                <TextView
+                    android:id="@+id/textView_viewProductVegetarian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_viewProductVegan"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Vegetarian" />
+
+                <TextView
+                    android:id="@+id/textView_viewProductCategoriesImported"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_viewProductVegetarian"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Categories" />
+
+
+                <TextView
+                    android:id="@+id/textView_viewProductNutriments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_viewProductCategoriesImported"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Nutriments" />
+
+                <TextView
+                    android:id="@+id/textView_viewProductBarcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_viewProductNutriments"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Barcode" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
+</LinearLayout>
