@@ -34,7 +34,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.foodbank.MainActivity;
 import com.example.foodbank.Product;
 import com.example.foodbank.R;
-import com.example.foodbank.ui.products.ViewProductActivity;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -180,7 +179,6 @@ public class AddProductFragment extends Fragment {
 
         initialiseDetectorsAndSources();
 
-        viewProduct(root);
         return root;
     }
 
@@ -308,20 +306,35 @@ public class AddProductFragment extends Fragment {
                 // Check and get the available data
                 if (productObject.has("nutriscore_grade"))
                     setNutriScore(productObject.getString("nutriscore_grade"));
+                else
+                    setNutriScore("unknown");
                 if (productObject.has("nova_group"))
                     setNovaGroup(productObject.getString("nova_group"));
+                else
+                    setNovaGroup("unknown");
                 if (productObject.has("ecoscore_grade"))
                     setEcoScore(productObject.getString("ecoscore_grade"));
+                else
+                    setEcoScore("unknown");
                 if (productObject.has("ingredients_text"))
                     setIngredients(productObject.getString("ingredients_text"));
+                    setIngredients("unknown");
                 if (productObject.has("nutriments"))
                     setNutriments(productObject.getString("nutriments"));
+                else
+                    setNutriments("unknown");
                 if (productObject.has("vegan"))
                     setVegan(productObject.getString("vegan"));
+                else
+                    setVegan("unknown");
                 if (productObject.has("vegetarian"))
                     setVegetarian(productObject.getString("vegetarian"));
+                else
+                    setVegetarian("unknown");
                 if (productObject.has("categories_imported"))
                     setCategoriesImported(productObject.getString("categories_imported"));
+                else
+                    setCategoriesImported("unknown");
 
                 // Set default image if not found
                 if (productObject.has("image_front_small_url")) {
@@ -549,14 +562,6 @@ public class AddProductFragment extends Fragment {
         }
     }
 
-    public void viewProduct(View view) {
-        CardView cardView = view.findViewById(R.id.cardView_addedProduct);
-        cardView.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ViewProductActivity.class);
-            intent.putExtra("product_barcode_add_product",  inputBarcodePutExtra);
-            startActivity(intent);
-        });
-    }
 
     public void hideKeyboard() {
         final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -581,8 +586,8 @@ public class AddProductFragment extends Fragment {
 
     public void alertAddProductDialogBox(Product product) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setMessage("Product found! Do you want to add this product to your list?");
-        builder.setTitle("Scanning Result");
+        builder.setMessage("Do you want to add this product to your list?");
+        builder.setTitle("Product found!");
         builder.setPositiveButton("Add", (dialog, which) -> insert(product)).setNegativeButton("Finish", (dialog, which) -> dialog.cancel());
         AlertDialog dialog = builder.create();
         dialog.show();

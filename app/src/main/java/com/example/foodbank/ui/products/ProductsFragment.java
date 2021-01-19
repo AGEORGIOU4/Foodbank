@@ -19,11 +19,10 @@ import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Vector;
 
 public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
-ProductsAdapter.OnActionBarMenuClickListener {
+        ProductsAdapter.OnActionBarMenuClickListener {
 
     // Recycler View
     private Vector<Product> productsList = new Vector<>();
@@ -41,7 +40,7 @@ ProductsAdapter.OnActionBarMenuClickListener {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        ProductsAdapter adapter = new ProductsAdapter(productsList, this, this, this);
+        ProductsAdapter adapter = new ProductsAdapter(productsList, this::itemClicked, this::itemLongClicked, this::onPopupMenuClick);
         recyclerView.setAdapter(adapter);
 
         return root;
@@ -58,7 +57,7 @@ ProductsAdapter.OnActionBarMenuClickListener {
     @Override
     public void itemClicked(View v, int pos, String value) {
         Intent intent = new Intent(getActivity(), ViewProductActivity.class);
-        intent.putExtra("product_barcode_products",  value);
+        intent.putExtra("product_barcode_products", value);
         startActivity(intent);
     }
 
@@ -68,7 +67,7 @@ ProductsAdapter.OnActionBarMenuClickListener {
     }
 
     @Override
-    public void onPopupMenuClick(View view, int pos) {
+    public void onPopupMenuClick(View view, int pos, String value) {
         Product listItem = productsList.get(pos);
         PopupMenu popup = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
@@ -76,7 +75,13 @@ ProductsAdapter.OnActionBarMenuClickListener {
         popup.setOnMenuItemClickListener(item -> {
             //do your things in each of the following cases
             if (item.getItemId() == R.id.menu_addToList) {
-                Toast.makeText(getContext(), "Item " + pos + " clicked! It's the " + listItem.getTitle(), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), "Add to list clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (item.getItemId() == R.id.menu_viewProduct) {
+                Intent intent = new Intent(getActivity(), ViewProductActivity.class);
+                intent.putExtra("product_barcode_products", value);
+                startActivity(intent);
                 return true;
             }
             return false;

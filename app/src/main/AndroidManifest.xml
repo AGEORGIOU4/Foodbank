@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodbank">
         <activity android:name=".ui.products.ViewProductActivity">
-
         </activity>
         <activity
             android:name=".MainActivity"

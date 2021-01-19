@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +26,12 @@ public class ViewProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+       // Remove Action Bar
+        try {
+            this.getSupportActionBar().hide();
+        } catch (NullPointerException e) {}
+
         setContentView(R.layout.j0_activity_view_product);
 
         View root = findViewById(R.id.root);
@@ -148,27 +155,27 @@ public class ViewProductActivity extends AppCompatActivity {
         if (!myProduct.getIngredients().equals("")) {
             textView_viewProductIngredients.setText("Ingredients: " + myProduct.getIngredients());
         } else {
-            textView_viewProductIngredients.setText("");
+            textView_viewProductIngredients.setText("Ingredients: unknown");
         }
         if (!myProduct.getNutriments().equals("")) {
             textView_viewProductNutriments.setText("Nutriments: " + myProduct.getNutriments());
         } else {
-            textView_viewProductNutriments.setText("");
+            textView_viewProductNutriments.setText("Nutriments: unknown");
         }
         if (!myProduct.getVegan().equals("")) {
             textView_viewProductVegan.setText("Vegan: " + myProduct.getVegan());
         } else {
-            textView_viewProductVegan.setText("");
+            textView_viewProductVegan.setText("Vegan: unknown");
         }
         if (!myProduct.getVegetarian().equals("")) {
             textView_viewProductVegetarian.setText("Vegetarian: " + myProduct.getVegetarian());
         } else {
-            textView_viewProductVegetarian.setText("");
+            textView_viewProductVegetarian.setText("Vegetarian: unknown");
         }
         if (!myProduct.getCategoriesImported().equals("")) {
             textView_viewProductCategoriesImported.setText("Categories: " + myProduct.getCategoriesImported());
         } else {
-            textView_viewProductCategoriesImported.setText("");
+            textView_viewProductCategoriesImported.setText("Categories: unknown");
         }
 
         try {

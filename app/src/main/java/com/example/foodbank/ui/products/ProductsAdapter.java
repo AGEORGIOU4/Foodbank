@@ -82,8 +82,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
         // Set listener on Click, Action Bar Menu
         holder.itemView.setOnClickListener(v->onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
-
-        holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position));
+        holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode()));
 
         // Get element from your data set at this position
         // Replace the contents of the view with that element
@@ -175,9 +174,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     }
 
     interface OnActionBarMenuClickListener {
-        void onPopupMenuClick(View view, int pos);
+        void onPopupMenuClick(View view, int pos, String value);
     }
-
 }
 
 
