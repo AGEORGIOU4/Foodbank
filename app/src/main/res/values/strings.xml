@@ -36,5 +36,6 @@
     <string name="scan_product">Scan Again</string>
     <string name="barcode_text">Barcode Text</string>
     <string name="view_product">View Product</string>
+    <string name="edit_text">Edit Text</string>
 
 </resources>

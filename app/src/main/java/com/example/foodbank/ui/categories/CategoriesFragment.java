@@ -20,6 +20,7 @@ import java.util.Vector;
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, CategoriesAdapter.OnItemLongClickListener {
 
     private final Vector<Category> categoriesList = new Vector<>();
+    private final Vector<Category> fetchedCategoriesList = new Vector<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -27,14 +28,14 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         View root = inflater.inflate(R.layout.c1_fragment_categories, container, false);
 
         // Initialize each category from the db to the categoriesList
-        categoriesList.addAll(getAllCategoriesSortedByTitle());
+      //  categoriesList.addAll(getAllCategoriesSortedByTitle());
 
         // Recycler View implementation
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView_categories);
         recyclerView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
-        CategoriesAdapter adapter = new CategoriesAdapter(categoriesList, this, this);
+        CategoriesAdapter adapter = new CategoriesAdapter(fetchedCategoriesList, this, this);
         recyclerView.setAdapter(adapter);
 
         return root;

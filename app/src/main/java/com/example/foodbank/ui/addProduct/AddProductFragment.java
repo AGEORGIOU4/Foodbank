@@ -17,7 +17,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +56,12 @@ public class AddProductFragment extends Fragment {
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
 
+    private static final int INITIAL_STATE = 1001;
+    private static final int PRODUCT_NOT_FOUND_STATE = 1002;
+    private static final int PRODUCT_FOUND_STATE = 1003;
     RequestQueue mQueue;
-
+    private int CURRENT_STATE = INITIAL_STATE;
+    private Button button_scanProduct;
     private SurfaceView surfaceView_camera;
     private CameraSource cameraSource;
     private TextView textView_barcodeResult;
@@ -83,7 +89,6 @@ public class AddProductFragment extends Fragment {
     private String imageUrl;
 
     // Control the surface view/product card visibility, and each scan
-    private boolean productFound;
     private boolean isScanned;
 
     private Vector<Product> productsList = new Vector<>();
@@ -139,10 +144,6 @@ public class AddProductFragment extends Fragment {
 
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public boolean isProductFound() { return productFound; }
-
-    public void setProductFound(boolean productFound) { this.productFound = productFound; }
-
     private boolean isIsScanned() {
         return isScanned;
     }
@@ -165,7 +166,6 @@ public class AddProductFragment extends Fragment {
         toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
         surfaceView_camera = root.findViewById(R.id.surfaceView_camera);
         textView_barcodeResult = root.findViewById(R.id.textView_barcodeResult);
-        setProductFound(false);
         setIsScanned(false);
 
 
@@ -173,11 +173,12 @@ public class AddProductFragment extends Fragment {
 
         // Layout elements
         Button buttonAddProduct = root.findViewById(R.id.button_addProduct);
-        Button button_scanProduct = root.findViewById(R.id.button_scanProduct);
-        buttonAddProduct.setOnClickListener(v -> checkBarcodeOnInput(root));
-        button_scanProduct.setOnClickListener(v -> scanAgain());
 
-        initialiseDetectorsAndSources();
+        button_scanProduct = root.findViewById(R.id.button_scanProduct);
+        buttonAddProduct.setOnClickListener(v -> checkBarcodeOnInput(root));
+        button_scanProduct.setOnClickListener(v -> scanAgain(root));
+
+        initialiseDetectorsAndSources(root);
 
         return root;
     }
@@ -190,11 +191,11 @@ public class AddProductFragment extends Fragment {
             Toast.makeText(getContext(), "Please enter barcode", Toast.LENGTH_SHORT).show();
         } else {
             setInputBarcode(textInput_enterBarcode.getText().toString());
-            getResponse();
+            getResponse(view);
         }
     }
 
-    private void initialiseDetectorsAndSources() {
+    private void initialiseDetectorsAndSources(View view) {
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(requireContext()).setBarcodeFormats(Barcode.ALL_FORMATS).build();
         cameraSource = new CameraSource.Builder(requireContext(), barcodeDetector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true) //you should add this feature
                 .build();
@@ -236,7 +237,7 @@ public class AddProductFragment extends Fragment {
                             barcodeData = barcodes.valueAt(0).displayValue;
                             setInputBarcode(barcodeData);
                             setIsScanned(true);
-                            getResponse();
+                            getResponse(view);
                             barcodeData = "";
                             barcodes.valueAt(0).displayValue = "";
                         }
@@ -247,7 +248,7 @@ public class AddProductFragment extends Fragment {
     }
 
     /*-------------------------------RESPONSE-----------------------------------*/
-    private void getResponse() {
+    private void getResponse(View view) {
         hideKeyboard();
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
 
@@ -261,16 +262,20 @@ public class AddProductFragment extends Fragment {
                 toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
                 // if the response is successful we get useful data from the JSON file
                 if (response.getInt("status") == 1) {
-                    jsonParseTitleAndCode();
-                    // Show alert dialog on if status is 0
+                    jsonParse(view);
                 } else {
-                    alertFailDialogBox();
+                    // Switch layout elements
+                    switchLayout(view, PRODUCT_NOT_FOUND_STATE);
+                    // Show alert dialog on if status is 0
+                    alertFailDialogBox(view);
                     clearData();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                // Show alert dialog on if status is not found
-                alertFailDialogBox();
+                // Switch layout elements
+                switchLayout(view, PRODUCT_NOT_FOUND_STATE);
+                // Show alert dialog on if status is 0
+                alertFailDialogBox(view);
                 clearData();
             }
         }, error -> {
@@ -280,7 +285,7 @@ public class AddProductFragment extends Fragment {
         mQueue.add(request);
     }
 
-    private void jsonParseTitleAndCode() {
+    private void jsonParse(View view) {
 
         String barcode = getInputBarcode();
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
@@ -318,10 +323,12 @@ public class AddProductFragment extends Fragment {
                     setEcoScore("unknown");
                 if (productObject.has("ingredients_text"))
                     setIngredients(productObject.getString("ingredients_text"));
-                    setIngredients("unknown");
-                if (productObject.has("nutriments"))
-                    setNutriments(productObject.getString("nutriments"));
                 else
+                    setIngredients("unknown");
+
+                if (productObject.has("nutriments")) {
+                    setNutriments(productObject.getString("nutriments"));
+                } else
                     setNutriments("unknown");
                 if (productObject.has("vegan"))
                     setVegan(productObject.getString("vegan"));
@@ -344,7 +351,6 @@ public class AddProductFragment extends Fragment {
                     setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
                 }
 
-                setProductFound(true);
                 inputBarcodePutExtra = getCode();
 
                 // Check if the product is not already included on the Database and add it
@@ -352,14 +358,15 @@ public class AddProductFragment extends Fragment {
 
                 // Set and show Products card
                 setProductCard(requireView());
-                showProductCardHideSurfaceView();
+                switchLayout(view, PRODUCT_FOUND_STATE);
+
                 clearData();
                 textInput_enterBarcode.setText("");
                 progressDialog.dismiss();
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                alertFailDialogBox();
+                alertFailDialogBox(view);
                 progressDialog.dismiss();
             }
         }, error -> {
@@ -403,14 +410,15 @@ public class AddProductFragment extends Fragment {
     }
 
     /*--------------------FUNCTIONS FOR REPEATING A SCAN------------------------*/
-    public void scanAgain() {
+    public void scanAgain(View view) {
         textInput_enterBarcode.setText("");
         textView_barcodeResult.setText("");
 
         setInputBarcode("");
         setIsScanned(false);
 
-        showProductCardHideSurfaceView();
+        switchLayout(view, INITIAL_STATE);
+
     }
 
     public void clearData() {
@@ -435,10 +443,14 @@ public class AddProductFragment extends Fragment {
         ImageView imageView_addedProductNutriScore = view.findViewById(R.id.imageView_addedProductNutriScore);
         ImageView imageView_addedProductEcoScore = view.findViewById(R.id.imageView_addedProductEcoScore);
         ImageView imageView_addedNovaGroup = view.findViewById(R.id.imageView_addedNovaGroup);
+        TextView textView_barcodeResult = view.findViewById(R.id.textView_barcodeResult);
         TextView textView_addedProductIngredients = view.findViewById(R.id.textView_addedProductIngredients);
+        TextView textView_addedProductNutriments = view.findViewById(R.id.textView_addedProductNutriments);
+        TextView textView_addedProductVegan = view.findViewById(R.id.textView_addedProductVegan);
+        TextView textView_addedProductVegetarian = view.findViewById(R.id.textView_addedProductVegetarian);
         TextView textView_addedProductCategoriesImported = view.findViewById(R.id.textView_addedProductCategoriesImported);
         ImageView imageView_addedProductImage = view.findViewById(R.id.imageView_addedProductImage);
-        TextView textView_barcodeResult = view.findViewById(R.id.textView_barcodeResult);
+
 
         // Initialize values on card
         textView_addedProductTitle.setText(title);
@@ -526,10 +538,27 @@ public class AddProductFragment extends Fragment {
                 break;
         }
 
+        textView_barcodeResult.setText("Barcode: " + inputBarcode);
+
         if (!ingredients.equals("")) {
             textView_addedProductIngredients.setText("Ingredients: " + ingredients);
         } else {
             textView_addedProductIngredients.setText("");
+        }
+        if (!nutriments.equals("")) {
+            textView_addedProductNutriments.setText("Nutriments: " + nutriments);
+        } else {
+            textView_addedProductNutriments.setText("");
+        }
+        if (!vegan.equals("")) {
+            textView_addedProductVegan.setText("Vegan: " + vegan);
+        } else {
+            textView_addedProductVegan.setText("");
+        }
+        if (!vegetarian.equals("")) {
+            textView_addedProductVegetarian.setText("Vegetarian: " + vegetarian);
+        } else {
+            textView_addedProductVegetarian.setText("");
         }
         if (!categoriesImported.equals("")) {
             textView_addedProductCategoriesImported.setText("Categories: " + categoriesImported);
@@ -537,7 +566,6 @@ public class AddProductFragment extends Fragment {
             textView_addedProductCategoriesImported.setText("");
         }
 
-        textView_barcodeResult.setText("Barcode: " + inputBarcode);
 
         try {
             Picasso.get().load(getImageUrl()).resize(66, 75).centerCrop().into(imageView_addedProductImage);
@@ -547,33 +575,17 @@ public class AddProductFragment extends Fragment {
         }
     }
 
-    public void showProductCardHideSurfaceView() {
-        CardView cardView_addedProduct = requireView().findViewById(R.id.cardView_addedProduct);
-        SurfaceView surfaceView_camera = requireView().findViewById(R.id.surfaceView_camera);
-
-        if (isProductFound()) {
-            cardView_addedProduct.setVisibility(View.VISIBLE);
-            surfaceView_camera.setVisibility(View.INVISIBLE);
-
-            setProductFound(false);
-        } else {
-            cardView_addedProduct.setVisibility(View.INVISIBLE);
-            surfaceView_camera.setVisibility(View.VISIBLE);
-        }
-    }
-
-
     public void hideKeyboard() {
         final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
     }
     /*--------------------------------------------------------------------------*/
 
-    public void alertFailDialogBox() {
+    public void alertFailDialogBox(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Product not found. Do you want to scan again?");
         builder.setTitle("Scanning Result");
-        builder.setPositiveButton("Try Again", (dialog, which) -> scanAgain()).setNegativeButton("Finish", (dialog, which) -> {
+        builder.setPositiveButton("Try Again", (dialog, which) -> scanAgain(view)).setNegativeButton("Finish", (dialog, which) -> {
             requireActivity().finish();
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
@@ -593,7 +605,42 @@ public class AddProductFragment extends Fragment {
         dialog.show();
     }
 
+    public void switchLayout(View view, int state) {
+        // Camera
+        SurfaceView surfaceView_camera = view.findViewById(R.id.surfaceView_camera);
 
+        // Product card
+        ScrollView scrollView_addedProduct = view.findViewById(R.id.scrollView_addedProduct);
+        CardView cardView_addedProduct = view.findViewById(R.id.cardView_addedProduct);
+
+        // Frame layout
+        FrameLayout frameLayout_surface_view = view.findViewById(R.id.frameLayout_surfaceView);
+
+        Button button_scanProduct = view.findViewById(R.id.button_scanProduct);
+
+
+        switch (state) {
+            case INITIAL_STATE:
+                surfaceView_camera.setVisibility(View.VISIBLE);
+                frameLayout_surface_view.setVisibility(View.INVISIBLE);
+                cardView_addedProduct.setVisibility(View.INVISIBLE);
+                button_scanProduct.setVisibility(View.INVISIBLE);
+                scrollView_addedProduct.scrollTo(0, 0);
+                break;
+            case PRODUCT_FOUND_STATE:
+                surfaceView_camera.setVisibility(View.INVISIBLE);
+                frameLayout_surface_view.setVisibility(View.INVISIBLE);
+                cardView_addedProduct.setVisibility(View.VISIBLE);
+                button_scanProduct.setVisibility(View.VISIBLE);
+                break;
+            case PRODUCT_NOT_FOUND_STATE:
+                surfaceView_camera.setVisibility(View.INVISIBLE);
+                frameLayout_surface_view.setVisibility(View.VISIBLE);
+                cardView_addedProduct.setVisibility(View.INVISIBLE);
+                button_scanProduct.setVisibility(View.VISIBLE);
+        }
+
+    }
 }
 
 
