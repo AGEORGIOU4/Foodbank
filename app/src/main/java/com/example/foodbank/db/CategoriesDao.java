@@ -6,26 +6,24 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.foodbank.Category;
-import com.example.foodbank.Product;
+import com.example.foodbank.ui.categories.Category;
 
 import java.util.List;
 
 @Dao
 public interface CategoriesDao {
-
     @Insert
     void insert(Category... categories);
 
     @Update
-    void update(Category categories);
+    void update(Category category);
 
-    @Query("SELECT * FROM categories ORDER BY title ASC")
+    @Query("SELECT * FROM categories ORDER BY name ASC")
     List<Category> getCategoriesSortedByTitle();
 
-    @Query("SELECT * FROM categories ORDER BY timestamp DESC")
-    List<Category> getCategoriesSortedByTimestamp();
+    @Query("SELECT * FROM categories ORDER BY products DESC")
+    List<Category> getCategoriesSortedByProducts();
 
     @Delete
-    void delete(Category categories);
+    void delete(Category category);
 }

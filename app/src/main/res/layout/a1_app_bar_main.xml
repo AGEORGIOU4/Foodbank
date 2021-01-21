@@ -16,8 +16,15 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/action_bar_bc"
-            app:popupTheme="@style/Theme.Foodbank.PopupOverlay" />
+            app:popupTheme="@style/Theme.Foodbank.PopupOverlay">
 
+            <ToggleButton
+                android:id="@+id/toggleButton_switchMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="4dp"/>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/a2_content_main" />
@@ -28,8 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_menu_add"
         android:backgroundTint="@color/cyan_700"
-        android:contentDescription="@string/floating_button"/>
+        android:contentDescription="@string/floating_button"
+        app:srcCompat="@drawable/ic_menu_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

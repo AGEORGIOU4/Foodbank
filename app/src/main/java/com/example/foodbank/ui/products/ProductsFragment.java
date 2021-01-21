@@ -29,7 +29,8 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         ProductsAdapter.OnActionBarMenuClickListener {
 
     // Recycler View
-    private Vector<Product> productsList = new Vector<>();
+    private final Vector<Product> productsList = new Vector<>();
+
     private ProductsAdapter adapter;
     // Delete Item on Swipe
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -40,36 +41,8 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            // Create a temp note if user wants to undo
-
             int pos = viewHolder.getAdapterPosition();
-
-            // Create a temp note if user wants to undo
-            Product tmpProduct = productsList.get(pos);
-
-            delete(productsList.get(pos));
-            // Clear the list and update it
-            Executors.newSingleThreadExecutor().execute(() -> {
-                final ProductsDao myDAO = ProductsRoomDatabase.getDatabase(requireContext()).productsDao();
-                productsList.clear();
-                productsList.addAll(myDAO.getProductsSortedByTimestamp());
-                requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
-            });
-            Snackbar snackbar = Snackbar.make(getView(), "You have deleted '" + tmpProduct.getTitle() + "'", Snackbar.LENGTH_LONG)
-                    .setAction("UNDO", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // Undo
-                            insert(tmpProduct);
-                            Executors.newSingleThreadExecutor().execute(() -> {
-                                final ProductsDao myDAO = ProductsRoomDatabase.getDatabase(requireContext()).productsDao();
-                                productsList.clear();
-                                productsList.addAll(myDAO.getProductsSortedByTimestamp());
-                                requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
-                            });
-                        }
-                    });
-            snackbar.show();
+            deleteItem(pos);
         }
     };
 
@@ -88,7 +61,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsAdapter(productsList, this::itemClicked, this::itemLongClicked, this::onPopupMenuClick);
+        adapter = new ProductsAdapter(productsList, this, this, this);
         recyclerView.setAdapter(adapter);
 
         return root;
@@ -123,7 +96,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         popup.setOnMenuItemClickListener(item -> {
             //do your things in each of the following cases
             if (item.getItemId() == R.id.menu_addToList) {
-                Toast.makeText(requireContext(), "Add to list clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Add to list clicked item " + pos, Toast.LENGTH_SHORT).show();
                 return true;
             }
             if (item.getItemId() == R.id.menu_viewProduct) {
@@ -132,17 +105,48 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
                 startActivity(intent);
                 return true;
             }
+            if (item.getItemId() == R.id.menu_deleteProduct) {
+                deleteItem(pos);
+                return true;
+            }
             return false;
         });
         popup.show();
     }
 
+    void deleteItem(int pos) {
+        // Create a temp note if user wants to undo
+        Product tmpProduct = productsList.get(pos);
+
+        delete(productsList.get(pos));
+        // Clear the list and update it
+        Executors.newSingleThreadExecutor().execute(() -> {
+            final ProductsDao myDAO = ProductsRoomDatabase.getDatabase(requireContext()).productsDao();
+            productsList.clear();
+            productsList.addAll(myDAO.getProductsSortedByTimestamp());
+            requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+        });
+        Snackbar snackbar = Snackbar.make(getView(), "You have deleted '" + tmpProduct.getTitle() + "'", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Undo
+                        insert(tmpProduct);
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            final ProductsDao myDAO = ProductsRoomDatabase.getDatabase(requireContext()).productsDao();
+                            productsList.clear();
+                            productsList.addAll(myDAO.getProductsSortedByTimestamp());
+                            requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                        });
+                    }
+                });
+        snackbar.show();
+    }
+
     // Insert product on products db
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
-        Toast.makeText(getContext(), "New item added to your products", Toast.LENGTH_LONG).show();
     }
-
 
     void update(Product note) {
         ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(note);

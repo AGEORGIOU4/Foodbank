@@ -1,11 +1,14 @@
 package com.example.foodbank;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -20,6 +23,8 @@ import com.google.android.material.snackbar.Snackbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    private ToggleButton toggleButton_switchMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Hide keyboard
         hideKeyboard(drawer);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Switch mode
+        switchMode();
     }
 
     @Override
@@ -63,5 +76,48 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void switchMode() {
+        toggleButton_switchMode = findViewById(R.id.toggleButton_switchMode);
+        setToggle();
+        toggleButton_switchMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (toggleButton_switchMode.isChecked()) {
+                    AppCompatDelegate
+                            .setDefaultNightMode(
+                                    AppCompatDelegate
+                                            .MODE_NIGHT_NO);
+                } else {
+                    AppCompatDelegate
+                            .setDefaultNightMode(
+                                    AppCompatDelegate
+                                            .MODE_NIGHT_YES);
+                }
+            }
+        });
+    }
+
+    public void setToggle() {
+
+        toggleButton_switchMode = findViewById(R.id.toggleButton_switchMode);
+
+        int nightModeFlags =
+                this.getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                toggleButton_switchMode.setChecked(false);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_NO:
+                toggleButton_switchMode.setChecked(true);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                toggleButton_switchMode.setChecked(false);
+                break;
+        }
     }
 }

@@ -7,7 +7,6 @@ import android.widget.Button;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodbank.Category;
 import com.example.foodbank.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,18 +26,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         this.onItemLongClickListener = onItemLongClickListener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        // Each category item has a title and a timestamp (Button, long)
-        public Button button_gridView_categories;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            this.button_gridView_categories = itemView.findViewById(R.id.button_gridView_categories);
-        }
-    }
-
     // Create new views (invoked by the layout manager)
     @NotNull
     @Override
@@ -55,7 +42,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         // Get element from your data set at this position
         // Replace the contents of the view with that element
-        holder.button_gridView_categories.setText(listItem.getTitle());
+        holder.button_gridView_categories.setText(listItem.getName() + "\n" + "(" + listItem.getProducts() + ")");
         //holder.gridView_categories_btn.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem));
     }
 
@@ -72,6 +59,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         boolean itemLongClicked(View v, int pos, String value);
     }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        // Each category item has a title and a timestamp (Button, long)
+        public Button button_gridView_categories;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            this.button_gridView_categories = itemView.findViewById(R.id.button_gridView_categories);
+        }
+    }
 }
 
 

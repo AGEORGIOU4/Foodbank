@@ -16,8 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodbank">
-        <activity android:name=".ui.products.ViewProductActivity">
-        </activity>
+        <activity android:name=".ui.products.ViewProductActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation"

@@ -208,9 +208,7 @@
         android:layout_below="@id/button_addProduct"
         android:layout_marginHorizontal="20dp"
         android:background="@color/grey_700"
-        android:backgroundTint="@color/grey_700"
-        android:visibility="invisible"
-        app:shapeAppearanceOverlay="@style/Circular">
+        android:visibility="invisible">
 
         <TextView
             android:layout_width="wrap_content"

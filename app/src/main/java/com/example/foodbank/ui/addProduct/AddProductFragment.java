@@ -41,6 +41,8 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,11 +58,13 @@ public class AddProductFragment extends Fragment {
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
 
+    // Activity states for switching layouts
     private static final int INITIAL_STATE = 1001;
     private static final int PRODUCT_NOT_FOUND_STATE = 1002;
     private static final int PRODUCT_FOUND_STATE = 1003;
-    RequestQueue mQueue;
     private int CURRENT_STATE = INITIAL_STATE;
+
+    RequestQueue mQueue;
     private Button button_scanProduct;
     private SurfaceView surfaceView_camera;
     private CameraSource cameraSource;
@@ -279,8 +283,9 @@ public class AddProductFragment extends Fragment {
                 clearData();
             }
         }, error -> {
-            // If during the request or response an error is occurred, a Toast message will pop up
-            Toast.makeText(getContext(), "Something went wrong. Please check your connection.", Toast.LENGTH_LONG).show();
+            // If during the request or response an error is occurred, a Snackbar message will pop up
+            Snackbar.make(requireView(), "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
+            switchLayout(view, PRODUCT_NOT_FOUND_STATE);
         });
         mQueue.add(request);
     }
@@ -370,8 +375,10 @@ public class AddProductFragment extends Fragment {
                 progressDialog.dismiss();
             }
         }, error -> {
-            // If during the request or response an error is occurred, a Toast message will pop up
-            Toast.makeText(getContext(), "Something went wrong. Please check your connection.", Toast.LENGTH_LONG).show();
+            // If during the request or response an error is occurred, a Snackbar message will pop up
+            Snackbar.make(requireView(), "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
+            switchLayout(view, PRODUCT_NOT_FOUND_STATE);
+            progressDialog.dismiss();
         });
         mQueue.add(request);
     }
@@ -571,7 +578,7 @@ public class AddProductFragment extends Fragment {
             Picasso.get().load(getImageUrl()).resize(66, 75).centerCrop().into(imageView_addedProductImage);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "Oops, something is wrong with the photo " + getImageUrl(), Toast.LENGTH_SHORT).show();
+            Snackbar.make(requireView(), "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
         }
     }
 
@@ -579,8 +586,8 @@ public class AddProductFragment extends Fragment {
         final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
     }
-    /*--------------------------------------------------------------------------*/
 
+    /*--------------------------------------------------------------------------*/
     public void alertFailDialogBox(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Product not found. Do you want to scan again?");
@@ -618,7 +625,6 @@ public class AddProductFragment extends Fragment {
 
         Button button_scanProduct = view.findViewById(R.id.button_scanProduct);
 
-
         switch (state) {
             case INITIAL_STATE:
                 surfaceView_camera.setVisibility(View.VISIBLE);
@@ -639,7 +645,6 @@ public class AddProductFragment extends Fragment {
                 cardView_addedProduct.setVisibility(View.INVISIBLE);
                 button_scanProduct.setVisibility(View.VISIBLE);
         }
-
     }
 }
 

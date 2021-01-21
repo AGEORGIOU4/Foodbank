@@ -37,5 +37,8 @@
     <string name="barcode_text">Barcode Text</string>
     <string name="view_product">View Product</string>
     <string name="edit_text">Edit Text</string>
+    <string name="try_again">TRY AGAIN</string>
+    <string name="delete">Delete</string>
+    <string name="Edit">Edit</string>
 
 </resources>

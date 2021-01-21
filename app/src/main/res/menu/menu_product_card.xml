@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_addToList" android:title="@string/add_to_list"/>
     <item android:id="@+id/menu_viewProduct" android:title="@string/view_product"/>
-    <item android:id="@+id/menu_editProduct" android:title="@string/edit_text"/>
+    <item android:id="@+id/menu_addToList" android:title="@string/add_to_list"/>
+    <item android:id="@+id/menu_editProduct" android:title="@string/Edit"/>
+    <item android:id="@+id/menu_deleteProduct" android:title="@string/delete"/>
 </menu>
