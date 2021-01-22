@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    private ToggleButton toggleButton_switchMode;
+    private Switch switchButton_switchMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +80,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchMode() {
-        toggleButton_switchMode = findViewById(R.id.toggleButton_switchMode);
+        switchButton_switchMode = findViewById(R.id.switchButton_switchMode);
         setToggle();
-        toggleButton_switchMode.setOnClickListener(new View.OnClickListener() {
+        switchButton_switchMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (toggleButton_switchMode.isChecked()) {
+                if (switchButton_switchMode.isChecked()) {
                     AppCompatDelegate
                             .setDefaultNightMode(
                                     AppCompatDelegate
@@ -101,22 +102,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void setToggle() {
 
-        toggleButton_switchMode = findViewById(R.id.toggleButton_switchMode);
+        switchButton_switchMode = findViewById(R.id.switchButton_switchMode);
 
         int nightModeFlags =
                 this.getResources().getConfiguration().uiMode &
                         Configuration.UI_MODE_NIGHT_MASK;
         switch (nightModeFlags) {
             case Configuration.UI_MODE_NIGHT_YES:
-                toggleButton_switchMode.setChecked(false);
+                switchButton_switchMode.setChecked(false);
                 break;
 
             case Configuration.UI_MODE_NIGHT_NO:
-                toggleButton_switchMode.setChecked(true);
+                switchButton_switchMode.setChecked(true);
                 break;
 
             case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                toggleButton_switchMode.setChecked(false);
+                switchButton_switchMode.setChecked(false);
                 break;
         }
     }

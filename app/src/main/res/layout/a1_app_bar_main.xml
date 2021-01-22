@@ -18,8 +18,8 @@
             android:background="@drawable/action_bar_bc"
             app:popupTheme="@style/Theme.Foodbank.PopupOverlay">
 
-            <ToggleButton
-                android:id="@+id/toggleButton_switchMode"
+            <Switch
+                android:id="@+id/switchButton_switchMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
