@@ -8,7 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.foodbank.Product;
+import com.example.foodbank.ui.products.Product;
 
 import java.util.concurrent.Executors;
 

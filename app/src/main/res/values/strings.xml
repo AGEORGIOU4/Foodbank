@@ -40,5 +40,11 @@
     <string name="try_again">TRY AGAIN</string>
     <string name="delete">Delete</string>
     <string name="Edit">Edit</string>
+    <string name="barcode">Barcode</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="nutriments">Nutriments</string>
+    <string name="vegan">Vegan</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="categories">Categories</string>
 
 </resources>

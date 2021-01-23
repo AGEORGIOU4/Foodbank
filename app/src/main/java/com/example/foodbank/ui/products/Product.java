@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.ui.products;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;

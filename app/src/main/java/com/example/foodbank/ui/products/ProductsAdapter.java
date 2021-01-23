@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodbank.Product;
 import com.example.foodbank.R;
 import com.squareup.picasso.Picasso;
 
@@ -35,6 +34,10 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         this.onItemClickListener = onItemClickListener;
         this.onItemLongClickListener = onItemLongClickListener;
         this.onActionBarMenuClickListener = onActionBarMenuClickListener;
+    }
+    public ProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener) {
+        this.listItems = listItems;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -165,7 +168,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         return listItems.size();
     }
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void itemClicked(View v, int pos, String value);
     }
 

@@ -34,9 +34,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.MainActivity;
-import com.example.foodbank.Product;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.ui.products.Product;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -352,7 +352,6 @@ public class AddProductFragment extends Fragment {
                 if (productObject.has("image_front_small_url")) {
                     setImageUrl(productObject.getString("image_front_small_url"));
                 } else {
-
                     setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
                 }
 

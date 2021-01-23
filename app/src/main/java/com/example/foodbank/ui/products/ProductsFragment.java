@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodbank.Product;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.ui.favorites.Favorites;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 
 public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
         ProductsAdapter.OnActionBarMenuClickListener {
+
 
     // Recycler View
     private final Vector<Product> productsList = new Vector<>();
@@ -127,18 +128,15 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
             requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
         });
         Snackbar snackbar = Snackbar.make(getView(), "You have deleted '" + tmpProduct.getTitle() + "'", Snackbar.LENGTH_LONG)
-                .setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Undo
-                        insert(tmpProduct);
-                        Executors.newSingleThreadExecutor().execute(() -> {
-                            final ProductsDao myDAO = ProductsRoomDatabase.getDatabase(requireContext()).productsDao();
-                            productsList.clear();
-                            productsList.addAll(myDAO.getProductsSortedByTimestamp());
-                            requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
-                        });
-                    }
+                .setAction("UNDO", v -> {
+                    // Undo
+                    insert(tmpProduct);
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        final ProductsDao myDAO = ProductsRoomDatabase.getDatabase(requireContext()).productsDao();
+                        productsList.clear();
+                        productsList.addAll(myDAO.getProductsSortedByTimestamp());
+                        requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                    });
                 });
         snackbar.show();
     }

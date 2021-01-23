@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_categoryProducts"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginVertical="2dp"
+        app:cardCornerRadius="4dp">
+
+        <RelativeLayout
+            android:id="@+id/list_item_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_productImage"
+                android:layout_width="65dp"
+                android:layout_height="77dp"
+                android:layout_alignParentStart="true"
+                android:background="@color/cyan_500"
+                android:backgroundTint="@color/grey_700" />
+
+            <TextView
+                android:id="@+id/textView_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:layout_toStartOf="@id/checkBox_star"
+                android:layout_toEndOf="@id/imageView_productImage"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/title"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_nutriScore"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/textView_title"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/imageView_productImage"
+                android:background="#00FFFFFF"
+                android:src="@drawable/d_img_nutriscore_a"
+                android:textColor="@color/cyan_700"
+                app:shapeAppearanceOverlay="@style/Circular" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_ecoScore"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/textView_title"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/imageView_nutriScore"
+                android:background="#00FFFFFF"
+                android:src="@drawable/d_img_ecoscore_a"
+                android:text="@string/nova_4"
+                app:shapeAppearanceOverlay="@style/Circular" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView_novaGroup"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/textView_title"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/imageView_ecoScore"
+                android:src="@drawable/d_img_novagroup_1"
+                app:shapeAppearanceOverlay="@style/Circular" />
+
+            <ImageView
+                android:id="@+id/imageView_popupMenu"
+                android:layout_width="33dp"
+                android:layout_height="27dp"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                android:src="@drawable/ic_action_more_vert"
+                android:contentDescription="@string/pop_up_menu"/>
+
+            <CheckBox
+                android:id="@+id/checkBox_star"
+                style="?android:attr/starStyle"
+                android:layout_width="33dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

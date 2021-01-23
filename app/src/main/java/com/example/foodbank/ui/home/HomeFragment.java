@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.foodbank.R;
+import com.example.foodbank.ui.favorites.Favorites;
 
 public class HomeFragment extends Fragment {
 
@@ -16,7 +17,6 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.b1_fragment_home, container, false);
-
         return root;
     }
 }

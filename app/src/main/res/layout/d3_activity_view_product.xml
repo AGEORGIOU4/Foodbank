@@ -102,7 +102,7 @@
                     android:layout_below="@id/imageView_viewProductNutriScore"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:text="Barcode" />
+                    android:text="@string/barcode" />
 
                 <TextView
                     android:id="@+id/textView_viewProductIngredients"
@@ -111,7 +111,7 @@
                     android:layout_below="@id/textView_viewProductBarcode"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:text="Ingredients" />
+                    android:text="@string/ingredients" />
 
                 <TextView
                     android:id="@+id/textView_viewProductNutriments"
@@ -120,7 +120,7 @@
                     android:layout_below="@id/textView_viewProductIngredients"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:text="Nutriments" />
+                    android:text="@string/nutriments" />
 
                 <TextView
                     android:id="@+id/textView_viewProductVegan"
@@ -129,7 +129,7 @@
                     android:layout_below="@id/textView_viewProductNutriments"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:text="Vegan" />
+                    android:text="@string/vegan" />
 
                 <TextView
                     android:id="@+id/textView_viewProductVegetarian"
@@ -138,7 +138,7 @@
                     android:layout_below="@id/textView_viewProductVegan"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:text="Vegetarian" />
+                    android:text="@string/vegetarian" />
 
                 <TextView
                     android:id="@+id/textView_viewProductCategoriesImported"
@@ -147,7 +147,7 @@
                     android:layout_below="@id/textView_viewProductVegetarian"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:text="Categories" />
+                    android:text="@string/categories" />
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>

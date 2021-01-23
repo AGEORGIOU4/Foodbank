@@ -6,11 +6,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.foodbank.Product;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.squareup.picasso.Picasso;
@@ -30,10 +28,11 @@ public class ViewProductActivity extends AppCompatActivity {
        // Remove Action Bar
         try {
             this.getSupportActionBar().hide();
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
-        setContentView(R.layout.j0_activity_view_product);
-
+        setContentView(R.layout.d3_activity_view_product);
         View root = findViewById(R.id.root);
 
         productsList.addAll(getAllProductsSortedByTitle());
