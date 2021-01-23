@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,11 +18,13 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Vector;
 
-public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
+public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> implements Filterable {
 
     private final Vector<Product> listItems;
+    private Vector<Product> listItemsAll;
     private Context context;
 
     private OnItemClickListener onItemClickListener;
@@ -31,6 +35,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
                            OnItemLongClickListener onItemLongClickListener,
                            OnActionBarMenuClickListener onActionBarMenuClickListener) {
         this.listItems = listItems;
+        this.listItemsAll = new Vector<>(listItems);
         this.onItemClickListener = onItemClickListener;
         this.onItemLongClickListener = onItemLongClickListener;
         this.onActionBarMenuClickListener = onActionBarMenuClickListener;
@@ -83,8 +88,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         String ecoScore = listItem.getEcoScore();
         String imageUrl = listItem.getImageUrl();
 
-        // Set listener on Click, Action Bar Menu
+        // Set listeners on Click, on Long Click Action Bar Menu
         holder.itemView.setOnClickListener(v->onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
+        holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, listItem.getTitle()));
         holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode()));
 
         // Get element from your data set at this position
@@ -179,6 +185,39 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     interface OnActionBarMenuClickListener {
         void onPopupMenuClick(View view, int pos, String value);
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    Filter filter = new Filter() {
+        // run on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            Vector<Product> filteredList = new Vector<>();
+
+            if(charSequence.toString().isEmpty()) {
+                filteredList.addAll(listItemsAll);
+            } else {
+                for (Product product: listItemsAll) {
+                    if(product.getTitle().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(product);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+            return filterResults;
+        }
+        // run on background thread
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults filterResults) {
+            listItems.clear();
+            listItems.addAll((Collection<? extends Product>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 }
 
 

@@ -3,10 +3,14 @@ package com.example.foodbank.ui.categories;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.SearchView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.R;
+import com.example.foodbank.ui.products.ProductsAdapter;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -26,17 +31,21 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Vector;
 
-public class ViewCategoryProductsActivity extends AppCompatActivity implements ProductsInCategoryAdapter.OnItemClickListener {
+public class ProductsInCategoryActivity extends AppCompatActivity implements ProductsInCategoryAdapter.OnItemClickListener {
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
-    private final Vector<ProductInCategory> productsList = new Vector<>();
+
     // Response
     String productsResponse = "";
     String categoryId;
+    String categoryName;
+
     // Recycler view
     private RecyclerView recyclerView_viewCategoryProducts;
+    private final Vector<ProductInCategory> productsList = new Vector<>();
     private ProductsInCategoryAdapter adapter;
+
     // Layout elements
     private ProgressDialog progressDialog;
 
@@ -44,46 +53,45 @@ public class ViewCategoryProductsActivity extends AppCompatActivity implements P
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Remove Action Bar
-        try {
-            this.getSupportActionBar().hide();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
         setContentView(R.layout.c3_activity_view_category_products);
+
         View root = findViewById(R.id.root);
 
-        categoryId = getIntent().getStringExtra("selected_item");
+        // Get category id from categories fragment
+        categoryId = getIntent().getStringExtra("selected_item_id");
+        categoryName = getIntent().getStringExtra("selected_item_name");
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null && categoryName != null) {
+            actionBar.setTitle(categoryName);
+        }
 
         // Recycler View implementation
-        recyclerView_viewCategoryProducts = root.findViewById(R.id.recyclerView_viewCategoryProducts);
-        // Item helper for swipe events
-        //  recyclerView_viewCategoryProducts.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView_viewCategoryProducts.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsInCategoryAdapter(this, productsList, this);
-        recyclerView_viewCategoryProducts.setAdapter(adapter);
+        setRecyclerView();
+
+        getResponse();
 
         // Try to get response again
-        Button button_categories_tryAgain = root.findViewById(R.id.button_categories_tryAgain);
-        button_categories_tryAgain.setOnClickListener(v -> getResponse());
-    }
+        tryAgainEvent(root);
 
-    public String getFormedUrl() {
-        return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100";
+        // Search
+        searchItem(root);
+
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
 
-        System.out.println(getFormedUrl());
-        getResponse();
+        super.onResume();
     }
 
     /*-------------------------------RESPONSE-----------------------------------*/
+    public String getFormedUrl() {
+        return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100";
+    }
+
     private void handleResponse(final String response) {
+
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -130,6 +138,44 @@ public class ViewCategoryProductsActivity extends AppCompatActivity implements P
         requestQueue.add(request);
     }
 
+    /*---------------------------------RECYCLER VIEW-----------------------------------*/
+    public void setRecyclerView() {
+        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
+        // Item helper for swipe events
+        recyclerView_viewCategoryProducts.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView_viewCategoryProducts.setLayoutManager(linearLayoutManager);
+        adapter = new ProductsInCategoryAdapter(this, productsList, this);
+        recyclerView_viewCategoryProducts.setAdapter(adapter);
+    }
+
+    /*------------------------------------SEARCH---------------------------------------*/
+    public void searchItem(View view) {
+        SearchView searchView = view.findViewById(R.id.searchView_categoryProducts);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
+
+    /*----------------------------------INTERFACES-------------------------------------*/
+    @Override
+    public void itemClicked(View v, int pos, String value) {
+    }
+
+    public void tryAgainEvent(View view) {
+        Button button_categories_tryAgain = view.findViewById(R.id.button_categories_tryAgain);
+        button_categories_tryAgain.setOnClickListener(v -> getResponse());
+    }
 
     /*-------------------------------------------------------------------------*/
     private void switchLayout(int state) {
@@ -147,9 +193,5 @@ public class ViewCategoryProductsActivity extends AppCompatActivity implements P
                 recyclerView_viewCategoryProducts.setVisibility(View.INVISIBLE);
                 break;
         }
-    }
-
-    @Override
-    public void itemClicked(View v, int pos, String value) {
     }
 }

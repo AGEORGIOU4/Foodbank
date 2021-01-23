@@ -3,9 +3,11 @@ package com.example.foodbank.ui.products;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,24 +30,9 @@ import java.util.concurrent.Executors;
 public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
         ProductsAdapter.OnActionBarMenuClickListener {
 
-
     // Recycler View
     private final Vector<Product> productsList = new Vector<>();
-
     private ProductsAdapter adapter;
-    // Delete Item on Swipe
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return true;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            int pos = viewHolder.getAdapterPosition();
-            deleteItem(pos);
-        }
-    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,18 +43,14 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         productsList.addAll(getAllProductsSortedByTimestamp());
 
         // Recycler View implementation
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerView_products);
-        // Item helper for swipe events
-        new ItemTouchHelper((itemTouchHelperCallback)).attachToRecyclerView(recyclerView);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsAdapter(productsList, this, this, this);
-        recyclerView.setAdapter(adapter);
+        setRecyclerView(root);
 
+        // Search
+        searchItem(root);
         return root;
     }
 
+    /*-------------------------------DATABASE-----------------------------------*/
     List<Product> getAllProductsSortedByTitle() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
     }
@@ -76,6 +59,48 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
     }
 
+    void insert(Product product) {
+        ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
+    }
+
+    void update(Product note) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(note);
+    }
+
+    void delete(final Product note) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(note);
+    }
+
+    /*---------------------------------RECYCLER VIEW-----------------------------------*/
+    public void setRecyclerView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_products);
+        // Item helper for swipe events
+        new ItemTouchHelper((itemTouchHelperCallback)).attachToRecyclerView(recyclerView);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new ProductsAdapter(productsList, this, this, this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    /*------------------------------------SEARCH---------------------------------------*/
+    public void searchItem(View view) {
+    SearchView searchView = view.findViewById(R.id.searchView_products);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            adapter.getFilter().filter(newText);
+            return false;
+        }
+    });
+}
+
+    /*----------------------------------INTERFACES-------------------------------------*/
     @Override
     public void itemClicked(View v, int pos, String value) {
         Intent intent = new Intent(getActivity(), ViewProductActivity.class);
@@ -85,7 +110,8 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
     @Override
     public boolean itemLongClicked(View v, int pos, String value) {
-        return false;
+        Snackbar.make(v, "Swipe to delete", Snackbar.LENGTH_SHORT).show();
+        return true;
     }
 
     @Override
@@ -141,16 +167,18 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         snackbar.show();
     }
 
-    // Insert product on products db
-    void insert(Product product) {
-        ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
-    }
+    // Delete Item on Swipe
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return true;
+        }
 
-    void update(Product note) {
-        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(note);
-    }
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int pos = viewHolder.getAdapterPosition();
+            deleteItem(pos);
+        }
+    };
 
-    void delete(final Product note) {
-        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(note);
-    }
 }

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -58,18 +58,23 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
         this.listView_Categories = root.findViewById(R.id.listView_Categories);
         this.arrayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, categoriesList);
         listView_Categories.setAdapter(arrayAdapter);
-
         listView_Categories.setOnItemClickListener((parent, view, position, id) -> {
             Category selected = arrayAdapter.getItem(position);
             String categoryId = selected.getId();
+            String categoryName = selected.getName();
 
-            Intent intent = new Intent(getActivity(), ViewCategoryProductsActivity.class);
-            intent.putExtra("selected_item", categoryId);
+            Intent intent = new Intent(getActivity(), ProductsInCategoryActivity.class);
+            intent.putExtra("selected_item_id", categoryId);
+            intent.putExtra("selected_item_name", categoryName);
             startActivity(intent);
         });
 
+        getResponse();
+
+
         // Search
         SearchView searchView_categories = root.findViewById(R.id.searchView_categories);
+        searchView_categories.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView_categories.setOnQueryTextListener(this);
 
         // Try to get response again
@@ -82,9 +87,6 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
     @Override
     public void onResume() {
         super.onResume();
-
-
-        getResponse();
     }
 
     /*-------------------------------RESPONSE-----------------------------------*/
