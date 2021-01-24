@@ -25,34 +25,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
     private final Vector<Product> listItems;
     private Vector<Product> listItemsAll;
-    Filter filter = new Filter() {
-        // run on background thread
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            Vector<Product> filteredList = new Vector<>();
 
-            if (charSequence.toString().isEmpty()) {
-                filteredList.addAll(listItemsAll);
-            } else {
-                for (Product product : listItemsAll) {
-                    if (product.getTitle().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-                        filteredList.add(product);
-                    }
-                }
-            }
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filteredList;
-            return filterResults;
-        }
-
-        // run on background thread
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults filterResults) {
-            listItems.clear();
-            listItems.addAll((Collection<? extends Product>) filterResults.values);
-            notifyDataSetChanged();
-        }
-    };
     private Context context;
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
@@ -81,6 +54,28 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.d2_card_product, parent, false);
         return new ViewHolder(v);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
+        public TextView textView_title;
+        public ImageView imageView_nutriScore;
+        public ImageView imageView_ecoScore;
+        public ImageView imageView_novaGroup;
+        public ImageView imageView_productImage;
+        public CheckBox checkBox_star;
+        public ImageView imageView_popupMenu;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
+            this.textView_title = itemView.findViewById(R.id.textView_title);
+            this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
+            this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
+            this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
+            this.imageView_popupMenu = itemView.findViewById(R.id.imageView_popupMenu);
+            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
+        }
     }
 
     @Override
@@ -223,6 +218,34 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     public Filter getFilter() {
         return filter;
     }
+    Filter filter = new Filter() {
+        // run on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            Vector<Product> filteredList = new Vector<>();
+
+            if (charSequence.toString().isEmpty()) {
+                filteredList.addAll(listItemsAll);
+            } else {
+                for (Product product : listItemsAll) {
+                    if (product.getTitle().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(product);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+            return filterResults;
+        }
+
+        // run on background thread
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults filterResults) {
+            listItems.clear();
+            listItems.addAll((Collection<? extends Product>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public interface OnItemClickListener {
         void itemClicked(View v, int pos, String value);
@@ -236,27 +259,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         void onPopupMenuClick(View view, int pos, String value);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
-        public TextView textView_title;
-        public ImageView imageView_nutriScore;
-        public ImageView imageView_ecoScore;
-        public ImageView imageView_novaGroup;
-        public ImageView imageView_productImage;
-        public CheckBox checkBox_star;
-        public ImageView imageView_popupMenu;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
-            this.textView_title = itemView.findViewById(R.id.textView_title);
-            this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
-            this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
-            this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
-            this.imageView_popupMenu = itemView.findViewById(R.id.imageView_popupMenu);
-            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
-        }
-    }
 }
 
 

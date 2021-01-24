@@ -7,36 +7,26 @@
     tools:context=".ui.categories.ProductsInCategoryActivity">
 
     <FrameLayout
-        android:id="@+id/frameLayout_categories"
+        android:id="@+id/frameLayout_productsInCategory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible">
 
         <Button
-            android:id="@+id/button_categories_tryAgain"
+            android:id="@+id/button_tryAgain"
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="center_vertical|center_horizontal"
             android:text="@string/try_again" />
     </FrameLayout>
 
-    <SearchView
-        android:id="@+id/searchView_categoryProducts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="10dp"
-        android:iconifiedByDefault="false">
-    </SearchView>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_viewCategoryProducts"
-        android:layout_below="@id/searchView_categoryProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="4dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="20dp"
         android:scrollbars="vertical" />
 
 </RelativeLayout>

@@ -50,13 +50,38 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
     private ListView listView_Categories;
     private ArrayAdapter<Category> arrayAdapter;
 
+    // Control loads
+    private boolean isLoaded = false;
+    public boolean isLoaded() { return isLoaded; }
+    public void setLoaded(boolean loaded) { isLoaded = loaded; }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.c1_fragment_categories, container, false);
+        setCategoriesAdapter(root);
 
+        // Try again on no connection
+        tryAgain(root);
 
-        // Simple list view implementation
+        // Search
+        searchCategory(root);
+
+        // Refresh fragment
+        refreshCategories(root);
+
+        return root;
+    }
+
+    @Override
+    public void onResume() {
+        if (!isLoaded()) { getResponse();}
+        super.onResume();
+    }
+
+    /*--------------------------------LAYOUT------------------------------------*/
+    public void setCategoriesAdapter(View root) {
+        // Simple list view implementation and on click listener actions
         this.listView_Categories = root.findViewById(R.id.listView_Categories);
         this.arrayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, categoriesList);
         listView_Categories.setAdapter(arrayAdapter);
@@ -70,66 +95,50 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
             intent.putExtra("selected_item_name", categoryName);
             startActivity(intent);
         });
-
-        getResponse();
-
-
-        // Search
-        SearchView searchView_categories = root.findViewById(R.id.searchView_categories);
-        searchView_categories.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView_categories.setOnQueryTextListener(this);
-
-        // Try to get response again
-        Button button_categories_tryAgain = root.findViewById(R.id.button_categories_tryAgain);
-        button_categories_tryAgain.setOnClickListener(v -> getResponse());
-
-        // Refresh fragment
-        refreshCategories(root);
-
-        return root;
     }
+    private void switchLayout(int state) {
+        // Layout elements
+        FrameLayout frameLayout_categories = requireView().findViewById(R.id.frameLayout_productsInCategory);
+        listView_Categories = requireView().findViewById(R.id.listView_Categories);
 
+        switch (state) {
+            case INITIAL_STATE:
+                frameLayout_categories.setVisibility(View.INVISIBLE);
+                listView_Categories.setVisibility(View.VISIBLE);
+                break;
+            case ERROR_STATE:
+                frameLayout_categories.setVisibility(View.VISIBLE);
+                listView_Categories.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
 
     /*-------------------------------RESPONSE-----------------------------------*/
     private void handleResponse(final String response) {
         JSONObject jsonObject = null;
-        int count = 0;
-        int maxTries = 3;
-        while (true) {
-            try {
-                jsonObject = new JSONObject(response);
-                tagsResponse = jsonObject.getString("tags");
-                Category[] categoryArray = new Gson().fromJson(tagsResponse, Category[].class);
-                this.categoriesList.clear();
-                this.categoriesList.addAll(Arrays.asList(categoryArray));
-                arrayAdapter.notifyDataSetChanged();
-
-
-                progressDialog.dismiss();
-                switchLayout(INITIAL_STATE);
-                return;
-            } catch (JSONException e) {
-                // handle exception
-                if (++count == maxTries) {
-                    e.printStackTrace();
-                    progressDialog.dismiss();
-                    switchLayout(INITIAL_STATE);
-                }
-            }
-            count++;
+        try {
+            jsonObject = new JSONObject(response);
+            tagsResponse = jsonObject.getString("tags");
+            progressDialog.dismiss();
+            switchLayout(INITIAL_STATE);
+        } catch (JSONException e) {
+            // handle exception
+            e.printStackTrace();
+            progressDialog.dismiss();
+            switchLayout(INITIAL_STATE);
         }
+        Category[] categoryArray = new Gson().fromJson(tagsResponse, Category[].class);
+        this.categoriesList.clear();
+        this.categoriesList.addAll(Arrays.asList(categoryArray));
+        arrayAdapter.notifyDataSetChanged();
     }
-
     private void handleError(VolleyError volleyError) {
-        Snackbar snackbar = Snackbar.make(listView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG);
-        snackbar.show();
+        Snackbar.make(listView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
         progressDialog.dismiss();
         switchLayout(ERROR_STATE);
     }
-
     public void getResponse() {
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
-
         // Set up progress bar before call
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMax(100);
@@ -146,6 +155,7 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
                 this::handleError); // method reference, equivalent to: error -> handleError(error)
 
         requestQueue.add(request);
+        setLoaded(true);
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
@@ -154,6 +164,11 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
     }
 
     /*--------------------------------SEARCH------------------------------------*/
+    public void searchCategory(View root) {
+        SearchView searchView_categories = root.findViewById(R.id.searchView_categories);
+        searchView_categories.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView_categories.setOnQueryTextListener(this);
+    }
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
@@ -167,23 +182,14 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
     }
 
     /*--------------------------------------------------------------------------*/
-    private void switchLayout(int state) {
-        // Layout elements
-        FrameLayout frameLayout_categories = requireView().findViewById(R.id.frameLayout_categories);
-        listView_Categories = requireView().findViewById(R.id.listView_Categories);
-
-        switch (state) {
-            case INITIAL_STATE:
-                frameLayout_categories.setVisibility(View.INVISIBLE);
-                listView_Categories.setVisibility(View.VISIBLE);
-                break;
-            case ERROR_STATE:
-                frameLayout_categories.setVisibility(View.VISIBLE);
-                listView_Categories.setVisibility(View.INVISIBLE);
-                break;
-        }
+    public void tryAgain(View root) {
+        // Try to get response again
+        Button button_categories_tryAgain = root.findViewById(R.id.button_tryAgain);
+        button_categories_tryAgain.setOnClickListener(v -> {
+            setLoaded(false);
+            getResponse();
+        });
     }
-
     public void refreshCategories(View view) {
         FloatingActionButton button_categories_refresh = view.findViewById(R.id.button_categories_refresh);
         button_categories_refresh.bringToFront();
@@ -191,5 +197,8 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.detach(CategoriesFragment.this).attach(CategoriesFragment.this).commit();
         });
+
+        setLoaded(false);
     }
+
 }

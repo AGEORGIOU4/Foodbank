@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Vector;
 
 public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCategoryAdapter.ViewHolder> {
@@ -23,7 +26,6 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
     private Vector<ProductInCategory> listItems;
 
     private Context context;
-
     private OnItemClickListener onItemClickListener;
 
     public ProductsInCategoryAdapter(final Context context, Vector<ProductInCategory> listItems,
@@ -32,7 +34,6 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
         this.listItems = listItems;
         this.onItemClickListener = onItemClickListener;
     }
-
     // Create new views (invoked by the layout manager)
     @NotNull
     @Override
@@ -43,6 +44,26 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
         return new ViewHolder(v);
     }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
+        public ImageView imageView_productImage;
+        public TextView textView_title;
+        public ImageView imageView_nutriScore;
+        public ImageView imageView_ecoScore;
+        public ImageView imageView_novaGroup;
+        public CheckBox checkBox_star;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
+            this.textView_title = itemView.findViewById(R.id.textView_title);
+            this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
+            this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
+            this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
+
+            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
+        }
+    }
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         ProductInCategory listItem = listItems.get(position);
@@ -202,27 +223,6 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
 
     public interface OnItemClickListener {
         void itemClicked(View v, int pos, String code);
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
-        public ImageView imageView_productImage;
-        public TextView textView_title;
-        public ImageView imageView_nutriScore;
-        public ImageView imageView_ecoScore;
-        public ImageView imageView_novaGroup;
-        public CheckBox checkBox_star;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
-            this.textView_title = itemView.findViewById(R.id.textView_title);
-            this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
-            this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
-            this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
-
-            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
-        }
     }
 }
 

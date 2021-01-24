@@ -4,11 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +29,15 @@ import java.util.List;
 import java.util.Vector;
 
 public class ViewProductActivity extends AppCompatActivity {
+    // Activity states for switching layouts
+    private static final int INITIAL_STATE = 2001;
+    private static final int ERROR_STATE = 2002;
+
+    // Layout elements
+    private final Vector<Product> productsList = new Vector<>();
+
+    // Response
+    private RequestQueue mQueue;
 
     // Product attributes
     private String barcode;
@@ -39,17 +52,15 @@ public class ViewProductActivity extends AppCompatActivity {
     private String categoriesImported;
     private String imageUrl;
 
-    private Vector<Product> productsList = new Vector<>();
-    private Product myProduct;
-    private RequestQueue mQueue;
-    private ProgressDialog progressDialog;
+    private Product myProduct = new Product("", "", "", "", "", "",
+            "", "", "", "", false, System.currentTimeMillis(), "");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Remove Action Bar
-        try { this.getSupportActionBar().hide(); } catch (NullPointerException e) {
+        try { this.getSupportActionBar().hide(); }
+        catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -61,8 +72,10 @@ public class ViewProductActivity extends AppCompatActivity {
 
         // Get barcode from clicked item
         getExtraData(root);
-        jsonParse(root);
+        findClickedProduct(root, myProduct);
 
+        // Try again on no connection
+        tryAgain(root);
     }
 
 
@@ -71,6 +84,18 @@ public class ViewProductActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    public void findClickedProduct(View view, Product product) {
+        // Check if the product belongs to user's database (also offline)
+        productsList.clear();
+        productsList.addAll(getAllProductsSortedByTitle());
+        if (checkIfProductIsOnDatabase()) {
+            initializeValuesOnCard(view);
+        } else {
+            jsonParse(view);
+        }
+    }
+
+    /*--------------------------------LAYOUT------------------------------------*/
     public void getExtraData(View view) {
         Intent intent = getIntent();
         if (!intent.getStringExtra("extra_products_code").equals("") ||
@@ -78,41 +103,30 @@ public class ViewProductActivity extends AppCompatActivity {
             barcode = intent.getStringExtra("extra_products_code");
         }
     }
+    private void switchLayout(int state) {
+        // Layout elements
+        FrameLayout frameLayout_productsInCategory = findViewById(R.id.frameLayout_productsInCategory);
+        ScrollView scrollView_viewProduct = findViewById(R.id.scrollView_viewProduct);
 
-    public void findClickedProduct(View view, Product product) {
-        // Check if the product belongs to user's database
-        productsList.clear();
-        productsList.addAll(getAllProductsSortedByTitle());
-        if (checkIfProductIsOnDatabase()) {
-            initializeValuesOnCard(view);
-        } else {
-            insert(product);
-            findClickedProduct(view, product);
+        switch (state) {
+            case INITIAL_STATE:
+                frameLayout_productsInCategory.setVisibility(View.INVISIBLE);
+                break;
+            case ERROR_STATE:
+                frameLayout_productsInCategory.setVisibility(View.VISIBLE);
+                scrollView_viewProduct.setVisibility(View.INVISIBLE);
+                break;
         }
     }
 
-
-    public boolean checkIfProductIsOnDatabase() {
-        // Check if the product belongs to user's database
-        for (int i = 0; i < productsList.size(); i++) {
-            if (productsList.get(i).getBarcode().equals(barcode)) {
-                myProduct = productsList.get(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
-
+    /*-------------------------------RESPONSE-----------------------------------*/
     private void jsonParse(View view) {
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
         String apiURL = mainURL + barcode;
 
-
         // The user's input is concatenated with the main URL and the program makes a request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
             try {
-                setProgressBar();
                 JSONObject productObject = response.getJSONObject("product");
                 // Check and get the available data
                 if (productObject.has("product_name"))
@@ -165,18 +179,18 @@ public class ViewProductActivity extends AppCompatActivity {
                         System.currentTimeMillis(), imageUrl);
 
                 // Check if the product is not already included on the Database and add it
+                insert(tmpProduct);
                 findClickedProduct(view, tmpProduct);
-
-                progressDialog.dismiss();
+                switchLayout(INITIAL_STATE);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
+                switchLayout(ERROR_STATE);
             }
         }, error -> {
             // If during the request or response an error is occurred, a Snackbar message will pop up
             Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
+            switchLayout(ERROR_STATE);
         });
         mQueue.add(request);
     }
@@ -186,23 +200,22 @@ public class ViewProductActivity extends AppCompatActivity {
         return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByTitle();
     }
 
+    public boolean checkIfProductIsOnDatabase() {
+        // Check if the product belongs to user's database
+        for (int i = 0; i < productsList.size(); i++) {
+            if (productsList.get(i).getBarcode().equals(barcode)) {
+                myProduct = productsList.get(i);
+                return true;
+            }
+        }
+        return false;
+    }
     // Insert product on products db
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
     }
 
     /*--------------------------------------------------------------------------*/
-    public void setProgressBar() {
-        // Set up progress bar before call
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMax(100);
-        progressDialog.setMessage("Loading....");
-        progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // Show it
-        progressDialog.show();
-    }
-
     public void initializeValuesOnCard(View view) {
         ImageView imageView_viewProductImage = view.findViewById(R.id.imageView_viewProductImage);
         TextView textView_viewProductTitle = view.findViewById(R.id.textView_viewProductTitle);
@@ -215,6 +228,8 @@ public class ViewProductActivity extends AppCompatActivity {
         TextView textView_viewProductVegetarian = view.findViewById(R.id.textView_viewProductVegetarian);
         TextView textView_viewProductCategoriesImported = view.findViewById(R.id.textView_viewProductCategoriesImported);
         TextView textView_viewProductBarcode = view.findViewById(R.id.textView_viewProductBarcode);
+
+        ScrollView scrollView_viewProduct = view.findViewById(R.id.scrollView_viewProduct);
 
         // Initialize values on card
         textView_viewProductBarcode.setText("Barcode: " + myProduct.getBarcode());
@@ -347,6 +362,18 @@ public class ViewProductActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Oops, something is wrong with the photo " + myProduct.getImageUrl(), Toast.LENGTH_SHORT).show();
         }
-    }
 
+        // Set card as visible when data is loaded
+        scrollView_viewProduct.setVisibility(View.VISIBLE);
+    }
+    public void tryAgain(View view) {
+        Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
+        button_categories_tryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(getIntent());
+            }
+        });
+    }
 }

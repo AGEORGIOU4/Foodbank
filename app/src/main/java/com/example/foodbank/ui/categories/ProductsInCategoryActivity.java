@@ -4,14 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.SearchView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +18,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.R;
-import com.example.foodbank.ui.products.ProductsAdapter;
 import com.example.foodbank.ui.products.ViewProductActivity;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,54 +33,90 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
-
+    // Recycler view
+    private final Vector<ProductInCategory> productsList = new Vector<>();
     // Response
     String productsResponse = "";
     String categoryId;
     String categoryName;
-
-    // Recycler view
     private RecyclerView recyclerView_viewCategoryProducts;
-    private final Vector<ProductInCategory> productsList = new Vector<>();
     private ProductsInCategoryAdapter adapter;
 
     // Layout elements
     private ProgressDialog progressDialog;
 
+    // Control loads
+    private boolean isLoaded = false;
+    public boolean isLoaded() { return isLoaded; }
+    public void setLoaded(boolean loaded) { isLoaded = loaded; }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.c3_activity_view_category_products);
-
-        View root = findViewById(R.id.root);
+        setContentView(R.layout.c3_activity_view_products_in_category);
 
         // Get category id from categories fragment
         categoryId = getIntent().getStringExtra("selected_item_id");
         categoryName = getIntent().getStringExtra("selected_item_name");
 
+        View root = findViewById(R.id.root);
+        setRecyclerView();
+        setActionBar();
+
+        // Try again on no connection
+        tryAgain(root);
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        if (!isLoaded()) { getResponse();}
+        super.onResume();
+    }
+
+    /*-----------------------------------LAYOUT---------------------------------------*/
+    public void setActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null && categoryName != null) {
             actionBar.setTitle(categoryName);
             actionBar.setBackgroundDrawable(getDrawable(R.drawable.action_bar_bc));
         }
-
-        // Recycler View implementation
-        setRecyclerView();
-
-        getResponse();
-
-        // Try to get response again
-        tryAgainEvent(root);
     }
 
-    /*-------------------------------RESPONSE-----------------------------------*/
+    public void setRecyclerView() {
+        this.recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
+        // Item helper for swipe events
+        recyclerView_viewCategoryProducts.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView_viewCategoryProducts.setLayoutManager(linearLayoutManager);
+        this.adapter = new ProductsInCategoryAdapter(this, productsList, this);
+        recyclerView_viewCategoryProducts.setAdapter(adapter);
+    }
+
+    private void switchLayout(int state) {
+        // Layout elements
+        FrameLayout frameLayout_productsInCategory = findViewById(R.id.frameLayout_productsInCategory);
+        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
+
+        switch (state) {
+            case INITIAL_STATE:
+                frameLayout_productsInCategory.setVisibility(View.INVISIBLE);
+                recyclerView_viewCategoryProducts.setVisibility(View.VISIBLE);
+                break;
+            case ERROR_STATE:
+                frameLayout_productsInCategory.setVisibility(View.VISIBLE);
+                recyclerView_viewCategoryProducts.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
+
+    /*----------------------------------RESPONSE--------------------------------------*/
     public String getFormedUrl() {
         return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100";
     }
-
     private void handleResponse(final String response) {
-
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -99,20 +131,16 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         } catch (JSONException e) {
             e.printStackTrace();
             progressDialog.dismiss();
-            switchLayout(INITIAL_STATE);
+            switchLayout(ERROR_STATE);
         }
     }
-
     private void handleError(VolleyError volleyError) {
         Snackbar.make(recyclerView_viewCategoryProducts, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
         progressDialog.dismiss();
         switchLayout(ERROR_STATE);
     }
-
     public void getResponse() {
-
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         // Set up progress bar before call
         progressDialog = new ProgressDialog(this);
         progressDialog.setMax(100);
@@ -129,47 +157,23 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
                 this::handleError); // method reference, equivalent to: error -> handleError(error)
 
         requestQueue.add(request);
+        setLoaded(true);
     }
 
-    /*---------------------------------RECYCLER VIEW-----------------------------------*/
-    public void setRecyclerView() {
-        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
-        // Item helper for swipe events
-        recyclerView_viewCategoryProducts.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView_viewCategoryProducts.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsInCategoryAdapter(this, productsList, this);
-        recyclerView_viewCategoryProducts.setAdapter(adapter);
+    /*------------------------------------------------------------------------------------*/
+    public void tryAgain(View view) {
+        Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
+        button_categories_tryAgain.setOnClickListener(v -> {
+            setLoaded(false);
+            getResponse();
+        });
     }
 
-    /*----------------------------------INTERFACES-------------------------------------*/
     @Override
-    public void itemClicked(View v, int pos, String code){
-    Intent intent = new Intent(this, ViewProductActivity.class);
-    intent.putExtra("extra_products_code", code);
-    startActivity(intent);
+    public void itemClicked(View v, int pos, String code) {
+        Intent intent = new Intent(this, ViewProductActivity.class);
+        intent.putExtra("extra_products_code", code);
+        startActivity(intent);
     }
 
-    public void tryAgainEvent(View view) {
-        Button button_categories_tryAgain = view.findViewById(R.id.button_categories_tryAgain);
-        button_categories_tryAgain.setOnClickListener(v -> getResponse());
-    }
-
-    /*-------------------------------------------------------------------------*/
-    private void switchLayout(int state) {
-        // Layout elements
-        FrameLayout frameLayout_categories = findViewById(R.id.frameLayout_categories);
-        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
-
-        switch (state) {
-            case INITIAL_STATE:
-                frameLayout_categories.setVisibility(View.INVISIBLE);
-                recyclerView_viewCategoryProducts.setVisibility(View.VISIBLE);
-                break;
-            case ERROR_STATE:
-                frameLayout_categories.setVisibility(View.VISIBLE);
-                recyclerView_viewCategoryProducts.setVisibility(View.INVISIBLE);
-                break;
-        }
-    }
 }

@@ -7,13 +7,13 @@
     tools:context=".ui.categories.CategoriesFragment">
 
     <FrameLayout
-        android:id="@+id/frameLayout_categories"
+        android:id="@+id/frameLayout_productsInCategory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible">
 
         <Button
-            android:id="@+id/button_categories_tryAgain"
+            android:id="@+id/button_tryAgain"
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="center_vertical|center_horizontal"

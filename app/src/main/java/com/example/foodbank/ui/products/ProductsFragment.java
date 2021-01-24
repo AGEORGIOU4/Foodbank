@@ -1,5 +1,6 @@
 package com.example.foodbank.ui.products;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -36,14 +38,11 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         View root = inflater.inflate(R.layout.d1_fragment_products, container, false);
-
         // Initialize each products from the db to the productsList
         productsList.clear();
         productsList.addAll(getAllProductsSortedByTimestamp());
 
-        // Recycler View implementation
         setRecyclerView(root);
 
         // Search
@@ -51,28 +50,17 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         return root;
     }
 
-    /*-------------------------------DATABASE-----------------------------------*/
-    List<Product> getAllProductsSortedByTitle() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
+    @Override
+    public void onResume() {
+        hideKeyboard();
+        super.onResume();
     }
 
-    List<Product> getAllProductsSortedByTimestamp() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
+    /*--------------------------------LAYOUT------------------------------------*/
+    public void hideKeyboard() {
+        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
     }
-
-    void insert(Product product) {
-        ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
-    }
-
-    void update(Product note) {
-        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(note);
-    }
-
-    void delete(final Product note) {
-        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(note);
-    }
-
-    /*---------------------------------RECYCLER VIEW-----------------------------------*/
     public void setRecyclerView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_products);
         // Item helper for swipe events
@@ -84,64 +72,22 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         recyclerView.setAdapter(adapter);
     }
 
-    /*------------------------------------SEARCH---------------------------------------*/
-    public void searchItem(View view) {
-    SearchView searchView = view.findViewById(R.id.searchView_products);
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
-            return false;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String newText) {
-            adapter.getFilter().filter(newText);
-            return false;
-        }
-    });
-}
-
-    /*----------------------------------INTERFACES-------------------------------------*/
-    @Override
-    public void itemClicked(View v, int pos, String value) {
-        Intent intent = new Intent(getActivity(), ViewProductActivity.class);
-        intent.putExtra("extra_products_code", value);
-        startActivity(intent);
+    /*-------------------------------DATABASE-----------------------------------*/
+    List<Product> getAllProductsSortedByTitle() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
     }
-
-    @Override
-    public boolean itemLongClicked(View v, int pos, String value) {
-        Snackbar.make(v, "Swipe to delete", Snackbar.LENGTH_SHORT).show();
-        return true;
+    List<Product> getAllProductsSortedByTimestamp() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
     }
-
-    @Override
-    public void onPopupMenuClick(View view, int pos, String value) {
-        Product listItem = productsList.get(pos);
-        PopupMenu popup = new PopupMenu(requireContext(), view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_product_card, popup.getMenu());
-        popup.setOnMenuItemClickListener(item -> {
-            //do your things in each of the following cases
-            if (item.getItemId() == R.id.menu_addToList) {
-                Toast.makeText(requireContext(), "Add to list clicked item " + pos, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            if (item.getItemId() == R.id.menu_viewProduct) {
-                Intent intent = new Intent(getActivity(), ViewProductActivity.class);
-                intent.putExtra("product_barcode_products", value);
-                startActivity(intent);
-                return true;
-            }
-            if (item.getItemId() == R.id.menu_deleteProduct) {
-                deleteItem(pos);
-                return true;
-            }
-            return false;
-        });
-        popup.show();
+    void insert(Product product) {
+        ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
     }
-
+    void update(Product note) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(note);
+    }
+    void delete(final Product note) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(note);
+    }
     void deleteItem(int pos) {
         // Create a temp note if user wants to undo
         Product tmpProduct = productsList.get(pos);
@@ -168,18 +114,71 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         snackbar.show();
     }
 
+    /*--------------------------------SEARCH------------------------------------*/
+    public void searchItem(View view) {
+    SearchView searchView = view.findViewById(R.id.searchView_products);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            adapter.getFilter().filter(newText);
+            return false;
+        }
+    });
+}
+
+    /*--------------------------------------------------------------------------*/
+    @Override
+    public void itemClicked(View v, int pos, String value) {
+        Intent intent = new Intent(getActivity(), ViewProductActivity.class);
+        intent.putExtra("extra_products_code", value);
+        startActivity(intent);
+    }
+    @Override
+    public boolean itemLongClicked(View v, int pos, String value) {
+        Snackbar.make(v, "Swipe to delete", Snackbar.LENGTH_SHORT).show();
+        return true;
+    }
+    @Override
+    public void onPopupMenuClick(View view, int pos, String value) {
+        Product listItem = productsList.get(pos);
+        PopupMenu popup = new PopupMenu(requireContext(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_product_card, popup.getMenu());
+        popup.setOnMenuItemClickListener(item -> {
+            //do your things in each of the following cases
+            if (item.getItemId() == R.id.menu_addToList) {
+                Toast.makeText(requireContext(), "Add to list clicked item " + pos, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (item.getItemId() == R.id.menu_viewProduct) {
+                Intent intent = new Intent(getActivity(), ViewProductActivity.class);
+                intent.putExtra("extra_products_code", value);
+                startActivity(intent);
+                return true;
+            }
+            if (item.getItemId() == R.id.menu_deleteProduct) {
+                deleteItem(pos);
+                return true;
+            }
+            return false;
+        });
+        popup.show();
+    }
     // Delete Item on Swipe
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return true;
         }
-
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int pos = viewHolder.getAdapterPosition();
             deleteItem(pos);
         }
     };
-
 }
