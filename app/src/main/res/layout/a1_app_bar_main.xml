@@ -18,13 +18,8 @@
             android:background="@drawable/action_bar_bc"
             app:popupTheme="@style/Theme.Foodbank.PopupOverlay">
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchButton_switchMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="4dp"/>
         </androidx.appcompat.widget.Toolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/a2_content_main" />

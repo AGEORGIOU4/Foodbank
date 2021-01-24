@@ -82,11 +82,11 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
     }
-    void update(Product note) {
-        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(note);
+    void update(Product product) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().update(product);
     }
-    void delete(final Product note) {
-        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(note);
+    void delete(final Product product) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(product);
     }
     void deleteItem(int pos) {
         // Create a temp note if user wants to undo

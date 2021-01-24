@@ -28,6 +28,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,6 +37,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.foodbank.MainActivity;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.ui.categories.CategoriesFragment;
 import com.example.foodbank.ui.products.Product;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -96,69 +98,9 @@ public class AddProductFragment extends Fragment {
 
     private Vector<Product> productsList = new Vector<>();
 
-    // Getters & Setters
-    public String getInputBarcode() {
-        return inputBarcode;
-    }
-
-    public void setInputBarcode(String inputBarcode) { this.inputBarcode = inputBarcode; }
-
-    public String getCode() { return code; }
-
-    public void setCode(String code) { this.code = code; }
-
-    public String getTitle() { return title; }
-
-    public void setTitle(String title) { this.title = title; }
-
-    public String getNutriScore() { return nutriScore; }
-
-    public void setNutriScore(String nutriScore) { this.nutriScore = nutriScore; }
-
-    public String getNovaGroup() { return novaGroup; }
-
-    public void setNovaGroup(String novaGroup) { this.novaGroup = novaGroup; }
-
-    public String getEcoScore() { return ecoScore; }
-
-    public void setEcoScore(String ecoScore) { this.ecoScore = ecoScore; }
-
-    public String getIngredients() { return ingredients; }
-
-    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
-
-    public String getNutriments() { return nutriments; }
-
-    public void setNutriments(String nutriments) { this.nutriments = nutriments; }
-
-    public String getVegan() { return vegan; }
-
-    public void setVegan(String vegan) { this.vegan = vegan; }
-
-    public String getVegetarian() { return vegetarian; }
-
-    public void setVegetarian(String vegetarian) { this.vegetarian = vegetarian; }
-
-    public String getCategoriesImported() { return categoriesImported; }
-
-    public void setCategoriesImported(String categoriesImported) { this.categoriesImported = categoriesImported; }
-
-    public String getImageUrl() { return imageUrl; }
-
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-    private boolean isIsScanned() {
-        return isScanned;
-    }
-
-    private void setIsScanned(boolean isScanned) { this.isScanned = isScanned; }
-
-    /*------------------------------------------------------------------------------------------------------------*/
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.e1_fragment_add_product, container, false);
-
         // Set product attributes on create
         clearData();
 
@@ -184,6 +126,11 @@ public class AddProductFragment extends Fragment {
         initialiseDetectorsAndSources(root);
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     /*-------------------------------INPUTS--------------------------------------*/
@@ -424,6 +371,9 @@ public class AddProductFragment extends Fragment {
 
         switchLayout(view, INITIAL_STATE);
 
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(AddProductFragment.this).attach(AddProductFragment.this).commit();
+
     }
 
     public void clearData() {
@@ -644,6 +594,63 @@ public class AddProductFragment extends Fragment {
                 button_scanProduct.setVisibility(View.VISIBLE);
         }
     }
+
+    /*----------------------------Getters & Setters-----------------------------*/
+    public String getInputBarcode() {
+        return inputBarcode;
+    }
+
+    public void setInputBarcode(String inputBarcode) { this.inputBarcode = inputBarcode; }
+
+    public String getCode() { return code; }
+
+    public void setCode(String code) { this.code = code; }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public String getNutriScore() { return nutriScore; }
+
+    public void setNutriScore(String nutriScore) { this.nutriScore = nutriScore; }
+
+    public String getNovaGroup() { return novaGroup; }
+
+    public void setNovaGroup(String novaGroup) { this.novaGroup = novaGroup; }
+
+    public String getEcoScore() { return ecoScore; }
+
+    public void setEcoScore(String ecoScore) { this.ecoScore = ecoScore; }
+
+    public String getIngredients() { return ingredients; }
+
+    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
+
+    public String getNutriments() { return nutriments; }
+
+    public void setNutriments(String nutriments) { this.nutriments = nutriments; }
+
+    public String getVegan() { return vegan; }
+
+    public void setVegan(String vegan) { this.vegan = vegan; }
+
+    public String getVegetarian() { return vegetarian; }
+
+    public void setVegetarian(String vegetarian) { this.vegetarian = vegetarian; }
+
+    public String getCategoriesImported() { return categoriesImported; }
+
+    public void setCategoriesImported(String categoriesImported) { this.categoriesImported = categoriesImported; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    private boolean isIsScanned() {
+        return isScanned;
+    }
+
+    private void setIsScanned(boolean isScanned) { this.isScanned = isScanned; }
 }
 
 

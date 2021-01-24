@@ -1,6 +1,5 @@
 package com.example.foodbank.ui.products;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -59,8 +57,7 @@ public class ViewProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Remove Action Bar
-        try { this.getSupportActionBar().hide(); }
-        catch (NullPointerException e) {
+        try { this.getSupportActionBar().hide(); } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -72,7 +69,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         // Get barcode from clicked item
         getExtraData(root);
-        findClickedProduct(root, myProduct);
+        findClickedProduct(root);
 
         // Try again on no connection
         tryAgain(root);
@@ -84,7 +81,7 @@ public class ViewProductActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void findClickedProduct(View view, Product product) {
+    public void findClickedProduct(View view) {
         // Check if the product belongs to user's database (also offline)
         productsList.clear();
         productsList.addAll(getAllProductsSortedByTitle());
@@ -103,6 +100,7 @@ public class ViewProductActivity extends AppCompatActivity {
             barcode = intent.getStringExtra("extra_products_code");
         }
     }
+
     private void switchLayout(int state) {
         // Layout elements
         FrameLayout frameLayout_productsInCategory = findViewById(R.id.frameLayout_productsInCategory);
@@ -180,7 +178,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
                 // Check if the product is not already included on the Database and add it
                 insert(tmpProduct);
-                findClickedProduct(view, tmpProduct);
+                findClickedProduct(view);
                 switchLayout(INITIAL_STATE);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -210,6 +208,7 @@ public class ViewProductActivity extends AppCompatActivity {
         }
         return false;
     }
+
     // Insert product on products db
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
@@ -366,6 +365,7 @@ public class ViewProductActivity extends AppCompatActivity {
         // Set card as visible when data is loaded
         scrollView_viewProduct.setVisibility(View.VISIBLE);
     }
+
     public void tryAgain(View view) {
         Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
         button_categories_tryAgain.setOnClickListener(new View.OnClickListener() {

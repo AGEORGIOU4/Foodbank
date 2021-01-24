@@ -1,12 +1,16 @@
 package com.example.foodbank;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Switch;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -16,11 +20,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.foodbank.ui.favorites.Favorites;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.foodbank.db.SettingsRoomDatabase;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+
+import java.util.List;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,9 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        loadSettings();
         super.onResume();
-        // Switch mode
-        switchMode();
     }
 
     @Override
@@ -77,43 +81,45 @@ public class MainActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public void switchMode() {
-        switchButton_switchMode = findViewById(R.id.switchButton_switchMode);
-        setToggle();
-        switchButton_switchMode.setOnClickListener(v -> {
-            if (switchButton_switchMode.isChecked()) {
-                AppCompatDelegate
-                        .setDefaultNightMode(
-                                AppCompatDelegate
-                                        .MODE_NIGHT_NO);
-            } else {
-                AppCompatDelegate
-                        .setDefaultNightMode(
-                                AppCompatDelegate
-                                        .MODE_NIGHT_YES);
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+        return true;
     }
 
-    public void setToggle() {
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
 
-        switchButton_switchMode = findViewById(R.id.switchButton_switchMode);
+        // menu item click handling
+        if (id == R.id.menu_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        int nightModeFlags =
-                this.getResources().getConfiguration().uiMode &
-                        Configuration.UI_MODE_NIGHT_MASK;
-        switch (nightModeFlags) {
-            case Configuration.UI_MODE_NIGHT_YES:
-                switchButton_switchMode.setChecked(false);
-                break;
+    public void loadSettings() {
+        List<Settings> settings = getSettings();
+        boolean theme = settings.get(0).isDarkMode();
+        System.out.println("theme is " + theme);
 
-            case Configuration.UI_MODE_NIGHT_NO:
-                switchButton_switchMode.setChecked(true);
-                break;
-
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                switchButton_switchMode.setChecked(false);
-                break;
+        if (theme) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
         }
     }
+
+    /*-------------------------------DATABASE-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(this).settingsDao().getSettings();
+    }
+
 }

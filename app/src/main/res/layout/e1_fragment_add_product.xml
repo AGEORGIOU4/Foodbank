@@ -197,8 +197,8 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
         android:backgroundTint="@color/grey_700"
-        android:text="@string/scan_product"
-        android:visibility="invisible" />
+        android:text="@string/scan"
+        android:visibility="visible" />
 
 
     <FrameLayout

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Circular">
         <item name="cornerSize">10%</item>
     </style>
@@ -15,5 +16,11 @@
     <style name="DefaultBackground">
         <item name="android:background">@drawable/main_bg</item>
         <item name="cornerSize">10%</item>
+    </style>
+
+    <!-- This will set the fade in animation on all your activities by default -->
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 </resources>

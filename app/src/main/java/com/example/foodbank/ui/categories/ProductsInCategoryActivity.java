@@ -3,6 +3,7 @@ package com.example.foodbank.ui.categories;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -47,12 +48,19 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     // Control loads
     private boolean isLoaded = false;
+
     public boolean isLoaded() { return isLoaded; }
+
     public void setLoaded(boolean loaded) { isLoaded = loaded; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         setContentView(R.layout.c3_activity_view_products_in_category);
 
@@ -116,6 +124,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     public String getFormedUrl() {
         return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100";
     }
+
     private void handleResponse(final String response) {
         JSONObject jsonObject = null;
         try {
@@ -134,11 +143,13 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
             switchLayout(ERROR_STATE);
         }
     }
+
     private void handleError(VolleyError volleyError) {
         Snackbar.make(recyclerView_viewCategoryProducts, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
         progressDialog.dismiss();
         switchLayout(ERROR_STATE);
     }
+
     public void getResponse() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         // Set up progress bar before call
@@ -174,6 +185,16 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         Intent intent = new Intent(this, ViewProductActivity.class);
         intent.putExtra("extra_products_code", code);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

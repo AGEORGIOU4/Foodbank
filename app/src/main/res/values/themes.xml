@@ -15,6 +15,7 @@
 
         <!-- Customize your theme here. -->
         <item name="android:textColorHint">@color/grey_300</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
 
     </style>
 
@@ -29,6 +30,7 @@
 
 
     <attr name="cardStyle" format="reference" />
+
     <style name="Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="cardStyle">@style/CardView.Dark</item>
     </style>
