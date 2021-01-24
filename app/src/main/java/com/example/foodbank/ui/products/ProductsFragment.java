@@ -40,6 +40,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         View root = inflater.inflate(R.layout.d1_fragment_products, container, false);
 
         // Initialize each products from the db to the productsList
+        productsList.clear();
         productsList.addAll(getAllProductsSortedByTimestamp());
 
         // Recycler View implementation

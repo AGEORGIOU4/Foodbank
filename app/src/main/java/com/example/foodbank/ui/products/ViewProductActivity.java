@@ -61,7 +61,14 @@ public class ViewProductActivity extends AppCompatActivity {
 
         // Get barcode from clicked item
         getExtraData(root);
+        jsonParse(root);
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void getExtraData(View view) {
@@ -70,9 +77,20 @@ public class ViewProductActivity extends AppCompatActivity {
                 intent.getStringExtra("extra_products_code") != null) {
             barcode = intent.getStringExtra("extra_products_code");
         }
-
-        findClickedProduct(view);
     }
+
+    public void findClickedProduct(View view, Product product) {
+        // Check if the product belongs to user's database
+        productsList.clear();
+        productsList.addAll(getAllProductsSortedByTitle());
+        if (checkIfProductIsOnDatabase()) {
+            initializeValuesOnCard(view);
+        } else {
+            insert(product);
+            findClickedProduct(view, product);
+        }
+    }
+
 
     public boolean checkIfProductIsOnDatabase() {
         // Check if the product belongs to user's database
@@ -85,25 +103,16 @@ public class ViewProductActivity extends AppCompatActivity {
         return false;
     }
 
-    public void findClickedProduct(View view) {
-        // Check if the product belongs to user's database
-        productsList.clear();
-        productsList.addAll(getAllProductsSortedByTitle());
-        if (checkIfProductIsOnDatabase()) {
-            initializeValuesOnCard(view);
-        } else {
-            jsonParse(view);
-        }
-    }
 
     private void jsonParse(View view) {
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
         String apiURL = mainURL + barcode;
 
-        setProgressBar();
+
         // The user's input is concatenated with the main URL and the program makes a request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
             try {
+                setProgressBar();
                 JSONObject productObject = response.getJSONObject("product");
                 // Check and get the available data
                 if (productObject.has("product_name"))
@@ -155,16 +164,13 @@ public class ViewProductActivity extends AppCompatActivity {
                         ingredients, nutriments, vegan, vegetarian, categoriesImported, false,
                         System.currentTimeMillis(), imageUrl);
 
-                insert(tmpProduct);
-
                 // Check if the product is not already included on the Database and add it
-                findClickedProduct(view);
-                progressDialog.dismiss();
+                findClickedProduct(view, tmpProduct);
 
+                progressDialog.dismiss();
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
-                ;
                 progressDialog.dismiss();
             }
         }, error -> {
@@ -183,9 +189,7 @@ public class ViewProductActivity extends AppCompatActivity {
     // Insert product on products db
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
-        Toast.makeText(this, "New item added to your products", Toast.LENGTH_LONG).show();
     }
-
 
     /*--------------------------------------------------------------------------*/
     public void setProgressBar() {
@@ -217,87 +221,98 @@ public class ViewProductActivity extends AppCompatActivity {
 
         textView_viewProductTitle.setText(myProduct.getTitle());
 
-        switch (myProduct.getNutriScore()) {
-            case "1":
-            case "A":
-            case "a":
-                imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
-                break;
-            case "2":
-            case "B":
-            case "b":
-                imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
-                break;
-            case "3":
-            case "C":
-            case "c":
-                imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
-                break;
-            case "4":
-            case "D":
-            case "d":
-                imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
-                break;
-            case "5":
-            case "E":
-            case "e":
-                imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
-                break;
-            default:
-                imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_unknown);
-                break;
+        try {
+            switch (myProduct.getNutriScore()) {
+                case "1":
+                case "A":
+                case "a":
+                    imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_a);
+                    break;
+                case "2":
+                case "B":
+                case "b":
+                    imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_b);
+                    break;
+                case "3":
+                case "C":
+                case "c":
+                    imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_c);
+                    break;
+                case "4":
+                case "D":
+                case "d":
+                    imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_d);
+                    break;
+                case "5":
+                case "E":
+                case "e":
+                    imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_e);
+                    break;
+                default:
+                    imageView_viewProductNutriScore.setImageResource(R.drawable.d_img_nutriscore_unknown);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        try {
 
-        switch (myProduct.getEcoScore()) {
-            case "1":
-            case "A":
-            case "a":
-                imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_a);
-                break;
-            case "2":
-            case "B":
-            case "b":
-                imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_b);
-                break;
-            case "3":
-            case "C":
-            case "c":
-                imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_c);
-                break;
-            case "4":
-            case "D":
-            case "d":
-                imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_d);
-                break;
-            default:
-                imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_unknown);
-                break;
+            switch (myProduct.getEcoScore()) {
+                case "1":
+                case "A":
+                case "a":
+                    imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_a);
+                    break;
+                case "2":
+                case "B":
+                case "b":
+                    imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_b);
+                    break;
+                case "3":
+                case "C":
+                case "c":
+                    imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_c);
+                    break;
+                case "4":
+                case "D":
+                case "d":
+                    imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_d);
+                    break;
+                default:
+                    imageView_viewProductEcoScore.setImageResource(R.drawable.d_img_ecoscore_unknown);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        switch (myProduct.getNovaGroup()) {
-            case "1":
-            case "A":
-            case "a":
-                imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_1);
-                break;
-            case "2":
-            case "B":
-            case "b":
-                imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_2);
-                break;
-            case "3":
-            case "C":
-            case "c":
-                imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_3);
-                break;
-            case "4":
-            case "D":
-            case "d":
-                imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_4);
-                break;
-            default:
-                imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_unknown);
-                break;
+        try {
+            switch (myProduct.getNovaGroup()) {
+                case "1":
+                case "A":
+                case "a":
+                    imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_1);
+                    break;
+                case "2":
+                case "B":
+                case "b":
+                    imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_2);
+                    break;
+                case "3":
+                case "C":
+                case "c":
+                    imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_3);
+                    break;
+                case "4":
+                case "D":
+                case "d":
+                    imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_4);
+                    break;
+                default:
+                    imageView_viewNovaGroup.setImageResource(R.drawable.d_img_novagroup_unknown);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (!myProduct.getIngredients().equals("")) {
