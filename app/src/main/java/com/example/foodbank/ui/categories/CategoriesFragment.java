@@ -15,6 +15,7 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.R;
 import com.example.foodbank.db.CategoriesRoomDatabase;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -81,37 +83,46 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
         Button button_categories_tryAgain = root.findViewById(R.id.button_categories_tryAgain);
         button_categories_tryAgain.setOnClickListener(v -> getResponse());
 
+        // Refresh fragment
+        refreshCategories(root);
+
         return root;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     /*-------------------------------RESPONSE-----------------------------------*/
     private void handleResponse(final String response) {
         JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(response);
-            tagsResponse = jsonObject.getString("tags");
-            Category[] categoryArray = new Gson().fromJson(tagsResponse, Category[].class);
-            this.categoriesList.clear();
-            this.categoriesList.addAll(Arrays.asList(categoryArray));
+        int count = 0;
+        int maxTries = 3;
+        while (true) {
+            try {
+                jsonObject = new JSONObject(response);
+                tagsResponse = jsonObject.getString("tags");
+                Category[] categoryArray = new Gson().fromJson(tagsResponse, Category[].class);
+                this.categoriesList.clear();
+                this.categoriesList.addAll(Arrays.asList(categoryArray));
+                arrayAdapter.notifyDataSetChanged();
 
-            arrayAdapter.notifyDataSetChanged();
 
-            progressDialog.dismiss();
-            switchLayout(INITIAL_STATE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            progressDialog.dismiss();
-            switchLayout(INITIAL_STATE);
+                progressDialog.dismiss();
+                switchLayout(INITIAL_STATE);
+                return;
+            } catch (JSONException e) {
+                // handle exception
+                if (++count == maxTries) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                    switchLayout(INITIAL_STATE);
+                }
+            }
+            count++;
         }
     }
 
     private void handleError(VolleyError volleyError) {
-        Snackbar.make(listView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
+        Snackbar snackbar = Snackbar.make(listView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG);
+        snackbar.show();
         progressDialog.dismiss();
         switchLayout(ERROR_STATE);
     }
@@ -171,5 +182,14 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
                 listView_Categories.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+
+    public void refreshCategories(View view) {
+        FloatingActionButton button_categories_refresh = view.findViewById(R.id.button_categories_refresh);
+        button_categories_refresh.bringToFront();
+        button_categories_refresh.setOnClickListener(v -> {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(CategoriesFragment.this).attach(CategoriesFragment.this).commit();
+        });
     }
 }

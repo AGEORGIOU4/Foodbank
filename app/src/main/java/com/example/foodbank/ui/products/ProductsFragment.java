@@ -104,7 +104,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
     @Override
     public void itemClicked(View v, int pos, String value) {
         Intent intent = new Intent(getActivity(), ViewProductActivity.class);
-        intent.putExtra("product_barcode_products", value);
+        intent.putExtra("extra_products_code", value);
         startActivity(intent);
     }
 

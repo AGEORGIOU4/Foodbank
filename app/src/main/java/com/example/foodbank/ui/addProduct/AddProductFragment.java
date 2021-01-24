@@ -57,25 +57,24 @@ public class AddProductFragment extends Fragment {
 
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-
-    // Activity states for switching layouts
-    private static final int INITIAL_STATE = 1001;
-    private static final int PRODUCT_NOT_FOUND_STATE = 1002;
-    private static final int PRODUCT_FOUND_STATE = 1003;
+    private RequestQueue mQueue;
     private int CURRENT_STATE = INITIAL_STATE;
-
-    RequestQueue mQueue;
     private Button button_scanProduct;
     private SurfaceView surfaceView_camera;
     private CameraSource cameraSource;
     private TextView textView_barcodeResult;
     private String barcodeData;
 
+    // Activity states for switching layouts
+    private static final int INITIAL_STATE = 1001;
+    private static final int PRODUCT_NOT_FOUND_STATE = 1002;
+    private static final int PRODUCT_FOUND_STATE = 1003;
+
     // Layout elements
     private ToneGenerator toneGen1;
     private EditText textInput_enterBarcode;
 
-    // Barcode
+    // Barcode variables
     private String inputBarcode;
     private String inputBarcodePutExtra;
 
@@ -284,7 +283,7 @@ public class AddProductFragment extends Fragment {
             }
         }, error -> {
             // If during the request or response an error is occurred, a Snackbar message will pop up
-            Snackbar.make(requireView(), "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
+            Snackbar.make(requireView(), "Something went wrong. Please check your connection", BaseTransientBottomBar.LENGTH_LONG).show();
             switchLayout(view, PRODUCT_NOT_FOUND_STATE);
         });
         mQueue.add(request);
@@ -375,7 +374,7 @@ public class AddProductFragment extends Fragment {
             }
         }, error -> {
             // If during the request or response an error is occurred, a Snackbar message will pop up
-            Snackbar.make(requireView(), "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
+            Snackbar.make(requireView(), "Something went wrong. Please check your connection", BaseTransientBottomBar.LENGTH_LONG).show();
             switchLayout(view, PRODUCT_NOT_FOUND_STATE);
             progressDialog.dismiss();
         });

@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginVertical="2dp"
         app:cardCornerRadius="4dp">
 
@@ -86,8 +87,8 @@
                 android:layout_height="27dp"
                 android:layout_alignParentEnd="true"
                 android:background="@null"
-                android:src="@drawable/ic_action_more_vert"
-                android:contentDescription="@string/pop_up_menu"/>
+                android:contentDescription="@string/pop_up_menu"
+                android:src="@drawable/ic_action_more_vert" />
 
             <CheckBox
                 android:id="@+id/checkBox_star"

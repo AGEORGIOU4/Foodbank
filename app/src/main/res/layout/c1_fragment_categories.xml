@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,20 +21,42 @@
     </FrameLayout>
 
     <SearchView
-        android:layout_marginVertical="10dp"
-        android:layout_marginHorizontal="10dp"
         android:id="@+id/searchView_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:iconifiedByDefault="false">
-    </SearchView>
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        android:iconifiedByDefault="false" />
 
     <ListView
         android:id="@+id/listView_Categories"
+        style="@style/DefaultListViewBackgroundColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchView_categories"
+        android:layout_marginHorizontal="4dp"
         android:layout_marginTop="20dp"
-        android:scrollbars="vertical"/>
+        android:padding="4dp"
+        android:dividerHeight="4.0sp"
+        android:scrollbars="vertical" />
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_categories_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:backgroundTint="@color/cyan_700"
+            android:contentDescription="@string/floating_button"
+            app:srcCompat="@drawable/ic_baseline_refresh_24" />
+
+    </FrameLayout>
 
 </RelativeLayout>

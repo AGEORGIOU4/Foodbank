@@ -1,6 +1,7 @@
 package com.example.foodbank.ui.categories;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.R;
 import com.example.foodbank.ui.products.ProductsAdapter;
+import com.example.foodbank.ui.products.ViewProductActivity;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -64,6 +66,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null && categoryName != null) {
             actionBar.setTitle(categoryName);
+            actionBar.setBackgroundDrawable(getDrawable(R.drawable.action_bar_bc));
         }
 
         // Recycler View implementation
@@ -73,16 +76,6 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
         // Try to get response again
         tryAgainEvent(root);
-
-        // Search
-        searchItem(root);
-
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
     }
 
     /*-------------------------------RESPONSE-----------------------------------*/
@@ -149,27 +142,12 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         recyclerView_viewCategoryProducts.setAdapter(adapter);
     }
 
-    /*------------------------------------SEARCH---------------------------------------*/
-    public void searchItem(View view) {
-        SearchView searchView = view.findViewById(R.id.searchView_categoryProducts);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-    }
-
     /*----------------------------------INTERFACES-------------------------------------*/
     @Override
-    public void itemClicked(View v, int pos, String value) {
+    public void itemClicked(View v, int pos, String code){
+    Intent intent = new Intent(this, ViewProductActivity.class);
+    intent.putExtra("extra_products_code", code);
+    startActivity(intent);
     }
 
     public void tryAgainEvent(View view) {
