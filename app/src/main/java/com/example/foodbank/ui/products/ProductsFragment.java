@@ -52,15 +52,10 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
     @Override
     public void onResume() {
-        hideKeyboard();
         super.onResume();
     }
 
     /*--------------------------------LAYOUT------------------------------------*/
-    public void hideKeyboard() {
-        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
-    }
     public void setRecyclerView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_products);
         // Item helper for swipe events

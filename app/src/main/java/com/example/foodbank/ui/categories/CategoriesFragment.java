@@ -6,17 +6,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,7 +25,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.R;
 import com.example.foodbank.db.CategoriesRoomDatabase;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -37,47 +36,45 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-public class CategoriesFragment extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
+public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, AdapterView.OnItemSelectedListener {
     private static final String SERVICE_URL = "https://world.openfoodfacts.org/categories.json";
-
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
+    // Recycler view
+    private final Vector<Category> categoriesList = new Vector<>();
+    private final Vector<Category> categoriesListMostPopular = new Vector<>();
     String tagsResponse = "";
     // Layout
     AppCompatSpinner spinner_categoriesOptions;
-
-    // Simple list view
-    private List<Category> categoriesList = new Vector<>();
-    private List<Category> tmpCategoriesList = new Vector<>();
+    private RecyclerView recyclerView_Categories;
+    private CategoriesAdapter adapterAPI;
+    private CategoriesAdapter adapterDB;
     private ProgressDialog progressDialog;
-    private ListView listView_Categories;
-    private ArrayAdapter<Category> arrayAdapter;
-
-    // Control api calls
-    private boolean isCalled = false;
-
-    public boolean isCalled() { return isCalled; }
-
-    public void setCalled(boolean called) { isCalled = called; }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.c1_fragment_categories, container, false);
+        recyclerView_Categories = root.findViewById(R.id.recyclerView_categories);
 
-        setCategoriesAdapter(root);
+        // Fetch all categories using API call
+        getResponse();
 
-        // Try again when no connection or load from spinner
-        AppCompatSpinner spinner_categoriesOptions = root.findViewById(R.id.spinner_categoriesOptions);
-        setSpinner(root);
-        tryAgain(root);
+        // Initialize each products from the db to the productsList
+//        categoriesListDB.clear();
+//        categoriesListDB.addAll(getAllCategoriesSortedByProducts());
+
+        // Recycler View
+        setRecyclerView(root);
+        recyclerView_Categories.setAdapter(adapterAPI);
 
         // Search
-        searchCategory(root);
+        searchItem(root);
 
-        // Get API response
-        //getResponse();
+        // Try again when no connection or load from spinner
+        setSpinner(root);
+        tryAgain(root);
 
         return root;
     }
@@ -88,38 +85,30 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
     }
 
     /*--------------------------------LAYOUT------------------------------------*/
-    public void setCategoriesAdapter(View root) {
-        // Simple list view implementation and on click listener actions
-        this.listView_Categories = root.findViewById(R.id.listView_Categories);
-        this.arrayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, categoriesList);
-        listView_Categories.setAdapter(arrayAdapter);
-        listView_Categories.setOnItemClickListener((parent, view, position, id) -> {
-            Category selected = arrayAdapter.getItem(position);
-            String categoryId = selected.getId();
-            String categoryName = selected.getName();
-
-            Intent intent = new Intent(getActivity(), ProductsInCategoryActivity.class);
-            intent.putExtra("selected_item_id", categoryId);
-            intent.putExtra("selected_item_name", categoryName);
-            startActivity(intent);
-        });
-    }
-
     private void switchLayout(int state) {
         // Layout elements
         FrameLayout frameLayout_categories = requireView().findViewById(R.id.frameLayout_productsInCategory);
-        listView_Categories = requireView().findViewById(R.id.listView_Categories);
+        recyclerView_Categories = requireView().findViewById(R.id.recyclerView_categories);
 
         switch (state) {
             case INITIAL_STATE:
                 frameLayout_categories.setVisibility(View.INVISIBLE);
-                listView_Categories.setVisibility(View.VISIBLE);
+                recyclerView_Categories.setVisibility(View.VISIBLE);
                 break;
             case ERROR_STATE:
                 frameLayout_categories.setVisibility(View.VISIBLE);
-                listView_Categories.setVisibility(View.INVISIBLE);
+                recyclerView_Categories.setVisibility(View.INVISIBLE);
                 break;
         }
+    }
+
+    public void setRecyclerView(View view) {
+        recyclerView_Categories = view.findViewById(R.id.recyclerView_categories);
+        recyclerView_Categories.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView_Categories.setLayoutManager(linearLayoutManager);
+        adapterAPI = new CategoriesAdapter(categoriesList, this);
+        adapterDB = new CategoriesAdapter(categoriesListMostPopular, this);
     }
 
     /*-------------------------------RESPONSE-----------------------------------*/
@@ -149,24 +138,33 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
             tagsResponse = jsonObject.getString("tags");
             progressDialog.dismiss();
             switchLayout(INITIAL_STATE);
-            setCalled(true);
         } catch (JSONException e) {
             // handle exception
             e.printStackTrace();
             progressDialog.dismiss();
             switchLayout(ERROR_STATE);
         }
+
         Category[] categoryArray = new Gson().fromJson(tagsResponse, Category[].class);
         this.categoriesList.clear();
         this.categoriesList.addAll(Arrays.asList(categoryArray));
-        this.tmpCategoriesList.addAll(Arrays.asList(categoryArray));
-        arrayAdapter.notifyDataSetChanged();
+        this.categoriesListMostPopular.clear();
+        for (int i = 0; i < 20; i++) {
+            this.categoriesListMostPopular.add(categoryArray[i]);
+        }
+
+        setRecyclerView(getView());
+
+        adapterAPI.notifyDataSetChanged();
+        adapterDB.notifyDataSetChanged();
+
         Snackbar.make(getView(), categoryArray.length + " items loaded", Snackbar.LENGTH_SHORT).show();
         progressDialog.dismiss();
+
     }
 
     private void handleError(VolleyError volleyError) {
-        Snackbar.make(listView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
+        Snackbar.make(recyclerView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
         progressDialog.dismiss();
         switchLayout(ERROR_STATE);
     }
@@ -179,26 +177,48 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
     List<Category> getAllCategoriesSortedByTitle() {
         return CategoriesRoomDatabase.getDatabase(getContext()).categoriesDao().getCategoriesSortedByTitle();
     }
-    /*--------------------------------SEARCH------------------------------------*/
-    public void searchCategory(View root) {
-        SearchView searchView_categories = root.findViewById(R.id.searchView_categories);
-        searchView_categories.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView_categories.setOnQueryTextListener(this);
+
+    /*-------------------------------SPINNER-----------------------------------*/
+    public void setSpinner(View view) {
+        spinner_categoriesOptions = view.findViewById(R.id.spinner_categoriesOptions);
+        String[] spinnerOptions = {"Show all", "Most popular"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
+        spinner_categoriesOptions.setAdapter(spinnerAdapter);
+        spinner_categoriesOptions.setOnItemSelectedListener(this);
+    }
+
+    /*--------------------------------SEARCH-----------------------------------*/
+    public void searchItem(View view) {
+        SearchView searchView = view.findViewById(R.id.searchView_categories);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterAPI.getFilter().filter(newText);
+                adapterDB.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedOption = parent.getItemAtPosition(position).toString();
+        // Set recycler view adapter for each selection
+        if (selectedOption.equals("Show all")) {
+            recyclerView_Categories.setAdapter(adapterAPI);
+
+        } else if (selectedOption.equals("Most popular")) {
+            recyclerView_Categories.setAdapter(adapterDB);
+        }
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        arrayAdapter.getFilter().filter(newText);
-
-        getView();
-        spinner_categoriesOptions.setVisibility(View.INVISIBLE);
-
-        return false;
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
     /*--------------------------------------------------------------------------*/
@@ -210,47 +230,12 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
         });
     }
 
-    /*-------------------------------SPINNER-----------------------------------*/
-    public void setSpinner(View view) {
-        spinner_categoriesOptions = view.findViewById(R.id.spinner_categoriesOptions);
-        String[] spinnerOptions = {"Most popular", "Show all"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
-        spinner_categoriesOptions.setAdapter(spinnerAdapter);
-        spinner_categoriesOptions.setOnItemSelectedListener(this);
-    }
-
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String selectedOption = parent.getItemAtPosition(position).toString();
-
-        if (selectedOption.equals("Show all")) {
-            if (!isCalled()) {
-                getResponse();
-            } else {
-                categoriesList.clear();
-                this.categoriesList.addAll(tmpCategoriesList);
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-        } else if (selectedOption.equals("Most popular")) {
-            if (!isCalled()) {
-                categoriesList.clear();
-                categoriesList.addAll(getAllCategoriesSortedByProducts());
-            } else {
-                categoriesList.clear();
-                for (int i = 0; i < 15; i++) {
-
-                    categoriesList.add(tmpCategoriesList.get(i));
-                }
-            }
-            arrayAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Initialize Categories from DB
-        categoriesList.clear();
-        categoriesList.addAll(getAllCategoriesSortedByProducts());
+    public void itemClicked(View v, int pos, String id, String categoryName, int productNumber) {
+        Intent intent = new Intent(getActivity(), ProductsInCategoryActivity.class);
+        intent.putExtra("selected_item_id", id);
+        intent.putExtra("selected_item_name", categoryName);
+        intent.putExtra("selected_item_total_products", productNumber);
+        startActivity(intent);
     }
 }

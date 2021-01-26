@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:layout_alignParentEnd="true"
-        android:text="1"
         android:layout_margin="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -34,21 +33,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
         android:layout_marginHorizontal="4dp"
         android:layout_below="@id/textView_showPage"
         android:scrollbars="vertical" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
 
 
         <Button
             android:id="@+id/button_previousPage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="start"
             android:layout_marginHorizontal="30dp"
             android:onClick="previousPage"
@@ -58,7 +57,7 @@
         <Button
             android:id="@+id/button_nextPage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="end"
             android:layout_marginHorizontal="30dp"
             android:onClick="nextPage"

@@ -35,15 +35,17 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
-
     // Recycler view
     private final Vector<ProductInCategory> productsList = new Vector<>();
+    // Layout
+    View root;
     TextView textView_showPage;
     private RecyclerView recyclerView_viewCategoryProducts;
     private ProductsInCategoryAdapter adapter;
     // Response
     private String productsResponse = "";
-    private String pages = "";
+    private String numberOfProductsInPage = "";
+    private int totalCategoryProducts = 0;
     private String selectedPage = "1";
     private boolean loadPages = false;
     private String categoryId;
@@ -66,13 +68,14 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setContentView(R.layout.c3_activity_view_products_in_category);
+        setContentView(R.layout.c2_activity_view_products_in_category);
 
-        // Get category id from categories fragment
+        // Get extras from categories fragment
         categoryId = getIntent().getStringExtra("selected_item_id");
         categoryName = getIntent().getStringExtra("selected_item_name");
+        totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 0);
 
-        View root = findViewById(R.id.root);
+        root = findViewById(R.id.root);
         setRecyclerView();
         setActionBar();
 
@@ -137,12 +140,12 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
             jsonObject = new JSONObject(response);
             productsResponse = jsonObject.getString("products");
 
-            if (!loadPages) {
-                pages = jsonObject.getString("page_count");
-                loadPages = true;
-            }
+            numberOfProductsInPage = jsonObject.getString("page_count");
+            loadPages = true;
+
             // Set page indication
-            textView_showPage.setText(selectedPage + "/" + pages);
+            int totalPages = (totalCategoryProducts / 100) + 1;
+            textView_showPage.setText(selectedPage + "/" + totalPages + " page");
 
             // Populate an array with the all the fetched categories
             ProductInCategory[] productArray = new Gson().fromJson(productsResponse, ProductInCategory[].class);
@@ -216,27 +219,29 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     public void previousPage(View view) {
         int page = Integer.parseInt(selectedPage);
+
         if (page > 1) {
             page--;
+            selectedPage = String.valueOf(page);
             getResponse();
         } else {
             // Min number of pages
             page = 1;
+            selectedPage = String.valueOf(page);
         }
-        selectedPage = String.valueOf(page);
-        textView_showPage.setText(selectedPage + "/" + pages);
     }
 
     public void nextPage(View view) {
         int page = Integer.parseInt(selectedPage);
-        if (page < Integer.parseInt(pages)) {
+
+        if (Integer.parseInt(numberOfProductsInPage) == 100) {
             page++;
+            selectedPage = String.valueOf(page);
             getResponse();
         } else {
             // Max number of pages
-            page = Integer.parseInt(pages);
+            page = Integer.parseInt(selectedPage);
+            selectedPage = String.valueOf(page);
         }
-        selectedPage = String.valueOf(page);
-        textView_showPage.setText(selectedPage + "/" + pages);
     }
 }
