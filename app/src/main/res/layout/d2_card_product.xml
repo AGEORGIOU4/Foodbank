@@ -96,7 +96,8 @@
                 android:layout_width="33dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true" />
+                android:layout_below="@id/imageView_popupMenu"
+                android:layout_marginTop="20dp"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

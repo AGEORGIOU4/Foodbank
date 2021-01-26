@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,18 +35,21 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
+
     // Recycler view
     private final Vector<ProductInCategory> productsList = new Vector<>();
-    // Response
-    String productsResponse = "";
-    String categoryId;
-    String categoryName;
+    TextView textView_showPage;
     private RecyclerView recyclerView_viewCategoryProducts;
     private ProductsInCategoryAdapter adapter;
-
+    // Response
+    private String productsResponse = "";
+    private String pages = "";
+    private String selectedPage = "1";
+    private boolean loadPages = false;
+    private String categoryId;
+    private String categoryName;
     // Layout elements
     private ProgressDialog progressDialog;
-
     // Control loads
     private boolean isLoaded = false;
 
@@ -75,7 +79,8 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         // Try again on no connection
         tryAgain(root);
 
-
+        // Pages indication
+        textView_showPage = root.findViewById(R.id.textView_showPage);
     }
 
     @Override
@@ -122,7 +127,8 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     /*----------------------------------RESPONSE--------------------------------------*/
     public String getFormedUrl() {
-        return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100";
+        //?page_size=100
+        return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100&page=" + selectedPage;
     }
 
     private void handleResponse(final String response) {
@@ -130,7 +136,18 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         try {
             jsonObject = new JSONObject(response);
             productsResponse = jsonObject.getString("products");
+
+            if (!loadPages) {
+                pages = jsonObject.getString("page_count");
+                loadPages = true;
+            }
+            // Set page indication
+            textView_showPage.setText(selectedPage + "/" + pages);
+
+            // Populate an array with the all the fetched categories
             ProductInCategory[] productArray = new Gson().fromJson(productsResponse, ProductInCategory[].class);
+
+            // Update the list hence the adapter
             this.productsList.clear();
             this.productsList.addAll(Arrays.asList(productArray));
             adapter.notifyDataSetChanged();
@@ -197,4 +214,29 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         return super.onOptionsItemSelected(item);
     }
 
+    public void previousPage(View view) {
+        int page = Integer.parseInt(selectedPage);
+        if (page > 1) {
+            page--;
+            getResponse();
+        } else {
+            // Min number of pages
+            page = 1;
+        }
+        selectedPage = String.valueOf(page);
+        textView_showPage.setText(selectedPage + "/" + pages);
+    }
+
+    public void nextPage(View view) {
+        int page = Integer.parseInt(selectedPage);
+        if (page < Integer.parseInt(pages)) {
+            page++;
+            getResponse();
+        } else {
+            // Max number of pages
+            page = Integer.parseInt(pages);
+        }
+        selectedPage = String.valueOf(page);
+        textView_showPage.setText(selectedPage + "/" + pages);
+    }
 }

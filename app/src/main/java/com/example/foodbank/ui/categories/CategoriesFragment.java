@@ -176,6 +176,9 @@ public class CategoriesFragment extends Fragment implements SearchView.OnQueryTe
         return CategoriesRoomDatabase.getDatabase(getContext()).categoriesDao().getCategoriesSortedByProducts();
     }
 
+    List<Category> getAllCategoriesSortedByTitle() {
+        return CategoriesRoomDatabase.getDatabase(getContext()).categoriesDao().getCategoriesSortedByTitle();
+    }
     /*--------------------------------SEARCH------------------------------------*/
     public void searchCategory(View root) {
         SearchView searchView_categories = root.findViewById(R.id.searchView_categories);
