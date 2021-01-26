@@ -130,40 +130,67 @@ public class ViewProductActivity extends AppCompatActivity {
                 if (productObject.has("product_name"))
                     title = productObject.getString("product_name");
                 else
-                    title = "unknown";
+                    title = "Unknown";
                 if (productObject.has("nutriscore_grade"))
                     nutriScore = productObject.getString("nutriscore_grade");
                 else
-                    nutriments = "unknown";
+                    nutriments = "Unknown";
                 if (productObject.has("nova_group"))
                     novaGroup = productObject.getString("nova_group");
                 else
-                    novaGroup = "unknown";
+                    novaGroup = "Unknown";
                 if (productObject.has("ecoscore_grade"))
                     ecoScore = productObject.getString("ecoscore_grade");
                 else
-                    ecoScore = "unknown";
+                    ecoScore = "Unknown";
                 if (productObject.has("ingredients_text"))
                     ingredients = productObject.getString("ingredients_text");
                 else
-                    ingredients = "unknown";
+                    ingredients = "Unknown";
 
                 if (productObject.has("nutriments")) {
-                    nutriments = productObject.getString("nutriments");
+                    String originalString = productObject.getString("nutriments");
+
+                    // Modify Nutriments string
+                    StringBuilder originalStringBuild = new StringBuilder();
+                    char tmpChar = ' ';
+
+                    for (int i = 0; i < originalString.length(); i++) {
+                        tmpChar = originalString.charAt(i);
+                        switch (tmpChar) {
+                            case '_':
+                            case '-':
+                                tmpChar = ' ';
+                                break;
+                            case '"':
+                                tmpChar = '\0';
+                                break;
+                            case ',':
+                            case '{':
+                            case '}':
+                                tmpChar = '\n';
+                                break;
+                            default:
+                                tmpChar = originalString.charAt(i);
+                                break;
+                        }
+                        originalStringBuild.append(tmpChar);
+                    }
+                    nutriments = originalStringBuild.toString();
                 } else
-                    nutriments = "unknown";
+                    nutriments = "Unknown";
                 if (productObject.has("vegan"))
                     vegan = productObject.getString("vegan");
                 else
-                    vegan = "unknown";
+                    vegan = "Unknown";
                 if (productObject.has("vegetarian"))
                     vegetarian = productObject.getString("vegetarian");
                 else
-                    vegetarian = "unknown";
+                    vegetarian = "Unknown";
                 if (productObject.has("categories_imported"))
                     categoriesImported = productObject.getString("categories_imported");
                 else
-                    categoriesImported = "unknown";
+                    categoriesImported = "Unknown";
 
                 // Set default image if not found
                 if (productObject.has("image_front_small_url")) {
@@ -368,12 +395,9 @@ public class ViewProductActivity extends AppCompatActivity {
 
     public void tryAgain(View view) {
         Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
-        button_categories_tryAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                startActivity(getIntent());
-            }
+        button_categories_tryAgain.setOnClickListener(v -> {
+            finish();
+            startActivity(getIntent());
         });
     }
 }

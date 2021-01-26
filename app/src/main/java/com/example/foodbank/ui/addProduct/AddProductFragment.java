@@ -37,7 +37,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.foodbank.MainActivity;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
-import com.example.foodbank.ui.categories.CategoriesFragment;
 import com.example.foodbank.ui.products.Product;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -59,6 +58,10 @@ public class AddProductFragment extends Fragment {
 
     // QR Code Scanner Elements
     private static final int REQUEST_CAMERA_PERMISSION = 201;
+    // Activity states for switching layouts
+    private static final int INITIAL_STATE = 1001;
+    private static final int PRODUCT_NOT_FOUND_STATE = 1002;
+    private static final int PRODUCT_FOUND_STATE = 1003;
     private RequestQueue mQueue;
     private int CURRENT_STATE = INITIAL_STATE;
     private Button button_scanProduct;
@@ -66,12 +69,6 @@ public class AddProductFragment extends Fragment {
     private CameraSource cameraSource;
     private TextView textView_barcodeResult;
     private String barcodeData;
-
-    // Activity states for switching layouts
-    private static final int INITIAL_STATE = 1001;
-    private static final int PRODUCT_NOT_FOUND_STATE = 1002;
-    private static final int PRODUCT_FOUND_STATE = 1003;
-
     // Layout elements
     private ToneGenerator toneGen1;
     private EditText textInput_enterBarcode;
@@ -263,36 +260,63 @@ public class AddProductFragment extends Fragment {
                 if (productObject.has("nutriscore_grade"))
                     setNutriScore(productObject.getString("nutriscore_grade"));
                 else
-                    setNutriScore("unknown");
+                    setNutriScore("Unknown");
                 if (productObject.has("nova_group"))
                     setNovaGroup(productObject.getString("nova_group"));
                 else
-                    setNovaGroup("unknown");
+                    setNovaGroup("Unknown");
                 if (productObject.has("ecoscore_grade"))
                     setEcoScore(productObject.getString("ecoscore_grade"));
                 else
-                    setEcoScore("unknown");
+                    setEcoScore("Unknown");
                 if (productObject.has("ingredients_text"))
                     setIngredients(productObject.getString("ingredients_text"));
                 else
-                    setIngredients("unknown");
+                    setIngredients("Unknown");
 
                 if (productObject.has("nutriments")) {
-                    setNutriments(productObject.getString("nutriments"));
+                    String originalString = productObject.getString("nutriments");
+
+                    // Modify Nutriments string
+                    StringBuilder originalStringBuild = new StringBuilder();
+                    char tmpChar = ' ';
+
+                    for (int i = 0; i < originalString.length(); i++) {
+                        tmpChar = originalString.charAt(i);
+                        switch (tmpChar) {
+                            case '_':
+                            case '-':
+                                tmpChar = ' ';
+                                break;
+                            case '"':
+                                tmpChar = '\0';
+                                break;
+                            case ',':
+                            case '{':
+                            case '}':
+                                tmpChar = '\n';
+                                break;
+                            default:
+                                tmpChar = originalString.charAt(i);
+                                break;
+                        }
+                        originalStringBuild.append(tmpChar);
+                    }
+                    setNutriments(originalStringBuild.toString());
                 } else
-                    setNutriments("unknown");
+                    setNutriments("Unknown");
                 if (productObject.has("vegan"))
                     setVegan(productObject.getString("vegan"));
                 else
-                    setVegan("unknown");
+                    setVegan("Unknown");
                 if (productObject.has("vegetarian"))
                     setVegetarian(productObject.getString("vegetarian"));
                 else
-                    setVegetarian("unknown");
+                    setVegetarian("Unknown");
                 if (productObject.has("categories_imported"))
                     setCategoriesImported(productObject.getString("categories_imported"));
                 else
-                    setCategoriesImported("unknown");
+                    setCategoriesImported("Unknown");
 
                 // Set default image if not found
                 if (productObject.has("image_front_small_url")) {

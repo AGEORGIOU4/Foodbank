@@ -65,11 +65,17 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
         }
     }
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         ProductInCategory listItem = listItems.get(position);
 
         String code = listItem.getCode();
-        String title = listItem.getProduct_name();
+        String title;
+        // Capitalize First letter
+        if(listItem.getProduct_name() != null && !listItem.getProduct_name().equals("")) {
+            title = listItem.getProduct_name().substring(0, 1).toUpperCase() + listItem.getProduct_name().substring(1);
+        } else {
+            title = "Unknown";
+        }
         String nutriScore = listItem.getNutriscore_grade();
         String novaGroup = listItem.getNova_group();
         String ecoScore = listItem.getEcoscore_grade();
