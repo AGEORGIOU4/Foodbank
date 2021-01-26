@@ -20,50 +20,58 @@
             android:text="@string/try_again" />
     </FrameLayout>
 
+    <SearchView
+        android:id="@+id/searchView_productsInCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        android:iconifiedByDefault="false" />
+
     <TextView
         android:id="@+id/textView_showPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:layout_below="@id/searchView_productsInCategories"
         android:layout_alignParentEnd="true"
-        android:layout_margin="10dp"/>
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_viewCategoryProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
         android:layout_marginHorizontal="4dp"
         android:layout_below="@id/textView_showPage"
         android:scrollbars="vertical" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom|end"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="10dp">
 
         <Button
             android:id="@+id/button_previousPage"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="50dp"
-            android:layout_gravity="start"
-            android:layout_marginHorizontal="30dp"
             android:onClick="previousPage"
-            android:text="@string/previousPage"
+            android:text="@string/arrow"
+            android:rotation="180"
             android:backgroundTint="@color/cyan_200"/>
 
         <Button
             android:id="@+id/button_nextPage"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="50dp"
-            android:layout_gravity="end"
-            android:layout_marginHorizontal="30dp"
             android:onClick="nextPage"
-            android:text="@string/nextPage"
+            android:text="@string/arrow"
             android:backgroundTint="@color/cyan_200"/>
-    </FrameLayout>
-
+        </LinearLayout>
 </RelativeLayout>
 

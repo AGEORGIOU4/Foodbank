@@ -34,18 +34,6 @@
         android:layout_below="@id/searchView_categories"
         android:layout_alignParentEnd="true" />
 
-<!--    <ListView
-        android:id="@+id/listView_Categories"
-        style="@style/DefaultListViewBackgroundColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/spinner_categoriesOptions"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="10dp"
-        android:dividerHeight="4.0sp"
-        android:padding="4dp"
-        android:scrollbars="vertical" />-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_categories"
         android:layout_width="match_parent"

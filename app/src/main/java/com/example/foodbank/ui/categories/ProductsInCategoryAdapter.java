@@ -21,9 +21,39 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Vector;
 
-public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCategoryAdapter.ViewHolder> {
+public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCategoryAdapter.ViewHolder> implements Filterable {
 
     private Vector<ProductInCategory> listItems;
+    private Vector<ProductInCategory> listItemsAll;
+
+    Filter filter = new Filter() {
+        // run on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            Vector<ProductInCategory> filteredList = new Vector<>();
+
+            if (charSequence.toString().isEmpty()) {
+                filteredList.addAll(listItemsAll);
+            } else {
+                for (ProductInCategory productInCategory : listItemsAll) {
+                    if (productInCategory.getProduct_name().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(productInCategory);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+            return filterResults;
+        }
+
+        // run on background thread
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults filterResults) {
+            listItems.clear();
+            listItems.addAll((Collection<? extends ProductInCategory>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     private Context context;
     private OnItemClickListener onItemClickListener;
@@ -32,8 +62,10 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
                                      OnItemClickListener onItemClickListener) {
         this.context = context.getApplicationContext();
         this.listItems = listItems;
+        this.listItemsAll = new Vector<>(listItems);
         this.onItemClickListener = onItemClickListener;
     }
+
     // Create new views (invoked by the layout manager)
     @NotNull
     @Override
@@ -44,26 +76,11 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
         return new ViewHolder(v);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
-        public ImageView imageView_productImage;
-        public TextView textView_title;
-        public ImageView imageView_nutriScore;
-        public ImageView imageView_ecoScore;
-        public ImageView imageView_novaGroup;
-        public CheckBox checkBox_star;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
-            this.textView_title = itemView.findViewById(R.id.textView_title);
-            this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
-            this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
-            this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
-
-            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
-        }
+    @Override
+    public Filter getFilter() {
+        return filter;
     }
+
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         ProductInCategory listItem = listItems.get(position);
@@ -71,7 +88,7 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
         String code = listItem.getCode();
         String title;
         // Capitalize First letter
-        if(listItem.getProduct_name() != null && !listItem.getProduct_name().equals("")) {
+        if (listItem.getProduct_name() != null && !listItem.getProduct_name().equals("")) {
             title = listItem.getProduct_name().substring(0, 1).toUpperCase() + listItem.getProduct_name().substring(1);
         } else {
             title = "Unknown";
@@ -229,6 +246,27 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
 
     public interface OnItemClickListener {
         void itemClicked(View v, int pos, String code);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        // Each products item has an image, a title, nutri-score, eco-score, nova-group, pop up menu and star
+        public ImageView imageView_productImage;
+        public TextView textView_title;
+        public ImageView imageView_nutriScore;
+        public ImageView imageView_ecoScore;
+        public ImageView imageView_novaGroup;
+        public CheckBox checkBox_star;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.imageView_productImage = itemView.findViewById(R.id.imageView_productImage);
+            this.textView_title = itemView.findViewById(R.id.textView_title);
+            this.imageView_nutriScore = itemView.findViewById(R.id.imageView_nutriScore);
+            this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
+            this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
+
+            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
+        }
     }
 }
 

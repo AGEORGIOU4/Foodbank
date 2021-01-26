@@ -50,7 +50,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
             notifyDataSetChanged();
         }
     };
-    private Context context;
+
     private OnItemClickListener onItemClickListener;
 
     public CategoriesAdapter(final Vector<Category> listItems, OnItemClickListener onItemClickListener) {

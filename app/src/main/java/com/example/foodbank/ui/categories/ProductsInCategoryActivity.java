@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -35,49 +36,49 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
+
     // Recycler view
     private final Vector<ProductInCategory> productsList = new Vector<>();
+    private RecyclerView recyclerView_viewCategoryProducts;
+    private ProductsInCategoryAdapter adapter;
+
     // Layout
     View root;
     TextView textView_showPage;
-    private RecyclerView recyclerView_viewCategoryProducts;
-    private ProductsInCategoryAdapter adapter;
+    private ProgressDialog progressDialog;
+
     // Response
     private String productsResponse = "";
     private String numberOfProductsInPage = "";
     private int totalCategoryProducts = 0;
     private String selectedPage = "1";
-    private boolean loadPages = false;
+
+    // Passed attributes
     private String categoryId;
     private String categoryName;
-    // Layout elements
-    private ProgressDialog progressDialog;
-    // Control loads
-    private boolean isLoaded = false;
-
-    public boolean isLoaded() { return isLoaded; }
-
-    public void setLoaded(boolean loaded) { isLoaded = loaded; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        setContentView(R.layout.c2_activity_view_products_in_category);
+        setContentView(R.layout.c2_activity_products_in_category);
+        setActionBar();
 
         // Get extras from categories fragment
         categoryId = getIntent().getStringExtra("selected_item_id");
         categoryName = getIntent().getStringExtra("selected_item_name");
         totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 0);
 
+
         root = findViewById(R.id.root);
+        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
+
+        // Fetch all products using API call
+        getResponse();
+
         setRecyclerView();
-        setActionBar();
+
+        // Search
+        searchItem(root);
 
         // Try again on no connection
         tryAgain(root);
@@ -88,7 +89,6 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     @Override
     protected void onResume() {
-        if (!isLoaded()) { getResponse();}
         super.onResume();
     }
 
@@ -96,19 +96,10 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     public void setActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null && categoryName != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(categoryName);
             actionBar.setBackgroundDrawable(getDrawable(R.drawable.action_bar_bc));
         }
-    }
-
-    public void setRecyclerView() {
-        this.recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
-        // Item helper for swipe events
-        recyclerView_viewCategoryProducts.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView_viewCategoryProducts.setLayoutManager(linearLayoutManager);
-        this.adapter = new ProductsInCategoryAdapter(this, productsList, this);
-        recyclerView_viewCategoryProducts.setAdapter(adapter);
     }
 
     private void switchLayout(int state) {
@@ -128,10 +119,38 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         }
     }
 
+    public void setRecyclerView() {
+        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
+        recyclerView_viewCategoryProducts.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView_viewCategoryProducts.setLayoutManager(linearLayoutManager);
+        adapter = new ProductsInCategoryAdapter(this, productsList, this);
+    }
+
     /*----------------------------------RESPONSE--------------------------------------*/
     public String getFormedUrl() {
         //?page_size=100
         return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100&page=" + selectedPage;
+    }
+
+    public void getResponse() {
+        // Set up progress bar before call
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Loading....");
+        progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // Show it
+        progressDialog.show();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        final StringRequest request = new StringRequest(
+                Request.Method.GET,
+                getFormedUrl(),
+                this::handleResponse, // method reference, equivalent to: response -> handleResponse(response)
+                this::handleError); // method reference, equivalent to: error -> handleError(error)
+        requestQueue.add(request);
     }
 
     private void handleResponse(final String response) {
@@ -139,24 +158,24 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         try {
             jsonObject = new JSONObject(response);
             productsResponse = jsonObject.getString("products");
-
             numberOfProductsInPage = jsonObject.getString("page_count");
-            loadPages = true;
-
+            //loadPages = true;
             // Set page indication
             int totalPages = (totalCategoryProducts / 100) + 1;
             textView_showPage.setText(selectedPage + "/" + totalPages + " page");
 
             // Populate an array with the all the fetched categories
             ProductInCategory[] productArray = new Gson().fromJson(productsResponse, ProductInCategory[].class);
-
-            // Update the list hence the adapter
             this.productsList.clear();
             this.productsList.addAll(Arrays.asList(productArray));
+
+            // Recycler View
+            setRecyclerView();
+
             adapter.notifyDataSetChanged();
+            recyclerView_viewCategoryProducts.setAdapter(adapter);
 
             progressDialog.dismiss();
-            switchLayout(INITIAL_STATE);
         } catch (JSONException e) {
             e.printStackTrace();
             progressDialog.dismiss();
@@ -170,52 +189,24 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         switchLayout(ERROR_STATE);
     }
 
-    public void getResponse() {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        // Set up progress bar before call
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMax(100);
-        progressDialog.setMessage("Loading....");
-        progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // Show it
-        progressDialog.show();
+    /*--------------------------------SEARCH-----------------------------------*/
+    public void searchItem(View view) {
+        SearchView searchView = view.findViewById(R.id.searchView_productsInCategories);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-        final StringRequest request = new StringRequest(
-                Request.Method.GET,
-                getFormedUrl(),
-                this::handleResponse, // method reference, equivalent to: response -> handleResponse(response)
-                this::handleError); // method reference, equivalent to: error -> handleError(error)
-
-        requestQueue.add(request);
-        setLoaded(true);
-    }
-
-    /*------------------------------------------------------------------------------------*/
-    public void tryAgain(View view) {
-        Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
-        button_categories_tryAgain.setOnClickListener(v -> {
-            setLoaded(false);
-            getResponse();
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
         });
     }
 
-    @Override
-    public void itemClicked(View v, int pos, String code) {
-        Intent intent = new Intent(this, ViewProductActivity.class);
-        intent.putExtra("extra_products_code", code);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    /*------------------------------------------------------------------------------------*/
 
     public void previousPage(View view) {
         int page = Integer.parseInt(selectedPage);
@@ -243,5 +234,28 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
             page = Integer.parseInt(selectedPage);
             selectedPage = String.valueOf(page);
         }
+    }
+
+    public void tryAgain(View view) {
+        Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
+        button_categories_tryAgain.setOnClickListener(v -> {
+            getResponse();
+        });
+    }
+    @Override
+    public void itemClicked(View v, int pos, String code) {
+        Intent intent = new Intent(this, ViewProductActivity.class);
+        intent.putExtra("extra_products_code", code);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

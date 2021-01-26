@@ -61,13 +61,8 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         // Fetch all categories using API call
         getResponse();
 
-        // Initialize each products from the db to the productsList
-//        categoriesListDB.clear();
-//        categoriesListDB.addAll(getAllCategoriesSortedByProducts());
-
         // Recycler View
         setRecyclerView(root);
-        recyclerView_Categories.setAdapter(adapterAPI);
 
         // Search
         searchItem(root);
@@ -148,14 +143,18 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         Category[] categoryArray = new Gson().fromJson(tagsResponse, Category[].class);
         this.categoriesList.clear();
         this.categoriesList.addAll(Arrays.asList(categoryArray));
+
         this.categoriesListMostPopular.clear();
         for (int i = 0; i < 20; i++) {
             this.categoriesListMostPopular.add(categoryArray[i]);
         }
 
+        // Recycler View
         setRecyclerView(getView());
 
         adapterAPI.notifyDataSetChanged();
+        recyclerView_Categories.setAdapter(adapterAPI);
+
         adapterDB.notifyDataSetChanged();
 
         Snackbar.make(getView(), categoryArray.length + " items loaded", Snackbar.LENGTH_SHORT).show();
@@ -205,6 +204,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         });
     }
 
+    // Spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String selectedOption = parent.getItemAtPosition(position).toString();
