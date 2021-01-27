@@ -58,7 +58,7 @@ public class EditProductActivity extends AppCompatActivity {
         Intent intent = getIntent();
         edited_Title = intent.getStringExtra("clicked_item_title");
 
-        if (intent.getStringExtra("clicked_item_nutri_score").toUpperCase().equals("UNKNOWN"))
+            if (intent.getStringExtra("clicked_item_nutri_score").toUpperCase().equals("UNKNOWN"))
             edited_NutriScore = "-";
         else
             edited_NutriScore = intent.getStringExtra("clicked_item_nutri_score").toUpperCase();

@@ -38,19 +38,23 @@ import java.util.Vector;
 
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, AdapterView.OnItemSelectedListener {
     private static final String SERVICE_URL = "https://world.openfoodfacts.org/categories.json";
+
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
+
     // Recycler view
+    private RecyclerView recyclerView_Categories;
     private final Vector<Category> categoriesList = new Vector<>();
     private final Vector<Category> categoriesListMostPopular = new Vector<>();
-    String tagsResponse = "";
-    // Layout
-    AppCompatSpinner spinner_categoriesOptions;
-    private RecyclerView recyclerView_Categories;
     private CategoriesAdapter adapterAPI;
     private CategoriesAdapter adapterDB;
+
+    // Layout
+    AppCompatSpinner spinner_categoriesOptions;
     private ProgressDialog progressDialog;
+
+    String tagsResponse = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,9 +71,10 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         // Search
         searchItem(root);
 
-        // Try again when no connection or load from spinner
-        setSpinner(root);
+        // Try again when no connection
         tryAgain(root);
+
+        setSpinner(root);
 
         return root;
     }
@@ -185,6 +190,22 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         spinner_categoriesOptions.setAdapter(spinnerAdapter);
         spinner_categoriesOptions.setOnItemSelectedListener(this);
     }
+    // Spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedOption = parent.getItemAtPosition(position).toString();
+        // Set recycler view adapter for each selection
+        if (selectedOption.equals("Show all")) {
+            recyclerView_Categories.setAdapter(adapterAPI);
+
+        } else if (selectedOption.equals("Most popular")) {
+            recyclerView_Categories.setAdapter(adapterDB);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
 
     /*--------------------------------SEARCH-----------------------------------*/
     public void searchItem(View view) {
@@ -204,21 +225,16 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         });
     }
 
-    // Spinner
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String selectedOption = parent.getItemAtPosition(position).toString();
-        // Set recycler view adapter for each selection
-        if (selectedOption.equals("Show all")) {
-            recyclerView_Categories.setAdapter(adapterAPI);
 
-        } else if (selectedOption.equals("Most popular")) {
-            recyclerView_Categories.setAdapter(adapterDB);
-        }
-    }
 
+    /*-----------------------------INTERFACES----------------------------------*/
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void itemClicked(View v, int pos, String id, String categoryName, int productNumber) {
+        Intent intent = new Intent(getActivity(), ProductsInCategoryActivity.class);
+        intent.putExtra("selected_item_id", id);
+        intent.putExtra("selected_item_name", categoryName);
+        intent.putExtra("selected_item_total_products", productNumber);
+        startActivity(intent);
     }
 
     /*--------------------------------------------------------------------------*/
@@ -228,14 +244,5 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         button_categories_tryAgain.setOnClickListener(v -> {
             getResponse();
         });
-    }
-
-    @Override
-    public void itemClicked(View v, int pos, String id, String categoryName, int productNumber) {
-        Intent intent = new Intent(getActivity(), ProductsInCategoryActivity.class);
-        intent.putExtra("selected_item_id", id);
-        intent.putExtra("selected_item_name", categoryName);
-        intent.putExtra("selected_item_total_products", productNumber);
-        startActivity(intent);
     }
 }

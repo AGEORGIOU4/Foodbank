@@ -6,10 +6,13 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -21,7 +24,7 @@ import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.ui.products.EditProductActivity;
 import com.example.foodbank.ui.products.Product;
-import com.example.foodbank.ui.products.ProductsAdapter;
+import com.example.foodbank.ui.products.MyProductsAdapter;
 import com.example.foodbank.ui.products.ViewProductActivity;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,32 +32,82 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 
-public class FavoritesFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
-        ProductsAdapter.OnActionBarMenuClickListener, ProductsAdapter.OnStarClickListener {
+public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnItemClickListener, MyProductsAdapter.OnItemLongClickListener,
+        MyProductsAdapter.OnActionBarMenuClickListener, MyProductsAdapter.OnStarClickListener,
+        AdapterView.OnItemSelectedListener {
+
     // Recycler View
     private final Vector<Product> productsList = new Vector<>();
-    private ProductsAdapter adapter;
+    private MyProductsAdapter adapter;
+    RecyclerView recyclerView;
+
+    // Layout
+    AppCompatSpinner spinner_productsOptions;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.d1_fragment_products, container, false);
+        View root = inflater.inflate(R.layout.d1_fragment_my_products, container, false);
 
         // Initialize each products from the db to the productsList
         productsList.clear();
-        productsList.addAll(getProductsFavorites());
+        productsList.addAll(getFavoriteProductsSortedByTimestamp());
 
         setRecyclerView(root);
 
         // Search
         searchItem(root);
 
+        setSpinner(root);
+
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        // Initialize each products from the db to the productsList
+        productsList.clear();
+        productsList.addAll(getFavoriteProductsSortedByTimestamp());
+        adapter.notifyDataSetChanged();
+
+        super.onResume();
+    }
+
+    /*--------------------------------LAYOUT------------------------------------*/
+    public void setRecyclerView(View view) {
+        recyclerView = view.findViewById(R.id.recyclerView_products);
+        // Item helper for swipe events
+        new ItemTouchHelper((itemTouchHelperCallback)).attachToRecyclerView(recyclerView);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new MyProductsAdapter(productsList, this, this, this, this);
+        recyclerView.setAdapter(adapter);
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
     List<Product> getProductsFavorites() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsFavorites();
+    }
+
+    List<Product> getFavoriteProductsSortedByTimestamp() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProductsSortedByTimestamp();
+    }
+
+    List<Product> getFavoriteProductsSortedByTitle() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProductsSortedByTitle();
+    }
+
+    List<Product> getFavoriteProductsSortedByNutriscore() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProductsSortedByNutriscore();
+    }
+
+    List<Product> getFavoriteProductsSortedByEcoscore() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProductsSortedByEcoscore();
+    }
+
+    List<Product> getFavoriteProductsSortedByNovaGroup() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProductsSortedByNovaGroup();
     }
 
     void insert(Product product) {
@@ -95,18 +148,6 @@ public class FavoritesFragment extends Fragment implements ProductsAdapter.OnIte
         snackbar.show();
     }
 
-    /*--------------------------------LAYOUT------------------------------------*/
-    public void setRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_products);
-        // Item helper for swipe events
-        new ItemTouchHelper((itemTouchHelperCallback)).attachToRecyclerView(recyclerView);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsAdapter(productsList, this, this, this, this);
-        recyclerView.setAdapter(adapter);
-    }
-
     /*--------------------------------SEARCH------------------------------------*/
     public void searchItem(View view) {
         SearchView searchView = view.findViewById(R.id.searchView_products);
@@ -124,7 +165,49 @@ public class FavoritesFragment extends Fragment implements ProductsAdapter.OnIte
         });
     }
 
+    /*-------------------------------SPINNER-----------------------------------*/
+    public void setSpinner(View view) {
+        spinner_productsOptions = view.findViewById(R.id.spinner_productsOptions);
+        String[] spinnerOptions = {"Date Added", "Title", "Nutriscore", "Ecoscore", "Novagroup"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
+        spinner_productsOptions.setAdapter(spinnerAdapter);
+        spinner_productsOptions.setOnItemSelectedListener(this);
+    }
 
+    // Spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedOption = parent.getItemAtPosition(position).toString();
+        // Set recycler view adapter for each selection
+        if (selectedOption.equals("Date Added")) {
+            productsList.clear();
+            productsList.addAll(getFavoriteProductsSortedByTimestamp());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Title")) {
+            productsList.clear();
+            productsList.addAll(getFavoriteProductsSortedByTitle());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Nutriscore")) {
+            productsList.clear();
+            productsList.addAll(getFavoriteProductsSortedByNutriscore());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Ecoscore")) {
+            productsList.clear();
+            productsList.addAll(getFavoriteProductsSortedByEcoscore());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Novagroup")) {
+            productsList.clear();
+            productsList.addAll(getFavoriteProductsSortedByNovaGroup());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+
+    /*-----------------------------INTERFACES----------------------------------*/
     // Delete Item on Swipe
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
@@ -137,7 +220,7 @@ public class FavoritesFragment extends Fragment implements ProductsAdapter.OnIte
             int pos = viewHolder.getAdapterPosition();
 
             productsList.get(pos).setStarred(false);
-            Toast.makeText(requireContext(), "Removed from favorites!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Removed from favorites", Toast.LENGTH_SHORT).show();
             update(productsList.get(pos));
             productsList.clear();
             productsList.addAll(getProductsFavorites());

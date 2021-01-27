@@ -23,14 +23,36 @@ public interface ProductsDao {
     @Query("SELECT * FROM products ORDER BY title ASC")
     List<Product> getProductsSortedByTitle();
 
-    @Query("SELECT * FROM products ORDER BY nutriScore DESC")
-    List<Product> getProductsSortedByGrade();
+    @Query("SELECT * FROM products ORDER BY nutriScore ASC")
+    List<Product> getProductsSortedByNutriscore();
+
+    @Query("SELECT * FROM products ORDER BY ecoScore ASC")
+    List<Product> getProductsSortedByEcoscore();
+
+    @Query("SELECT * FROM products ORDER BY novaGroup ASC")
+    List<Product> getProductsSortedByNovaGroup();
 
     @Query("SELECT * FROM products ORDER BY timestamp DESC")
     List<Product> getProductsSortedByTimestamp();
 
     @Query("SELECT * FROM products WHERE starred IS 1")
     List<Product> getProductsFavorites();
+
+    @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY title ASC")
+    List<Product> getFavoriteProductsSortedByTitle();
+
+    @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY nutriScore ASC")
+    List<Product> getFavoriteProductsSortedByNutriscore();
+
+    @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY ecoScore ASC")
+    List<Product> getFavoriteProductsSortedByEcoscore();
+
+    @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY novaGroup ASC")
+    List<Product> getFavoriteProductsSortedByNovaGroup();
+
+    @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY timestamp DESC")
+    List<Product> getFavoriteProductsSortedByTimestamp();
+
 
     @Delete
     void delete(Product product);

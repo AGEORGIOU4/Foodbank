@@ -10,7 +10,7 @@
     <string name="action_settings">Settings</string>
     <string name="menu_home">Home</string>
     <string name="menu_categories">Categories</string>
-    <string name="menu_products">Products</string>
+    <string name="menu_products">My Products</string>
     <string name="menu_add_product">Add Product</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_healthy">Healthy</string>
@@ -19,46 +19,51 @@
     <string name="nav_lists_title">Lists</string>
     <string name="nav_social_media_title">Social Media</string>
 
+    <!--Action Bar-->
     <string name="title_activity_bottom_navigation">MainActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="settings">Settings</string>
+    <string name="category">Category</string>
+
+    <string name="foodbank_cover">foodbank cover</string>
+
+    <!--Notifications-->
     <string name="trouble_scanning_enter_barcode">Trouble Scanning? Enter barcode</string>
     <string name="align_the_bar_code_within_frame_to_scan_the_product">Align the Bar Code within frame to scan the product</string>
+
+    <!--General-->
+    <string name="OK">OK</string>
+    <string name="arrow">V</string>
     <string name="ok">OK</string>
-    <string name="foodbank_cover">foodbank cover</string>
-    <string name="nova_4">Nova: 4</string>
-    <string name="add_product">ADD PRODUCT</string>
-    <string name="floating_button">floating button</string>
-    <string name="category">CATEGORY</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!--Buttons-->
+    <string name="add_product">Add Product</string>
     <string name="add_to_list">Add to List</string>
+    <string name="try_again">Try again</string>
     <string name="pop_up_menu">Pop up Menu</string>
     <string name="scan_product">Scan Again</string>
-    <string name="barcode_text">Barcode Text</string>
+    <string name="previousPage"><![CDATA[<]]></string>
+    <string name="nextPage"><![CDATA[>]]></string>
     <string name="view_product">View Product</string>
     <string name="edit_text">Edit Text</string>
-    <string name="try_again">TRY AGAIN</string>
     <string name="delete">Delete</string>
     <string name="Edit">Edit</string>
+    <string name="refresh">Refresh</string>
+    <string name="scan">Scan</string>
+
+    <!--Product Card-->
     <string name="barcode">Barcode</string>
+    <string name="title">Title</string>
     <string name="ingredients">Ingredients</string>
     <string name="nutriments">Nutriments</string>
     <string name="vegan">Vegan</string>
     <string name="vegetarian">Vegetarian</string>
     <string name="categories">Categories</string>
-    <string name="scan">Scan</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="settings">Settings</string>
-    <string name="view_more">VIEW MORE</string>
-    <string name="previousPage"><![CDATA[<]]></string>
-    <string name="nextPage"><![CDATA[>]]></string>
-    <string name="refresh">REFRESH</string>
-    <string name="arrow">V</string>
-    <string name="title">Title</string>
     <string name="nutri_score">Nutri-Score  (A, B, C, D, E)</string>
-    <string name="OK">ok</string>
-    <string name="back">Back</string>
     <string name="eco_score">Eco-Score (A, B, C, D, E)</string>
     <string name="nova_group">Nova-Group (1, 2, 3, 4)</string>
-    <string name="favorite">Favorite</string>
+
+
+    <string name="nova_4">Nova: 4</string>
 </resources>

@@ -329,8 +329,8 @@ public class AddProductFragment extends Fragment {
                     setVegetarian(productObject.getString("vegetarian"));
                 else
                     setVegetarian("Unknown");
-                if (productObject.has("categories_imported"))
-                    setCategoriesImported(productObject.getString("categories_imported"));
+                if (productObject.has("categories"))
+                    setCategoriesImported(productObject.getString("categories"));
                 else
                     setCategoriesImported("Unknown");
 

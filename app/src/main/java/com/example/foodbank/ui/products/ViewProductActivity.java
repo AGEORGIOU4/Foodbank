@@ -217,6 +217,8 @@ public class ViewProductActivity extends AppCompatActivity {
 
                 // Check if the product is not already included on the Database and add it
                 insert(tmpProduct);
+
+                Toast.makeText(this, "New item added to your products", Toast.LENGTH_SHORT).show();
                 findClickedProduct(view);
                 switchLayout(INITIAL_STATE);
             } catch (JSONException e) {
@@ -388,8 +390,8 @@ public class ViewProductActivity extends AppCompatActivity {
         } else {
             textView_viewProductVegetarian.setText("Vegetarian: unknown");
         }
-        if (!myProduct.getCategoriesImported().equals("")) {
-            textView_viewProductCategoriesImported.setText("Categories: " + myProduct.getCategoriesImported());
+        if (!myProduct.getCategories().equals("")) {
+            textView_viewProductCategoriesImported.setText("Categories: " + myProduct.getCategories());
         } else {
             textView_viewProductCategoriesImported.setText("Categories: unknown");
         }

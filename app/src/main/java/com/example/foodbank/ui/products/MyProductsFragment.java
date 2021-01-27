@@ -6,10 +6,13 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,16 +28,23 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 
-public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
-        ProductsAdapter.OnActionBarMenuClickListener, ProductsAdapter.OnStarClickListener {
+public class MyProductsFragment extends Fragment implements MyProductsAdapter.OnItemClickListener, MyProductsAdapter.OnItemLongClickListener,
+        MyProductsAdapter.OnActionBarMenuClickListener, MyProductsAdapter.OnStarClickListener,
+        AdapterView.OnItemSelectedListener {
 
     // Recycler View
     private final Vector<Product> productsList = new Vector<>();
-    private ProductsAdapter adapter;
+    private MyProductsAdapter adapter;
+
+
+    // Layout
+    AppCompatSpinner spinner_productsOptions;
+
+    ArrayAdapter<String> spinnerAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.d1_fragment_products, container, false);
+        View root = inflater.inflate(R.layout.d1_fragment_my_products, container, false);
         // Initialize each products from the db to the productsList
         productsList.clear();
         productsList.addAll(getAllProductsSortedByTimestamp());
@@ -43,6 +53,9 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
         // Search
         searchItem(root);
+
+        setSpinner(root);
+
         return root;
     }
 
@@ -51,10 +64,12 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         // Initialize each products from the db to the productsList
         productsList.clear();
         productsList.addAll(getAllProductsSortedByTimestamp());
+        spinner_productsOptions.setSelection(spinnerAdapter.getPosition("Date Added"));
         adapter.notifyDataSetChanged();
 
         super.onResume();
     }
+
 
     /*--------------------------------LAYOUT------------------------------------*/
     public void setRecyclerView(View view) {
@@ -64,17 +79,33 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsAdapter(productsList, this, this, this, this);
+        adapter = new MyProductsAdapter(productsList, this, this, this, this);
         recyclerView.setAdapter(adapter);
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
-    List<Product> getAllProductsSortedByTitle() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
+    List<Product> getProductsFavorites() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsFavorites();
     }
 
     List<Product> getAllProductsSortedByTimestamp() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
+    }
+
+    List<Product> getProductsSortedByTitle() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
+    }
+
+    List<Product> getProductsSortedByNutriscore() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByNutriscore();
+    }
+
+    List<Product> getProductsSortedByEcoscore() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByEcoscore();
+    }
+
+    List<Product> getProductsSortedByNovaGroup() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByNovaGroup();
     }
 
     void insert(Product product) {
@@ -132,6 +163,51 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         });
     }
 
+    /*-------------------------------SPINNER-----------------------------------*/
+    public void setSpinner(View view) {
+        spinner_productsOptions = view.findViewById(R.id.spinner_productsOptions);
+        String[] spinnerOptions = {"Date Added", "Title", "Nutriscore", "Ecoscore", "Novagroup", "Favorites"};
+        spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
+        spinner_productsOptions.setAdapter(spinnerAdapter);
+        spinner_productsOptions.setOnItemSelectedListener(this);
+    }
+
+    // Spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedOption = parent.getItemAtPosition(position).toString();
+        // Set recycler view adapter for each selection
+        if (selectedOption.equals("Date Added")) {
+            productsList.clear();
+            productsList.addAll(getAllProductsSortedByTimestamp());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Title")) {
+            productsList.clear();
+            productsList.addAll(getProductsSortedByTitle());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Nutriscore")) {
+            productsList.clear();
+            productsList.addAll(getProductsSortedByNutriscore());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Ecoscore")) {
+            productsList.clear();
+            productsList.addAll(getProductsSortedByEcoscore());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Novagroup")) {
+            productsList.clear();
+            productsList.addAll(getProductsSortedByNovaGroup());
+            adapter.notifyDataSetChanged();
+        } else if (selectedOption.equals("Favorites")) {
+            productsList.clear();
+            productsList.addAll(getProductsFavorites());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+
     /*--------------------------------------------------------------------------*/
     @Override
     public void itemClicked(View v, int pos, String value) {
@@ -147,7 +223,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
     }
 
     @Override
-    public void onPopupMenuClick(View view, int pos, String code, String title, String nutriScore,
+    public void onPopupMenuClick(View view, int pos, String code, final String title, String nutriScore,
                                  String ecoScore, String novaGroup, boolean isStarred) {
         Product listItem = productsList.get(pos);
         PopupMenu popup = new PopupMenu(requireContext(), view);
@@ -168,10 +244,32 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
             if (item.getItemId() == R.id.menu_editProduct) {
                 Intent intent = new Intent(getActivity(), EditProductActivity.class);
                 intent.putExtra("extra_products_code", code);
-                intent.putExtra("clicked_item_title", title);
-                intent.putExtra("clicked_item_nutri_score", nutriScore);
-                intent.putExtra("clicked_item_eco_score", ecoScore);
-                intent.putExtra("clicked_item_nova_group", novaGroup);
+
+                // Check for nulls
+                if (title != null) {
+                    intent.putExtra("clicked_item_title", title);
+                } else {
+                    intent.putExtra("clicked_item_title", "Unknown");
+                }
+
+                if (nutriScore != null) {
+                    intent.putExtra("clicked_item_nutri_score", nutriScore);
+                } else {
+                    intent.putExtra("clicked_item_nutri_score", "Unknown");
+                }
+
+                if (ecoScore != null) {
+                    intent.putExtra("clicked_item_eco_score", ecoScore);
+                } else {
+                    intent.putExtra("clicked_item_eco_score", "Unknown");
+                }
+
+                if (novaGroup != null) {
+                    intent.putExtra("clicked_item_nova_group", novaGroup);
+                } else {
+                    intent.putExtra("clicked_item_nova_group", "Unknown");
+                }
+
                 intent.putExtra("clicked_item_starred", isStarred);
                 intent.putExtra("clicked_item_position", pos);
                 startActivity(intent);

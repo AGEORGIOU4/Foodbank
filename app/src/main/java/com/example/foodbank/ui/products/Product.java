@@ -44,13 +44,13 @@ public class Product {
     private String nutriments;
     private String vegan;
     private String vegetarian;
-    private String categoriesImported;
+    private String categories;
     private boolean starred;
     private long timestamp;
     private String imageUrl;
 
     public Product(int id, String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutriments,
-                   String vegan, String vegetarian, String categoriesImported, boolean starred, long timestamp, String imageUrl) {
+                   String vegan, String vegetarian, String categories, boolean starred, long timestamp, String imageUrl) {
         this.id = id;
         this.barcode = barcode;
         this.title = title;
@@ -61,7 +61,7 @@ public class Product {
         this.nutriments = nutriments;
         this.vegan = vegan;
         this.vegetarian = vegetarian;
-        this.categoriesImported = categoriesImported;
+        this.categories = categories;
         this.starred = starred;
         this.timestamp = timestamp;
         this.imageUrl = imageUrl;
@@ -69,7 +69,7 @@ public class Product {
 
     @Ignore
     public Product(String barcode, String title, String nutriScore, String novaGroup, String ecoScore, String ingredients, String nutriments,
-                   String vegan, String vegetarian, String categoriesImported, boolean starred, long timestamp, String imageUrl) {
+                   String vegan, String vegetarian, String categories, boolean starred, long timestamp, String imageUrl) {
         this.title = title;
         this.barcode = barcode;
         this.nutriScore = nutriScore;
@@ -79,7 +79,7 @@ public class Product {
         this.nutriments = nutriments;
         this.vegan = vegan;
         this.vegetarian = vegetarian;
-        this.categoriesImported = categoriesImported;
+        this.categories = categories;
         this.starred = starred;
         this.timestamp = timestamp;
         this.imageUrl = imageUrl;
@@ -117,7 +117,7 @@ public class Product {
 
     public String getVegetarian() { return vegetarian; }
 
-    public String getCategoriesImported() { return categoriesImported; }
+    public String getCategories() { return categories; }
 
     public boolean isStarred() {
         return starred;

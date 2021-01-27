@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Vector;
 
-public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> implements Filterable {
+public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.ViewHolder> implements Filterable {
 
     private final Vector<Product> listItems;
     private Vector<Product> listItemsAll;
@@ -32,9 +32,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     private OnStarClickListener onStarClickListener;
     private OnActionBarMenuClickListener onActionBarMenuClickListener;
 
-    public ProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener,
-                           OnItemLongClickListener onItemLongClickListener,
-                           OnActionBarMenuClickListener onActionBarMenuClickListener, OnStarClickListener onStarClickListener) {
+    public MyProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener,
+                             OnItemLongClickListener onItemLongClickListener,
+                             OnActionBarMenuClickListener onActionBarMenuClickListener, OnStarClickListener onStarClickListener) {
         this.listItems = listItems;
         this.listItemsAll = new Vector<>(listItems);
         this.onItemClickListener = onItemClickListener;
@@ -43,7 +43,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         this.onStarClickListener = onStarClickListener;
     }
 
-    public ProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener) {
+    public MyProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener) {
         this.listItems = listItems;
         this.onItemClickListener = onItemClickListener;
     }
@@ -51,7 +51,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     // Create new views (invoked by the layout manager)
     @NotNull
     @Override
-    public ProductsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyProductsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.d2_card_product, parent, false);

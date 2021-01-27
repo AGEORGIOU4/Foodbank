@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/nav_products"
-        android:name="com.example.foodbank.ui.products.ProductsFragment"
+        android:name="com.example.foodbank.ui.products.MyProductsFragment"
         android:label="@string/menu_products"
-        tools:layout="@layout/d1_fragment_products" />
+        tools:layout="@layout/d1_fragment_my_products" />
 
     <fragment
         android:id="@+id/nav_add_product"
