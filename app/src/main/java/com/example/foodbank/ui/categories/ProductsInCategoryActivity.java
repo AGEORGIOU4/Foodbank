@@ -81,6 +81,9 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
         recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
 
+        // Recycler View
+        setRecyclerView();
+
         // Fetch all products using API call
         getResponse();
 

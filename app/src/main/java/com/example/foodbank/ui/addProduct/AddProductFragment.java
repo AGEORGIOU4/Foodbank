@@ -38,6 +38,7 @@ import com.example.foodbank.MainActivity;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.ui.products.Product;
+import com.example.foodbank.ui.products.ViewProductActivity;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -234,7 +235,6 @@ public class AddProductFragment extends Fragment {
     }
 
     private void jsonParse(View view) {
-
         String barcode = getInputBarcode();
         String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
         String apiURL = mainURL + barcode;
@@ -253,10 +253,16 @@ public class AddProductFragment extends Fragment {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
             try {
                 JSONObject productObject = response.getJSONObject("product");
-                setCode(productObject.getString("code"));
-                setTitle(productObject.getString("product_name"));
-
                 // Check and get the available data
+                if(productObject.has("code"))
+                    setCode(productObject.getString("code"));
+                else
+                    setCode("Unknown");
+                if(productObject.has("product_name"))
+                    setTitle(productObject.getString("product_name"));
+                else
+                    setTitle("Unknown");
+
                 if (productObject.has("nutriscore_grade"))
                     setNutriScore(productObject.getString("nutriscore_grade"));
                 else
@@ -276,13 +282,22 @@ public class AddProductFragment extends Fragment {
 
                 if (productObject.has("nutriments")) {
                     String originalString = productObject.getString("nutriments");
+                    //------------------ Modify Nutriments string -------------------//
+                    int capitalizeFirst = 0;
 
-                    // Modify Nutriments string
                     StringBuilder originalStringBuild = new StringBuilder();
                     char tmpChar = ' ';
-
                     for (int i = 0; i < originalString.length(); i++) {
                         tmpChar = originalString.charAt(i);
+
+                        if (capitalizeFirst == 1) {
+                            tmpChar = Character.toUpperCase(tmpChar);
+                            capitalizeFirst = 0;
+                        }
+                        if(tmpChar == '{' || tmpChar == '"' || tmpChar == ',' || tmpChar == '}') {
+                            capitalizeFirst++;
+                        }
+
                         switch (tmpChar) {
                             case '_':
                             case '-':
@@ -291,18 +306,19 @@ public class AddProductFragment extends Fragment {
                             case '"':
                                 tmpChar = '\0';
                                 break;
-                            case ',':
                             case '{':
                             case '}':
+                            case ',':
                                 tmpChar = '\n';
                                 break;
-                            default:
-                                tmpChar = originalString.charAt(i);
-                                break;
+//                            default:
+//
+//                                break;
                         }
                         originalStringBuild.append(tmpChar);
                     }
-                    setNutriments(originalStringBuild.toString());
+                    nutriments = originalStringBuild.toString();
+
                 } else
                     setNutriments("Unknown");
                 if (productObject.has("vegan"))

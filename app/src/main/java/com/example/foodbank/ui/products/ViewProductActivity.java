@@ -75,7 +75,6 @@ public class ViewProductActivity extends AppCompatActivity {
         tryAgain(root);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -150,13 +149,22 @@ public class ViewProductActivity extends AppCompatActivity {
 
                 if (productObject.has("nutriments")) {
                     String originalString = productObject.getString("nutriments");
+                    //------------------ Modify Nutriments string -------------------//
+                    int capitalizeFirst = 0;
 
-                    // Modify Nutriments string
                     StringBuilder originalStringBuild = new StringBuilder();
                     char tmpChar = ' ';
-
                     for (int i = 0; i < originalString.length(); i++) {
                         tmpChar = originalString.charAt(i);
+
+                        if (capitalizeFirst == 1) {
+                            tmpChar = Character.toUpperCase(tmpChar);
+                            capitalizeFirst = 0;
+                        }
+                        if(tmpChar == '{' || tmpChar == '"' || tmpChar == ',' || tmpChar == '}') {
+                            capitalizeFirst++;
+                        }
+
                         switch (tmpChar) {
                             case '_':
                             case '-':
@@ -165,20 +173,24 @@ public class ViewProductActivity extends AppCompatActivity {
                             case '"':
                                 tmpChar = '\0';
                                 break;
-                            case ',':
                             case '{':
                             case '}':
+                            case ',':
                                 tmpChar = '\n';
                                 break;
-                            default:
-                                tmpChar = originalString.charAt(i);
-                                break;
+//                            default:
+//
+//                                break;
                         }
                         originalStringBuild.append(tmpChar);
                     }
                     nutriments = originalStringBuild.toString();
+
                 } else
                     nutriments = "Unknown";
+
+                //----------------------------------------------------------//
+
                 if (productObject.has("vegan"))
                     vegan = productObject.getString("vegan");
                 else
