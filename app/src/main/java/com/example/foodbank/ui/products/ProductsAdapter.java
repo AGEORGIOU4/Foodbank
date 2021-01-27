@@ -29,16 +29,18 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     private Context context;
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
+    private OnStarClickListener onStarClickListener;
     private OnActionBarMenuClickListener onActionBarMenuClickListener;
 
     public ProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener,
                            OnItemLongClickListener onItemLongClickListener,
-                           OnActionBarMenuClickListener onActionBarMenuClickListener) {
+                           OnActionBarMenuClickListener onActionBarMenuClickListener, OnStarClickListener onStarClickListener) {
         this.listItems = listItems;
         this.listItemsAll = new Vector<>(listItems);
         this.onItemClickListener = onItemClickListener;
         this.onItemLongClickListener = onItemLongClickListener;
         this.onActionBarMenuClickListener = onActionBarMenuClickListener;
+        this.onStarClickListener = onStarClickListener;
     }
 
     public ProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener) {
@@ -84,7 +86,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
         String title = "Unknown";
         // Capitalize First letter
-        if(listItem.getTitle() != null && !listItem.getTitle().equals("")) {
+        if (listItem.getTitle() != null && !listItem.getTitle().equals("")) {
             title = listItem.getTitle().substring(0, 1).toUpperCase() + listItem.getTitle().substring(1);
         }
         String nutriScore = listItem.getNutriScore();
@@ -95,6 +97,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         // Set listeners on Click, on Long Click Action Bar Menu
         holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
         holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, listItem.getTitle()));
+        holder.checkBox_star.setOnClickListener(v -> onStarClickListener.itemClicked(v, position, listItem.isStarred()));
 
         try {
             holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode(),
@@ -211,6 +214,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
             e.printStackTrace();
             Toast.makeText(context, "Oops, this should happened.", Toast.LENGTH_SHORT).show();
         }
+
+        holder.checkBox_star.setChecked(listItem.isStarred());
     }
 
     @Override
@@ -222,6 +227,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     public Filter getFilter() {
         return filter;
     }
+
     Filter filter = new Filter() {
         // run on background thread
         @Override
@@ -255,13 +261,17 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         void itemClicked(View v, int pos, String value);
     }
 
-    interface OnItemLongClickListener {
+    public interface OnItemLongClickListener {
         boolean itemLongClicked(View v, int pos, String value);
     }
 
-    interface OnActionBarMenuClickListener {
+    public interface OnActionBarMenuClickListener {
         void onPopupMenuClick(View view, int pos, String code, String title, String nutriScore,
                               String ecoScore, String novaGroup, boolean isStarred);
+    }
+
+    public interface OnStarClickListener {
+        void itemClicked(View v, int pos, boolean checked);
     }
 
 }

@@ -1,14 +1,11 @@
 package com.example.foodbank.ui.products;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -22,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
-import com.example.foodbank.ui.favorites.Favorites;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -30,7 +26,7 @@ import java.util.Vector;
 import java.util.concurrent.Executors;
 
 public class ProductsFragment extends Fragment implements ProductsAdapter.OnItemClickListener, ProductsAdapter.OnItemLongClickListener,
-        ProductsAdapter.OnActionBarMenuClickListener {
+        ProductsAdapter.OnActionBarMenuClickListener, ProductsAdapter.OnStarClickListener {
 
     // Recycler View
     private final Vector<Product> productsList = new Vector<>();
@@ -68,7 +64,7 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new ProductsAdapter(productsList, this, this, this);
+        adapter = new ProductsAdapter(productsList, this, this, this, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -76,15 +72,23 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
     List<Product> getAllProductsSortedByTitle() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTitle();
     }
+
     List<Product> getAllProductsSortedByTimestamp() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
     }
+
     void insert(Product product) {
         ProductsRoomDatabase.getDatabase(getContext()).productsDao().insert(product);
     }
+
+    void update(Product product) {
+        ProductsRoomDatabase.getDatabase(getContext()).productsDao().update(product);
+    }
+
     void delete(final Product product) {
         ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(product);
     }
+
     void deleteItem(int pos) {
         // Create a temp note if user wants to undo
         Product tmpProduct = productsList.get(pos);
@@ -113,20 +117,20 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
 
     /*--------------------------------SEARCH------------------------------------*/
     public void searchItem(View view) {
-    SearchView searchView = view.findViewById(R.id.searchView_products);
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
-            return false;
-        }
+        SearchView searchView = view.findViewById(R.id.searchView_products);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-        @Override
-        public boolean onQueryTextChange(String newText) {
-            adapter.getFilter().filter(newText);
-            return false;
-        }
-    });
-}
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
 
     /*--------------------------------------------------------------------------*/
     @Override
@@ -135,11 +139,13 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         intent.putExtra("extra_products_code", value);
         startActivity(intent);
     }
+
     @Override
     public boolean itemLongClicked(View v, int pos, String value) {
         Snackbar.make(v, "Swipe to delete", Snackbar.LENGTH_SHORT).show();
         return true;
     }
+
     @Override
     public void onPopupMenuClick(View view, int pos, String code, String title, String nutriScore,
                                  String ecoScore, String novaGroup, boolean isStarred) {
@@ -181,12 +187,27 @@ public class ProductsFragment extends Fragment implements ProductsAdapter.OnItem
         popup.show();
     }
 
+    // Handle checkbox(star) clicks
+    @Override
+    public void itemClicked(View v, int pos, boolean checked) {
+        boolean checkStar = productsList.get(pos).isStarred();
+
+        if (pos >= 0) {
+            checkStar = !checkStar;
+            productsList.get(pos).setStarred(checkStar);
+            update(productsList.get(pos));
+            if (checkStar)
+                Toast.makeText(requireContext(), "Added to favorites!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // Delete Item on Swipe
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return true;
         }
+
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int pos = viewHolder.getAdapterPosition();

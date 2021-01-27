@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.foodbank.R;
-import com.example.foodbank.ui.favorites.Favorites;
 
 public class HomeFragment extends Fragment {
 

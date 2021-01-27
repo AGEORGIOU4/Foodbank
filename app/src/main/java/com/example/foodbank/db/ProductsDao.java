@@ -29,6 +29,9 @@ public interface ProductsDao {
     @Query("SELECT * FROM products ORDER BY timestamp DESC")
     List<Product> getProductsSortedByTimestamp();
 
+    @Query("SELECT * FROM products WHERE starred IS 1")
+    List<Product> getProductsFavorites();
+
     @Delete
     void delete(Product product);
 }
