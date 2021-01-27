@@ -43,6 +43,12 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Foodbank.NoActionBar" />
+        <activity
+            android:name=".ui.products.EditProductActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Foodbank.NoActionBar" />
     </application>
 
 </manifest>

@@ -66,15 +66,16 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.c2_activity_products_in_category);
-        setActionBar();
-
-        root = findViewById(R.id.root);
-
         // Get extras from categories fragment
         categoryId = getIntent().getStringExtra("selected_item_id");
         categoryName = getIntent().getStringExtra("selected_item_name");
         totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 0);
+
+        setActionBar();
+
+        setContentView(R.layout.c2_activity_products_in_category);
+
+        root = findViewById(R.id.root);
 
         // Pages indication
         textView_showPage = root.findViewById(R.id.textView_showPage);
@@ -243,6 +244,8 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         startActivity(intent);
     }
 
+
+    // Back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

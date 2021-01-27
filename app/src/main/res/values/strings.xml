@@ -27,7 +27,6 @@
     <string name="align_the_bar_code_within_frame_to_scan_the_product">Align the Bar Code within frame to scan the product</string>
     <string name="ok">OK</string>
     <string name="foodbank_cover">foodbank cover</string>
-    <string name="title">Title</string>
     <string name="nova_4">Nova: 4</string>
     <string name="add_product">ADD PRODUCT</string>
     <string name="floating_button">floating button</string>
@@ -55,4 +54,11 @@
     <string name="nextPage"><![CDATA[>]]></string>
     <string name="refresh">REFRESH</string>
     <string name="arrow">V</string>
+    <string name="title">Title</string>
+    <string name="nutri_score">Nutri-Score  (A, B, C, D, E)</string>
+    <string name="OK">ok</string>
+    <string name="back">Back</string>
+    <string name="eco_score">Eco-Score (A, B, C, D, E)</string>
+    <string name="nova_group">Nova-Group (1, 2, 3, 4)</string>
+    <string name="favorite">Favorite</string>
 </resources>

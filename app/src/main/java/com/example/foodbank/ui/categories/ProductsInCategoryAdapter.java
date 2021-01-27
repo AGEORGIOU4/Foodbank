@@ -72,7 +72,7 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
     public ProductsInCategoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.c4_card_category_product, parent, false);
+                .inflate(R.layout.c4_card_product_category, parent, false);
         return new ViewHolder(v);
     }
 

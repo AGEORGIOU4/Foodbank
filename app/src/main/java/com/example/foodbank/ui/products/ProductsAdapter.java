@@ -82,12 +82,10 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         Product listItem = listItems.get(position);
 
-        String title = "";
+        String title = "Unknown";
         // Capitalize First letter
         if(listItem.getTitle() != null && !listItem.getTitle().equals("")) {
             title = listItem.getTitle().substring(0, 1).toUpperCase() + listItem.getTitle().substring(1);
-        } else {
-            title = "Unknown";
         }
         String nutriScore = listItem.getNutriScore();
         String novaGroup = listItem.getNovaGroup();
@@ -99,7 +97,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, listItem.getTitle()));
 
         try {
-            holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode()));
+            holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode(),
+                    listItem.getTitle(), nutriScore, ecoScore, novaGroup, listItem.isStarred()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -261,7 +260,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
     }
 
     interface OnActionBarMenuClickListener {
-        void onPopupMenuClick(View view, int pos, String value);
+        void onPopupMenuClick(View view, int pos, String code, String title, String nutriScore,
+                              String ecoScore, String novaGroup, boolean isStarred);
     }
 
 }

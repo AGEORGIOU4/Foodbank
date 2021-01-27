@@ -65,7 +65,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="10dp"
-                    android:layout_toStartOf="@id/checkBox_star"
                     android:layout_toEndOf="@id/imageView_addedProductImage"
                     android:ellipsize="end"
                     android:maxLines="1"
@@ -109,13 +108,6 @@
                     android:layout_toEndOf="@id/imageView_addedProductEcoScore"
                     android:src="@drawable/d_img_novagroup_1"
                     app:shapeAppearanceOverlay="@style/Circular" />
-
-                <CheckBox
-                    android:id="@+id/checkBox_star"
-                    style="?android:attr/starStyle"
-                    android:layout_width="33dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true" />
 
                 <TextView
                     android:id="@+id/textView_barcodeResult"

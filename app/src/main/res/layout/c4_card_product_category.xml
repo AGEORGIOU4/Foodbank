@@ -88,7 +88,9 @@
                 android:layout_alignParentEnd="true"
                 android:background="@null"
                 android:contentDescription="@string/pop_up_menu"
-                android:src="@drawable/ic_action_more_vert" />
+                android:src="@drawable/ic_action_more_vert"
+                android:clickable="false"
+                android:visibility="invisible"/>
 
             <CheckBox
                 android:id="@+id/checkBox_star"
