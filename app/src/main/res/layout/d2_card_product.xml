@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
-                android:layout_toStartOf="@id/checkBox_star"
+                android:layout_toStartOf="@id/imageView_popupMenu"
                 android:layout_toEndOf="@id/imageView_productImage"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -83,7 +83,7 @@
 
             <ImageView
                 android:id="@+id/imageView_popupMenu"
-                android:layout_width="33dp"
+                android:layout_width="50dp"
                 android:layout_height="27dp"
                 android:layout_alignParentEnd="true"
                 android:background="@null"

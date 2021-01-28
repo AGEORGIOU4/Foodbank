@@ -114,7 +114,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     /*-------------------------------RESPONSE-----------------------------------*/
     public void getResponse() {
         // Set up progress bar before call
-        progressDialog = new ProgressDialog(getContext());
+        progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMax(100);
         progressDialog.setMessage("Loading....");
         progressDialog.setTitle("Fetching data from world.openfoodfacts.org");

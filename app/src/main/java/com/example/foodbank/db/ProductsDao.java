@@ -20,10 +20,13 @@ public interface ProductsDao {
     @Update
     void update(Product product);
 
+    @Delete
+    void delete(Product product);
+
     @Query("SELECT * FROM products ORDER BY title ASC")
     List<Product> getProductsSortedByTitle();
 
-    @Query("SELECT * FROM products ORDER BY nutriScore ASC")
+    @Query("SELECT * FROM products WHERE nutriScore ORDER BY nutriScore")
     List<Product> getProductsSortedByNutriscore();
 
     @Query("SELECT * FROM products ORDER BY ecoScore ASC")
@@ -53,7 +56,4 @@ public interface ProductsDao {
     @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY timestamp DESC")
     List<Product> getFavoriteProductsSortedByTimestamp();
 
-
-    @Delete
-    void delete(Product product);
 }

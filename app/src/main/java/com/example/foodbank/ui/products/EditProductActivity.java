@@ -45,12 +45,7 @@ public class EditProductActivity extends AppCompatActivity {
         getExtras();
 
         button_submitEdit = findViewById(R.id.button_submitEdit);
-        button_submitEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateProduct();
-            }
-        });
+        button_submitEdit.setOnClickListener(v -> updateProduct());
 
     }
 
@@ -88,6 +83,14 @@ public class EditProductActivity extends AppCompatActivity {
         ProductsRoomDatabase.getDatabase(this).productsDao().update(product);
     }
 
+    void insert(Product product) {
+        ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
+    }
+
+    void delete(final Product product) {
+        ProductsRoomDatabase.getDatabase(this).productsDao().delete(product);
+    }
+
     public void updateProduct() {
         edited_Title = editText_Title.getText().toString();
         edited_NutriScore = editText_NutriScore.getText().toString();
@@ -98,13 +101,22 @@ public class EditProductActivity extends AppCompatActivity {
         if(!edited_NutriScore.equals("") && !edited_NutriScore.equals("") && !edited_EcoScore.equals("")
         && !edited_NovaGroup.equals("")) {
             Product currentProduct = getAllProductsSortedByTimestamp().get(itemPosition);
-            // Update product
-            currentProduct.setTitle(edited_Title);
-            currentProduct.setNutriScore(edited_NutriScore);
-            currentProduct.setEcoScore(edited_EcoScore);
-            currentProduct.setNovaGroup(edited_NovaGroup);
-            currentProduct.setStarred(edited_Starred);
-            update(currentProduct);
+            Product tmpProduct = new Product(currentProduct.getBarcode(), edited_Title, edited_NutriScore, edited_NovaGroup,
+                    edited_EcoScore, currentProduct.getIngredients(), currentProduct.getNutriments(),
+                    currentProduct.getVegan(), currentProduct.getVegetarian(), currentProduct.getCategories(), edited_Starred,
+                    currentProduct.getTimestamp(), currentProduct.getImageUrl());
+            delete(getAllProductsSortedByTimestamp().get(itemPosition));
+            insert(tmpProduct);
+
+//            // Update product
+//            currentProduct.setTitle(edited_Title);
+//            currentProduct.setNutriScore(edited_NutriScore);
+//            currentProduct.setEcoScore(edited_EcoScore);
+//            currentProduct.setNovaGroup(edited_NovaGroup);
+//            currentProduct.setStarred(edited_Starred);
+
+
+           // update(currentProduct);
 
             finish();
         } else {

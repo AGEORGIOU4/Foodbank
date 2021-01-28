@@ -87,17 +87,43 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
 
         String code = listItem.getCode();
         String title;
+        String nutriScore;
+        String novaGroup;
+        String ecoScore;
+        String imageUrl;
+
         // Capitalize First letter
-        if (listItem.getProduct_name() != null && !listItem.getProduct_name().equals("")) {
+        if (listItem.getProduct_name() != null || !listItem.getProduct_name().equals("")) {
             title = listItem.getProduct_name().substring(0, 1).toUpperCase() + listItem.getProduct_name().substring(1);
         } else {
             title = "Unknown";
         }
-        String nutriScore = listItem.getNutriscore_grade();
-        String novaGroup = listItem.getNova_group();
-        String ecoScore = listItem.getEcoscore_grade();
+
+        if (listItem.getNutriscore_grade() != null) {
+            nutriScore = listItem.getNutriscore_grade();
+        } else {
+            nutriScore = "Unknown";
+        }
+
+        if (listItem.getNova_group() != null) {
+            novaGroup = listItem.getNova_group();
+        } else {
+            novaGroup = "Unknown";
+        }
+
+        if (listItem.getEcoscore_grade() != null) {
+            ecoScore = listItem.getEcoscore_grade();
+        } else {
+            ecoScore = "Unknown";
+        }
+
         boolean starred = false;
-        String imageUrl = listItem.getImage_small_url();
+
+        if (listItem.getImage_small_url() != null) {
+            imageUrl = listItem.getImage_small_url();
+        } else {
+            imageUrl = "Unknown";
+        }
 
         // Get element from your data set at this position
         // Replace the contents of the view with that element

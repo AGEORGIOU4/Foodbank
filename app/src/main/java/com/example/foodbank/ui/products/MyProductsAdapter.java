@@ -84,15 +84,44 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         Product listItem = listItems.get(position);
 
-        String title = "Unknown";
+        String title;
+        String nutriScore;
+        String novaGroup;
+        String ecoScore;
+        String imageUrl;
+
         // Capitalize First letter
-        if (listItem.getTitle() != null && !listItem.getTitle().equals("")) {
+        if (listItem.getTitle() != null || !listItem.getTitle().equals("")) {
             title = listItem.getTitle().substring(0, 1).toUpperCase() + listItem.getTitle().substring(1);
+        } else {
+            title = "Unknown";
         }
-        String nutriScore = listItem.getNutriScore();
-        String novaGroup = listItem.getNovaGroup();
-        String ecoScore = listItem.getEcoScore();
-        String imageUrl = listItem.getImageUrl();
+
+        if (listItem.getNutriScore() != null) {
+            nutriScore = listItem.getNutriScore();
+        } else {
+            nutriScore = "Unknown";
+        }
+
+        if (listItem.getNovaGroup() != null) {
+            novaGroup = listItem.getNovaGroup();
+        } else {
+            novaGroup = "Unknown";
+        }
+
+        if (listItem.getEcoScore() != null) {
+            ecoScore = listItem.getEcoScore();
+        } else {
+            ecoScore = "Unknown";
+        }
+
+        boolean starred = false;
+
+        if (listItem.getImageUrl() != null) {
+            imageUrl = listItem.getImageUrl();
+        } else {
+            imageUrl = "Unknown";
+        }
 
         // Set listeners on Click, on Long Click Action Bar Menu
         holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
