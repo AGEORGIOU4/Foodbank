@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 public abstract class ProductsRoomDatabase extends RoomDatabase {
 
     private static final Product[] INITIAL_PRODUCTS = new Product[]{
-            new Product("0737628064502", "Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning", "A", "A", "1", "Noodle: rice, water. seasoning packet: " +
+            new Product("0737628064502", "Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning", "A", "1", "A", "Noodle: rice, water. seasoning packet: " +
                     "peanut, sugar, hydrolyzed soy protein, green onion, corn maltodextrin, spice (including paprika), citric acid, sea salt, extractives of paprika (color), silicon " +
                     "dioxide (added to make free flowing), yeast extract.", "\ncalcium 100g:0.038\n" +
                     "vitamin c:0\n" + "fat unit:g\n" + "vitamin c 100g:0\n" + "cholesterol 100g:0\n" + "carbohydrates value:71.15\n" +

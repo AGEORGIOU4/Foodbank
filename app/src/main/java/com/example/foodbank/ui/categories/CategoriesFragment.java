@@ -1,11 +1,13 @@
 package com.example.foodbank.ui.categories;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,6 +65,8 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         View root = inflater.inflate(R.layout.c1_fragment_categories, container, false);
         recyclerView_Categories = root.findViewById(R.id.recyclerView_categories);
 
+        progressDialog = new ProgressDialog(requireContext());
+
         // Fetch all categories using API call
         getResponse();
 
@@ -82,6 +86,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
 
     @Override
     public void onResume() {
+        hideKeyboard();
         super.onResume();
     }
 
@@ -115,7 +120,6 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     /*-------------------------------RESPONSE-----------------------------------*/
     public void getResponse() {
         // Set up progress bar before call
-        progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMax(100);
         progressDialog.setMessage("Loading....");
         progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
@@ -191,6 +195,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         spinner_categoriesOptions.setAdapter(spinnerAdapter);
         spinner_categoriesOptions.setOnItemSelectedListener(this);
     }
+
     // Spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -247,5 +252,10 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.detach(CategoriesFragment.this).attach(CategoriesFragment.this).commit();
         });
+    }
+
+    public void hideKeyboard() {
+        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
     }
 }
