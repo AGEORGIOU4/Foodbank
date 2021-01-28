@@ -26,7 +26,7 @@ public interface ProductsDao {
     @Query("SELECT * FROM products ORDER BY title ASC")
     List<Product> getProductsSortedByTitle();
 
-    @Query("SELECT * FROM products WHERE nutriScore ORDER BY nutriScore")
+    @Query("SELECT * FROM products ORDER BY nutriScore")
     List<Product> getProductsSortedByNutriscore();
 
     @Query("SELECT * FROM products ORDER BY ecoScore ASC")

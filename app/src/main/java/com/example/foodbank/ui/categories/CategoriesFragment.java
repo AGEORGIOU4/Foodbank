@@ -15,6 +15,7 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -226,7 +227,6 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     }
 
 
-
     /*-----------------------------INTERFACES----------------------------------*/
     @Override
     public void itemClicked(View v, int pos, String id, String categoryName, int productNumber) {
@@ -239,10 +239,13 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
 
     /*--------------------------------------------------------------------------*/
     public void tryAgain(View root) {
-        // Try to get response again
+
         Button button_categories_tryAgain = root.findViewById(R.id.button_tryAgain);
         button_categories_tryAgain.setOnClickListener(v -> {
-            getResponse();
+            // Try to get response again
+            assert getFragmentManager() != null;
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(CategoriesFragment.this).attach(CategoriesFragment.this).commit();
         });
     }
 }

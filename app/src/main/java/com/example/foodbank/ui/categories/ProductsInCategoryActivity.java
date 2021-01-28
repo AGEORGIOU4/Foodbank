@@ -197,8 +197,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     }
 
     /*-------------------------------------------------------------------------*/
-    public void previousPage(View view)
-    {
+    public void previousPage(View view) {
         if (selectedPage > 1) {
             selectedPage--;
             getResponse();
@@ -243,7 +242,6 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         intent.putExtra("extra_products_code", code);
         startActivity(intent);
     }
-
 
     // Back button
     @Override
