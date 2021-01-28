@@ -91,7 +91,7 @@
                 android:src="@drawable/ic_action_more_vert" />
 
             <CheckBox
-                android:id="@+id/checkBox_star"
+                android:id="@+id/checkBox_viewStarred"
                 style="?android:attr/starStyle"
                 android:layout_width="33dp"
                 android:layout_height="30dp"

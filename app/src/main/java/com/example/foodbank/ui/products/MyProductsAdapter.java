@@ -76,7 +76,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
             this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
             this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
             this.imageView_popupMenu = itemView.findViewById(R.id.imageView_popupMenu);
-            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
+            this.checkBox_star = itemView.findViewById(R.id.checkBox_viewStarred);
         }
     }
 

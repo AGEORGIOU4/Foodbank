@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="10dp"
-                    android:layout_toStartOf="@id/checkBox_star"
+                    android:layout_toStartOf="@id/checkBox_viewStarred"
                     android:layout_toEndOf="@id/imageView_viewProductImage"
                     android:ellipsize="end"
                     android:maxLines="4"
@@ -105,11 +105,12 @@
                     app:shapeAppearanceOverlay="@style/Circular" />
 
                 <CheckBox
-                    android:id="@+id/checkBox_star"
+                    android:id="@+id/checkBox_viewStarred"
                     style="?android:attr/starStyle"
                     android:layout_width="33dp"
                     android:layout_height="30dp"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:clickable="false" />
 
                 <TextView
                     android:id="@+id/textView_viewProductBarcode"

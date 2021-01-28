@@ -291,7 +291,7 @@ public class ProductsInCategoryAdapter extends RecyclerView.Adapter<ProductsInCa
             this.imageView_ecoScore = itemView.findViewById(R.id.imageView_ecoScore);
             this.imageView_novaGroup = itemView.findViewById(R.id.imageView_novaGroup);
 
-            this.checkBox_star = itemView.findViewById(R.id.checkBox_star);
+            this.checkBox_star = itemView.findViewById(R.id.checkBox_viewStarred);
         }
     }
 }

@@ -394,7 +394,6 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     @Override
     public void onPopupMenuClick(View view, int pos, String code, final String title, String nutriScore,
                                  String ecoScore, String novaGroup, boolean isStarred) {
-        Product listItem = productsListDate.get(pos);
         PopupMenu popup = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_product_card, popup.getMenu());
@@ -458,15 +457,49 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     // Handle checkbox(star) clicks
     @Override
     public void itemClicked(View v, int pos, boolean checked) {
-        boolean checkStar = productsListDate.get(pos).isStarred();
-
-        if (pos >= 0) {
-            checkStar = !checkStar;
-            productsListDate.get(pos).setStarred(checkStar);
-            update(productsListDate.get(pos));
-            if (checkStar)
-                Toast.makeText(requireContext(), "Added to favorites!", Toast.LENGTH_SHORT).show();
+        boolean checkStar = false;
+        switch (sortController) {
+            case 1:
+                checkStar = productsListDate.get(pos).isStarred();
+                checkStar = !checkStar;
+                productsListDate.get(pos).setStarred(checkStar);
+                update(productsListDate.get(pos));
+                break;
+            case 2:
+                checkStar = productsListTitle.get(pos).isStarred();
+                checkStar = !checkStar;
+                productsListTitle.get(pos).setStarred(checkStar);
+                update(productsListTitle.get(pos));
+                break;
+            case 3:
+                checkStar = productsListNutriScore.get(pos).isStarred();
+                checkStar = !checkStar;
+                productsListNutriScore.get(pos).setStarred(checkStar);
+                update(productsListNutriScore.get(pos));
+                break;
+            case 4:
+                checkStar = productsListEcoScore.get(pos).isStarred();
+                checkStar = !checkStar;
+                productsListEcoScore.get(pos).setStarred(checkStar);
+                update(productsListEcoScore.get(pos));
+                break;
+            case 5:
+                checkStar = productsListNovaGroup.get(pos).isStarred();
+                checkStar = !checkStar;
+                productsListNovaGroup.get(pos).setStarred(checkStar);
+                update(productsListNovaGroup.get(pos));
+                break;
+            case 6:
+                checkStar = productsListFavorites.get(pos).isStarred();
+                checkStar = !checkStar;
+                productsListFavorites.get(pos).setStarred(checkStar);
+                update(productsListFavorites.get(pos));
+                if (!checkStar)
+                    Toast.makeText(requireContext(), "Removed", Toast.LENGTH_SHORT).show();
+                break;
         }
+        if (checkStar)
+            Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
         setLists();
     }
 

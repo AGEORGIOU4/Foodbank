@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -37,6 +38,9 @@ public class ViewProductActivity extends AppCompatActivity {
     // Response
     private RequestQueue mQueue;
 
+    // Set favorite
+    CheckBox checkBox_viewStarred;
+
     // Product attributes
     private String barcode;
     private String title;
@@ -48,10 +52,13 @@ public class ViewProductActivity extends AppCompatActivity {
     private String vegan;
     private String vegetarian;
     private String categoriesImported;
+    private boolean starred;
     private String imageUrl;
 
     private Product myProduct = new Product("", "", "", "", "", "",
             "", "", "", "", false, System.currentTimeMillis(), "");
+
+    private int itemPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,8 @@ public class ViewProductActivity extends AppCompatActivity {
         setContentView(R.layout.d3_activity_view_product);
         View root = findViewById(R.id.root);
 
+        checkBox_viewStarred = root.findViewById(R.id.checkBox_viewStarred);
+
         // Get barcode from clicked item
         getExtraData(root);
         findClickedProduct(root);
@@ -80,18 +89,7 @@ public class ViewProductActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void findClickedProduct(View view) {
-        // Check if the product belongs to user's database (also offline)
-        productsList.clear();
-        productsList.addAll(getAllProductsSortedByTitle());
-        if (checkIfProductIsOnDatabase()) {
-            initializeValuesOnCard(view);
-        } else {
-            jsonParse(view);
-        }
-    }
-
-    /*--------------------------------LAYOUT------------------------------------*/
+    /*-------------------------------CHECK PRODUCT--------------------------------*/
     public void getExtraData(View view) {
         Intent intent = getIntent();
         if (!intent.getStringExtra("extra_products_code").equals("") ||
@@ -100,6 +98,30 @@ public class ViewProductActivity extends AppCompatActivity {
         }
     }
 
+    public boolean checkIfProductIsOnDatabase() {
+        // Check if the product belongs to user's database
+        for (int i = 0; i < productsList.size(); i++) {
+            if (productsList.get(i).getBarcode().equals(barcode)) {
+                myProduct = productsList.get(i);
+                itemPosition = i;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void findClickedProduct(View view) {
+        // Check if the product belongs to user's database (also offline)
+        productsList.clear();
+        productsList.addAll(getAllProductsSortedByTimestamp());
+        if (checkIfProductIsOnDatabase()) {
+            initializeValuesOnCard(view);
+        } else {
+            jsonParse(view);
+        }
+    }
+
+    /*--------------------------------LAYOUT------------------------------------*/
     private void switchLayout(int state) {
         // Layout elements
         FrameLayout frameLayout_productsInCategory = findViewById(R.id.frameLayout_productsInCategory);
@@ -116,146 +138,6 @@ public class ViewProductActivity extends AppCompatActivity {
         }
     }
 
-    /*-------------------------------RESPONSE-----------------------------------*/
-    private void jsonParse(View view) {
-        String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
-        String apiURL = mainURL + barcode;
-
-        // The user's input is concatenated with the main URL and the program makes a request
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
-            try {
-                JSONObject productObject = response.getJSONObject("product");
-                // Check and get the available data
-                if (productObject.has("product_name"))
-                    title = productObject.getString("product_name");
-                else
-                    title = "Unknown";
-                if (productObject.has("nutriscore_grade"))
-                    nutriScore = productObject.getString("nutriscore_grade");
-                else
-                    nutriments = "Unknown";
-                if (productObject.has("nova_group"))
-                    novaGroup = productObject.getString("nova_group");
-                else
-                    novaGroup = "Unknown";
-                if (productObject.has("ecoscore_grade"))
-                    ecoScore = productObject.getString("ecoscore_grade");
-                else
-                    ecoScore = "Unknown";
-                if (productObject.has("ingredients_text"))
-                    ingredients = productObject.getString("ingredients_text");
-                else
-                    ingredients = "Unknown";
-
-                if (productObject.has("nutriments")) {
-                    String originalString = productObject.getString("nutriments");
-                    //------------------ Modify Nutriments string -------------------//
-                    int capitalizeFirst = 0;
-
-                    StringBuilder originalStringBuild = new StringBuilder();
-                    char tmpChar = ' ';
-                    for (int i = 0; i < originalString.length(); i++) {
-                        tmpChar = originalString.charAt(i);
-
-                        if (capitalizeFirst == 1) {
-                            tmpChar = Character.toUpperCase(tmpChar);
-                            capitalizeFirst = 0;
-                        }
-                        if(tmpChar == '{' || tmpChar == '"' || tmpChar == ',' || tmpChar == '}') {
-                            capitalizeFirst++;
-                        }
-
-                        switch (tmpChar) {
-                            case '_':
-                            case '-':
-                                tmpChar = ' ';
-                                break;
-                            case '"':
-                                tmpChar = '\0';
-                                break;
-                            case '{':
-                            case '}':
-                            case ',':
-                                tmpChar = '\n';
-                                break;
-//                            default:
-//
-//                                break;
-                        }
-                        originalStringBuild.append(tmpChar);
-                    }
-                    nutriments = originalStringBuild.toString();
-
-                } else
-                    nutriments = "Unknown";
-
-                //----------------------------------------------------------//
-
-                if (productObject.has("vegan"))
-                    vegan = productObject.getString("vegan");
-                else
-                    vegan = "Unknown";
-                if (productObject.has("vegetarian"))
-                    vegetarian = productObject.getString("vegetarian");
-                else
-                    vegetarian = "Unknown";
-                if (productObject.has("categories_imported"))
-                    categoriesImported = productObject.getString("categories_imported");
-                else
-                    categoriesImported = "Unknown";
-
-                // Set default image if not found
-                if (productObject.has("image_front_small_url")) {
-                    imageUrl = productObject.getString("image_front_small_url");
-                } else {
-                    imageUrl = "https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png";
-                }
-
-                Product tmpProduct = new Product(barcode, title, nutriScore, novaGroup, ecoScore,
-                        ingredients, nutriments, vegan, vegetarian, categoriesImported, false,
-                        System.currentTimeMillis(), imageUrl);
-
-                // Check if the product is not already included on the Database and add it
-                insert(tmpProduct);
-
-                Toast.makeText(this, "New item added to your products", Toast.LENGTH_SHORT).show();
-                findClickedProduct(view);
-                switchLayout(INITIAL_STATE);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
-                switchLayout(ERROR_STATE);
-            }
-        }, error -> {
-            // If during the request or response an error is occurred, a Snackbar message will pop up
-            Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
-            switchLayout(ERROR_STATE);
-        });
-        mQueue.add(request);
-    }
-
-    /*-------------------------------DATABASE-----------------------------------*/
-    List<Product> getAllProductsSortedByTitle() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByTitle();
-    }
-
-    public boolean checkIfProductIsOnDatabase() {
-        // Check if the product belongs to user's database
-        for (int i = 0; i < productsList.size(); i++) {
-            if (productsList.get(i).getBarcode().equals(barcode)) {
-                myProduct = productsList.get(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Insert product on products db
-    void insert(Product product) {
-        ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
-    }
-
-    /*--------------------------------------------------------------------------*/
     public void initializeValuesOnCard(View view) {
         ImageView imageView_viewProductImage = view.findViewById(R.id.imageView_viewProductImage);
         TextView textView_viewProductTitle = view.findViewById(R.id.textView_viewProductTitle);
@@ -268,6 +150,9 @@ public class ViewProductActivity extends AppCompatActivity {
         TextView textView_viewProductVegetarian = view.findViewById(R.id.textView_viewProductVegetarian);
         TextView textView_viewProductCategoriesImported = view.findViewById(R.id.textView_viewProductCategoriesImported);
         TextView textView_viewProductBarcode = view.findViewById(R.id.textView_viewProductBarcode);
+
+        // Set favorite current status
+        checkBox_viewStarred = view.findViewById(R.id.checkBox_viewStarred);
 
         ScrollView scrollView_viewProduct = view.findViewById(R.id.scrollView_viewProduct);
 
@@ -396,6 +281,13 @@ public class ViewProductActivity extends AppCompatActivity {
             textView_viewProductCategoriesImported.setText("Categories: unknown");
         }
 
+        // Set favorite
+        if (myProduct.isStarred()) {
+            checkBox_viewStarred.setChecked(true);
+        } else {
+            checkBox_viewStarred.setChecked(false);
+        }
+
         try {
             Picasso.get().load(myProduct.getImageUrl()).resize(66, 75).centerCrop().into(imageView_viewProductImage);
         } catch (Exception e) {
@@ -407,6 +299,140 @@ public class ViewProductActivity extends AppCompatActivity {
         scrollView_viewProduct.setVisibility(View.VISIBLE);
     }
 
+    /*-------------------------------RESPONSE-----------------------------------*/
+    private void jsonParse(View view) {
+        String mainURL = "https://world.openfoodfacts.org/api/v0/product/";
+        String apiURL = mainURL + barcode;
+
+        // The user's input is concatenated with the main URL and the program makes a request
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiURL, null, response -> {
+            try {
+                JSONObject productObject = response.getJSONObject("product");
+                // Check and get the available data
+                if (productObject.has("product_name"))
+                    title = productObject.getString("product_name");
+                else
+                    title = "Unknown";
+                if (productObject.has("nutriscore_grade"))
+                    nutriScore = productObject.getString("nutriscore_grade");
+                else
+                    nutriments = "Unknown";
+                if (productObject.has("nova_group"))
+                    novaGroup = productObject.getString("nova_group");
+                else
+                    novaGroup = "Unknown";
+                if (productObject.has("ecoscore_grade"))
+                    ecoScore = productObject.getString("ecoscore_grade");
+                else
+                    ecoScore = "Unknown";
+                if (productObject.has("ingredients_text"))
+                    ingredients = productObject.getString("ingredients_text");
+                else
+                    ingredients = "Unknown";
+
+                if (productObject.has("nutriments")) {
+                    String originalString = productObject.getString("nutriments");
+                    //------------------ Modify Nutriments string -------------------//
+                    int capitalizeFirst = 0;
+
+                    StringBuilder originalStringBuild = new StringBuilder();
+                    char tmpChar = ' ';
+                    for (int i = 0; i < originalString.length(); i++) {
+                        tmpChar = originalString.charAt(i);
+
+                        if (capitalizeFirst == 1) {
+                            tmpChar = Character.toUpperCase(tmpChar);
+                            capitalizeFirst = 0;
+                        }
+                        if (tmpChar == '{' || tmpChar == '"' || tmpChar == ',' || tmpChar == '}') {
+                            capitalizeFirst++;
+                        }
+
+                        switch (tmpChar) {
+                            case '_':
+                            case '-':
+                                tmpChar = ' ';
+                                break;
+                            case '"':
+                                tmpChar = '\0';
+                                break;
+                            case '{':
+                            case '}':
+                            case ',':
+                                tmpChar = '\n';
+                                break;
+//                            default:
+//
+//                                break;
+                        }
+                        originalStringBuild.append(tmpChar);
+                    }
+                    nutriments = originalStringBuild.toString();
+
+                } else
+                    nutriments = "Unknown";
+
+                //----------------------------------------------------------//
+
+                if (productObject.has("vegan"))
+                    vegan = productObject.getString("vegan");
+                else
+                    vegan = "Unknown";
+                if (productObject.has("vegetarian"))
+                    vegetarian = productObject.getString("vegetarian");
+                else
+                    vegetarian = "Unknown";
+                if (productObject.has("categories_imported"))
+                    categoriesImported = productObject.getString("categories_imported");
+                else
+                    categoriesImported = "Unknown";
+
+                // Set default image if not found
+                if (productObject.has("image_front_small_url")) {
+                    imageUrl = productObject.getString("image_front_small_url");
+                } else {
+                    imageUrl = "https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png";
+                }
+
+                Product tmpProduct = new Product(barcode, title, nutriScore, novaGroup, ecoScore,
+                        ingredients, nutriments, vegan, vegetarian, categoriesImported, false,
+                        System.currentTimeMillis(), imageUrl);
+
+                // Check if the product is not already included on the Database and add it
+                insert(tmpProduct);
+
+                Toast.makeText(this, "New item added to your products", Toast.LENGTH_SHORT).show();
+                findClickedProduct(view);
+                switchLayout(INITIAL_STATE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
+                switchLayout(ERROR_STATE);
+            }
+        }, error -> {
+            // If during the request or response an error is occurred, a Snackbar message will pop up
+            Toast.makeText(this, "Something went wrong. Please check your connection", Toast.LENGTH_SHORT).show();
+            switchLayout(ERROR_STATE);
+        });
+        mQueue.add(request);
+    }
+
+    /*-------------------------------DATABASE-----------------------------------*/
+    List<Product> getAllProductsSortedByTimestamp() {
+        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByTimestamp();
+    }
+
+    /*-------------------------------DATABASE-----------------------------------*/
+    void insert(Product product) {
+        ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
+    }
+
+    void update(Product product) {
+        ProductsRoomDatabase.getDatabase(this).productsDao().update(product);
+    }
+
+
+    /*--------------------------------------------------------------------------*/
     public void tryAgain(View view) {
         Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
         button_categories_tryAgain.setOnClickListener(v -> {
