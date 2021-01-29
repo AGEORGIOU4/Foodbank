@@ -32,6 +32,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
     private OnStarClickListener onStarClickListener;
     private OnActionBarMenuClickListener onActionBarMenuClickListener;
 
+    // Constructor
     public MyProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener,
                              OnItemLongClickListener onItemLongClickListener,
                              OnActionBarMenuClickListener onActionBarMenuClickListener, OnStarClickListener onStarClickListener) {
@@ -41,21 +42,6 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         this.onItemLongClickListener = onItemLongClickListener;
         this.onActionBarMenuClickListener = onActionBarMenuClickListener;
         this.onStarClickListener = onStarClickListener;
-    }
-
-    public MyProductsAdapter(final Vector<Product> listItems, OnItemClickListener onItemClickListener) {
-        this.listItems = listItems;
-        this.onItemClickListener = onItemClickListener;
-    }
-
-    // Create new views (invoked by the layout manager)
-    @NotNull
-    @Override
-    public MyProductsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.d2_card_product, parent, false);
-        return new ViewHolder(v);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -80,6 +66,17 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         }
     }
 
+    // Create new views (invoked by the layout manager)
+    @NotNull
+    @Override
+    public MyProductsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.d2_card_product, parent, false);
+        return new ViewHolder(v);
+    }
+
+    // Set values on view elements
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         Product listItem = listItems.get(position);
@@ -91,31 +88,29 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         String imageUrl;
 
         // Capitalize First letter
-        if (listItem.getTitle() != null || !listItem.getTitle().equals("")) {
+        if (listItem.getTitle() != null && !listItem.getTitle().equals("")) {
             title = listItem.getTitle().substring(0, 1).toUpperCase() + listItem.getTitle().substring(1);
         } else {
             title = "Unknown";
         }
 
-        if (listItem.getNutriScore() != null) {
+        if (listItem.getNutriScore() != null && !listItem.getNutriScore().equals("")) {
             nutriScore = listItem.getNutriScore();
         } else {
             nutriScore = "Unknown";
         }
 
-        if (listItem.getNovaGroup() != null) {
+        if (listItem.getNovaGroup() != null && !listItem.getNovaGroup().equals("")) {
             novaGroup = listItem.getNovaGroup();
         } else {
             novaGroup = "Unknown";
         }
 
-        if (listItem.getEcoScore() != null) {
+        if (listItem.getEcoScore() != null && !listItem.getEcoScore().equals("")) {
             ecoScore = listItem.getEcoScore();
         } else {
             ecoScore = "Unknown";
         }
-
-        boolean starred = false;
 
         if (listItem.getImageUrl() != null) {
             imageUrl = listItem.getImageUrl();
@@ -252,6 +247,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         return listItems.size();
     }
 
+    // Filter list on search action
     @Override
     public Filter getFilter() {
         return filter;
@@ -286,6 +282,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         }
     };
 
+    // Interfaces
     public interface OnItemClickListener {
         void itemClicked(View v, int pos, String value);
     }

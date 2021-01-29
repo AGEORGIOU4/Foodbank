@@ -17,45 +17,68 @@ public class ProductInCategory {
                              String nova_group, String ingredients_text, String vegan, String vegetarian,
                              String categories, String image_small_url) {
         this.code = code;
-        this.product_name = product_name;
-        
+
+        if (product_name == null || product_name.equals("")) {
+            this.product_name = "unknown";
+        } else {
+            this.product_name = product_name;
+        }
+
         // Set constraints
         switch (nutriscore_grade) {
-            case "1": case "a":
+            case "1":
+            case "a":
                 this.nutriscore_grade = "A";
                 break;
-            case "2": case "b":
-                this.nutriscore_grade ="B";
+            case "2":
+            case "b":
+                this.nutriscore_grade = "B";
                 break;
-            case "3": case "c":
+            case "3":
+            case "c":
                 this.nutriscore_grade = "C";
-            case "4": case "d":
+            case "4":
+            case "d":
                 this.nutriscore_grade = "D";
                 break;
-            case "5": case "e":
+            case "5":
+            case "e":
                 this.nutriscore_grade = "E";
-            case "A": case "B": case "C": case "D": case "E":
+            case "A":
+            case "B":
+            case "C":
+            case "D":
+            case "E":
                 this.nutriscore_grade = nutriscore_grade;
                 break;
             default:
-                this.nutriscore_grade = "Unknown"; 
+                this.nutriscore_grade = "Unknown";
         }
 
         switch (ecoscore_grade) {
-            case "1": case "a":
+            case "1":
+            case "a":
                 this.ecoscore_grade = "A";
                 break;
-            case "2": case "b":
-                this.ecoscore_grade ="B";
+            case "2":
+            case "b":
+                this.ecoscore_grade = "B";
                 break;
-            case "3": case "c":
+            case "3":
+            case "c":
                 this.ecoscore_grade = "C";
-            case "4": case "d":
+            case "4":
+            case "d":
                 this.ecoscore_grade = "D";
                 break;
-            case "5": case "e":
+            case "5":
+            case "e":
                 this.ecoscore_grade = "E";
-            case "A": case "B": case "C": case "D": case "E":
+            case "A":
+            case "B":
+            case "C":
+            case "D":
+            case "E":
                 this.ecoscore_grade = ecoscore_grade;
                 break;
             default:
@@ -63,20 +86,29 @@ public class ProductInCategory {
         }
 
         switch (nova_group) {
-            case "1": case "a":
+            case "1":
+            case "a":
                 this.nova_group = "A";
                 break;
-            case "2": case "b":
-                this.nova_group ="B";
+            case "2":
+            case "b":
+                this.nova_group = "B";
                 break;
-            case "3": case "c":
+            case "3":
+            case "c":
                 this.nova_group = "C";
-            case "4": case "d":
+            case "4":
+            case "d":
                 this.nova_group = "D";
                 break;
-            case "5": case "e":
+            case "5":
+            case "e":
                 this.nova_group = "E";
-            case "A": case "B": case "C": case "D": case "E":
+            case "A":
+            case "B":
+            case "C":
+            case "D":
+            case "E":
                 this.nova_group = nova_group;
                 break;
             default:

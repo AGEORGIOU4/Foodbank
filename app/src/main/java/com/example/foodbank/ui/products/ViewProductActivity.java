@@ -361,9 +361,6 @@ public class ViewProductActivity extends AppCompatActivity {
                             case ',':
                                 tmpChar = '\n';
                                 break;
-//                            default:
-//
-//                                break;
                         }
                         originalStringBuild.append(tmpChar);
                     }

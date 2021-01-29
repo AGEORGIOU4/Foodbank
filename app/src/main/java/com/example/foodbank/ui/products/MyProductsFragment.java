@@ -35,6 +35,11 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         MyProductsAdapter.OnActionBarMenuClickListener, MyProductsAdapter.OnStarClickListener,
         AdapterView.OnItemSelectedListener {
 
+    // Layout
+    AppCompatSpinner spinner_productsOptions;
+    ArrayAdapter<String> spinnerAdapter;
+    SearchView searchView;
+
     // Recycler View
     RecyclerView recyclerView;
     private final Vector<Product> productsListDate = new Vector<>();
@@ -51,11 +56,6 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     private MyProductsAdapter adapterNovaGroup;
     private MyProductsAdapter adapterFavorites;
 
-    // Layout
-    AppCompatSpinner spinner_productsOptions;
-    ArrayAdapter<String> spinnerAdapter;
-    SearchView searchView;
-
     // Sort controller
     private int sortController = 1;
 
@@ -64,12 +64,12 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.d1_fragment_my_products, container, false);
 
+        // Initialize each product from the db to each list
+        setLists();
+
         //Set recycler view and adapters
         recyclerView = root.findViewById(R.id.recyclerView_products);
         setRecyclerView(root);
-
-        // Initialize each product from the db to each list
-        setLists();
 
         // Search
         searchItem(root);
@@ -91,27 +91,21 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     public void setLists() {
         productsListDate.clear();
         productsListDate.addAll(getAllProductsSortedByTimestamp());
-        adapterDate.notifyDataSetChanged();
 
         productsListTitle.clear();
         productsListTitle.addAll(getProductsSortedByTitle());
-        adapterTitle.notifyDataSetChanged();
 
         productsListNutriScore.clear();
         productsListNutriScore.addAll(getProductsSortedByNutriscore());
-        adapterNutriScore.notifyDataSetChanged();
 
         productsListEcoScore.clear();
         productsListEcoScore.addAll(getProductsSortedByEcoscore());
-        adapterEcoScore.notifyDataSetChanged();
 
         productsListNovaGroup.clear();
         productsListNovaGroup.addAll(getProductsSortedByNovaGroup());
-        adapterNovaGroup.notifyDataSetChanged();
 
         productsListFavorites.clear();
         productsListFavorites.addAll(getProductsFavorites());
-        adapterFavorites.notifyDataSetChanged();
     }
 
     /*--------------------------------LAYOUT------------------------------------*/
@@ -376,7 +370,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         });
     }
 
-    /*--------------------------------------------------------------------------*/
+    /*-----------------------------INTERFACES----------------------------------*/
     // View Product
     @Override
     public void itemClicked(View v, int pos, String value) {
@@ -384,13 +378,14 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         intent.putExtra("extra_products_code", value);
         startActivity(intent);
     }
-
+    // Show snackbar for deletion
     @Override
     public boolean itemLongClicked(View v, int pos, String value) {
         Snackbar.make(v, "Swipe to delete", Snackbar.LENGTH_SHORT).show();
         return true;
     }
 
+    // Show options menu
     @Override
     public void onPopupMenuClick(View view, int pos, String code, final String title, String nutriScore,
                                  String ecoScore, String novaGroup, boolean isStarred) {
@@ -517,6 +512,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         }
     };
 
+    /*--------------------------------------------------------------------------*/
     public void hideKeyboard() {
         final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);

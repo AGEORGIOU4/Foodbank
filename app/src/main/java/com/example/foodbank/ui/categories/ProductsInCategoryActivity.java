@@ -37,27 +37,24 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
 
-
-    // Recycler view
-    private final Vector<ProductInCategory> productsList = new Vector<>();
-
-    private RecyclerView recyclerView_viewCategoryProducts;
-    private ProductsInCategoryAdapter adapter;
-
-    // Pages control
-    int totalPages = 0;
-    private int selectedPage = 1;
-
     // Layout
     View root;
     TextView textView_showPage;
     private ProgressDialog progressDialog;
+
+    // Recycler view
+    private final Vector<ProductInCategory> productsList = new Vector<>();
+    private RecyclerView recyclerView_viewCategoryProducts;
+    private ProductsInCategoryAdapter adapter;
 
     // Response
     private String productsResponse = "";
     private String numberOfProductsInPage = "";
     private int totalCategoryProducts = 0;
 
+    // Pages control
+    int totalPages = 0;
+    private int selectedPage = 1;
 
     // Passed attributes
     private String categoryId;
@@ -66,6 +63,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Get extras from categories fragment
         categoryId = getIntent().getStringExtra("selected_item_id");
         categoryName = getIntent().getStringExtra("selected_item_name");
@@ -75,21 +73,17 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
         setContentView(R.layout.c2_activity_products_in_category);
 
+        // Fetch all products using API call
+        getResponse();
+
+        setRecyclerView();
+
         root = findViewById(R.id.root);
 
         // Pages indication
         textView_showPage = root.findViewById(R.id.textView_showPage);
 
         recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
-
-        // Recycler View
-        setRecyclerView();
-
-        // Fetch all products using API call
-        getResponse();
-
-        // Search
-        searchItem(root);
 
         // Try again on no connection
         tryAgain(root);
@@ -114,7 +108,6 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     private void switchLayout(int state) {
         // Layout elements
         FrameLayout frameLayout_productsInCategory = findViewById(R.id.frameLayout_productsInCategory);
-        recyclerView_viewCategoryProducts = findViewById(R.id.recyclerView_viewCategoryProducts);
 
         switch (state) {
             case INITIAL_STATE:
@@ -149,7 +142,6 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         progressDialog.setMessage("Loading....");
         progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // Show it
         progressDialog.show();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -169,34 +161,41 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
             productsResponse = jsonObject.getString("products");
             numberOfProductsInPage = jsonObject.getString("page_count");
 
-            // Populate an array with the all the fetched categories
+            // Populate an array with the all the fetched products
             ProductInCategory[] productArray = new Gson().fromJson(productsResponse, ProductInCategory[].class);
             this.productsList.clear();
             this.productsList.addAll(Arrays.asList(productArray));
 
+            // Recycler View (this must be implemented here so search view will work)
             setRecyclerView();
+            // Search
+            searchItem(root);
 
-            adapter.notifyDataSetChanged();
-
-
+            // Pages handler
             totalPages = (totalCategoryProducts / 100) + 1;
             textView_showPage.setText(selectedPage + "/" + totalPages + " page");
+
+            switchLayout(INITIAL_STATE);
 
             progressDialog.dismiss();
         } catch (JSONException e) {
             e.printStackTrace();
-            progressDialog.dismiss();
+
             switchLayout(ERROR_STATE);
+
+            progressDialog.dismiss();
         }
     }
 
     private void handleError(VolleyError volleyError) {
         Snackbar.make(recyclerView_viewCategoryProducts, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
-        progressDialog.dismiss();
+
         switchLayout(ERROR_STATE);
+
+        progressDialog.dismiss();
     }
 
-    /*-------------------------------------------------------------------------*/
+    /*---------------------------------PAGES-----------------------------------*/
     public void previousPage(View view) {
         if (selectedPage > 1) {
             selectedPage--;
@@ -214,6 +213,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     /*--------------------------------SEARCH-----------------------------------*/
     public void searchItem(View view) {
         SearchView searchView = view.findViewById(R.id.searchView_productsInCategories);
+        searchView.setQuery("", true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -228,14 +228,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         });
     }
 
-    /*-------------------------------------------------------------------------*/
-    public void tryAgain(View view) {
-        Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
-        button_categories_tryAgain.setOnClickListener(v -> {
-            getResponse();
-        });
-    }
-
+    /*-----------------------------INTERFACES----------------------------------*/
     @Override
     public void itemClicked(View v, int pos, String code) {
         Intent intent = new Intent(this, ViewProductActivity.class);
@@ -253,4 +246,13 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /*-------------------------------------------------------------------------*/
+    public void tryAgain(View view) {
+        Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
+        button_categories_tryAgain.setOnClickListener(v -> {
+            getResponse();
+        });
+    }
+
 }

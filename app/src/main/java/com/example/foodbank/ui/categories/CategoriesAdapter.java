@@ -22,41 +22,26 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     private Vector<Category> listItems;
     private Vector<Category> listItemsAll;
 
-    Filter filter = new Filter() {
-        // run on background thread
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            Vector<Category> filteredList = new Vector<>();
-
-            if (charSequence.toString().isEmpty()) {
-                filteredList.addAll(listItemsAll);
-            } else {
-                for (Category category : listItemsAll) {
-                    if (category.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-                        filteredList.add(category);
-                    }
-                }
-            }
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filteredList;
-            return filterResults;
-        }
-
-        // run on background thread
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults filterResults) {
-            listItems.clear();
-            listItems.addAll((Collection<? extends Category>) filterResults.values);
-            notifyDataSetChanged();
-        }
-    };
-
     private OnItemClickListener onItemClickListener;
 
+    // Constructor
     public CategoriesAdapter(final Vector<Category> listItems, OnItemClickListener onItemClickListener) {
         this.listItems = listItems;
         this.listItemsAll = new Vector<>(listItems);
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        // Each category item has a title and products number
+        public TextView textView_title;
+        public TextView textView_products;
+
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.textView_title = itemView.findViewById(R.id.textView_title);
+            this.textView_products = itemView.findViewById(R.id.textView_products);
+        }
     }
 
     // Create new views (invoked by the layout manager)
@@ -69,6 +54,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         return new ViewHolder(v);
     }
 
+    // Set values on view elements
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         Category listItem = listItems.get(position);
@@ -109,27 +95,46 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         return listItems.size();
     }
 
+    // Filter list on search action
+    Filter filter = new Filter() {
+        // run on background thread
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            Vector<Category> filteredList = new Vector<>();
+
+            if (charSequence.toString().isEmpty()) {
+                filteredList.addAll(listItemsAll);
+            } else {
+                for (Category category : listItemsAll) {
+                    if (category.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(category);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+            return filterResults;
+        }
+
+        // run on background thread
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults filterResults) {
+            listItems.clear();
+            listItems.addAll((Collection<? extends Category>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
+
     @Override
     public Filter getFilter() {
         return filter;
     }
 
+    // Interfaces
     public interface OnItemClickListener {
         void itemClicked(View v, int pos, String id, String categoryName, int productNumber);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // Each category item has a title and products number
-        public TextView textView_title;
-        public TextView textView_products;
-
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.textView_title = itemView.findViewById(R.id.textView_title);
-            this.textView_products = itemView.findViewById(R.id.textView_products);
-        }
-    }
 }
 
 

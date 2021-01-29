@@ -27,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.R;
-import com.example.foodbank.db.CategoriesRoomDatabase;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -36,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
 
 public class CategoriesFragment extends Fragment implements CategoriesAdapter.OnItemClickListener, AdapterView.OnItemSelectedListener {
@@ -46,35 +44,29 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     private static final int INITIAL_STATE = 2001;
     private static final int ERROR_STATE = 2002;
 
-    // Recycler view
-    private RecyclerView recyclerView_Categories;
-    private final Vector<Category> categoriesList = new Vector<>();
-    private final Vector<Category> categoriesListMostPopular = new Vector<>();
-    private CategoriesAdapter adapterAPI;
-    private CategoriesAdapter adapterDB;
-
     // Layout
     AppCompatSpinner spinner_categoriesOptions;
     private ProgressDialog progressDialog;
 
+    // Recycler view
+    private RecyclerView recyclerView_Categories;
+    private final Vector<Category> categoriesList = new Vector<>();
+    private final Vector<Category> categoriesListMostPopular = new Vector<>();
+    private CategoriesAdapter adapterAll;
+    private CategoriesAdapter adapterMostPopular;
+
+    // Response
     String tagsResponse = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.c1_fragment_categories, container, false);
-        recyclerView_Categories = root.findViewById(R.id.recyclerView_categories);
-
-        progressDialog = new ProgressDialog(requireContext());
 
         // Fetch all categories using API call
         getResponse();
 
-        // Recycler View
-        setRecyclerView(root);
-
-        // Search
-        searchItem(root);
+        recyclerView_Categories = root.findViewById(R.id.recyclerView_categories);
 
         // Try again when no connection
         tryAgain(root);
@@ -94,7 +86,6 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     private void switchLayout(int state) {
         // Layout elements
         FrameLayout frameLayout_categories = requireView().findViewById(R.id.frameLayout_productsInCategory);
-        recyclerView_Categories = requireView().findViewById(R.id.recyclerView_categories);
 
         switch (state) {
             case INITIAL_STATE:
@@ -113,18 +104,19 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         recyclerView_Categories.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView_Categories.setLayoutManager(linearLayoutManager);
-        adapterAPI = new CategoriesAdapter(categoriesList, this);
-        adapterDB = new CategoriesAdapter(categoriesListMostPopular, this);
+        adapterAll = new CategoriesAdapter(categoriesList, this);
+        adapterMostPopular = new CategoriesAdapter(categoriesListMostPopular, this);
+        recyclerView_Categories.setAdapter(adapterAll);
     }
 
     /*-------------------------------RESPONSE-----------------------------------*/
     public void getResponse() {
         // Set up progress bar before call
+        progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMax(100);
         progressDialog.setMessage("Loading....");
         progressDialog.setTitle("Fetching data from world.openfoodfacts.org");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // Show it
         progressDialog.show();
 
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
@@ -159,32 +151,27 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
             this.categoriesListMostPopular.add(categoryArray[i]);
         }
 
-        // Recycler View
-        setRecyclerView(getView());
 
-        adapterAPI.notifyDataSetChanged();
-        recyclerView_Categories.setAdapter(adapterAPI);
+        // Recycler View (this must be implemented here so search view will work)
+        setRecyclerView(requireView());
 
-        adapterDB.notifyDataSetChanged();
+        // Search
+        searchItem(requireView());
+
+        adapterAll.notifyDataSetChanged();
+        adapterMostPopular.notifyDataSetChanged();
+
+        recyclerView_Categories.setAdapter(adapterAll);
 
         Snackbar.make(getView(), categoryArray.length + " items loaded", Snackbar.LENGTH_SHORT).show();
-        progressDialog.dismiss();
 
+        progressDialog.dismiss();
     }
 
     private void handleError(VolleyError volleyError) {
         Snackbar.make(recyclerView_Categories, "Something went wrong. Please check your connection.", BaseTransientBottomBar.LENGTH_LONG).show();
         progressDialog.dismiss();
         switchLayout(ERROR_STATE);
-    }
-
-    /*-------------------------------DATABASE-----------------------------------*/
-    List<Category> getAllCategoriesSortedByProducts() {
-        return CategoriesRoomDatabase.getDatabase(getContext()).categoriesDao().getCategoriesSortedByProducts();
-    }
-
-    List<Category> getAllCategoriesSortedByTitle() {
-        return CategoriesRoomDatabase.getDatabase(getContext()).categoriesDao().getCategoriesSortedByTitle();
     }
 
     /*-------------------------------SPINNER-----------------------------------*/
@@ -202,10 +189,10 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         String selectedOption = parent.getItemAtPosition(position).toString();
         // Set recycler view adapter for each selection
         if (selectedOption.equals("Show all")) {
-            recyclerView_Categories.setAdapter(adapterAPI);
+            recyclerView_Categories.setAdapter(adapterAll);
 
         } else if (selectedOption.equals("Most popular")) {
-            recyclerView_Categories.setAdapter(adapterDB);
+            recyclerView_Categories.setAdapter(adapterMostPopular);
         }
     }
 
@@ -224,13 +211,12 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapterAPI.getFilter().filter(newText);
-                adapterDB.getFilter().filter(newText);
+                adapterAll.getFilter().filter(newText);
+                adapterMostPopular.getFilter().filter(newText);
                 return false;
             }
         });
     }
-
 
     /*-----------------------------INTERFACES----------------------------------*/
     @Override
