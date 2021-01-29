@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.products;
+package com.example.foodbank.fragments.products;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +22,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.foodbank.EditProductActivity;
 import com.example.foodbank.R;
+import com.example.foodbank.ViewProductActivity;
+import com.example.foodbank.adapters.MyProductsAdapter;
+import com.example.foodbank.classes.Product;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.google.android.material.snackbar.Snackbar;
@@ -64,15 +68,12 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.d1_fragment_my_products, container, false);
 
-        // Initialize each product from the db to each list
-        setLists();
-
         //Set recycler view and adapters
         recyclerView = root.findViewById(R.id.recyclerView_products);
-        setRecyclerView(root);
+        setRecyclerView();
 
-        // Search
-        searchItem(root);
+        // Initialize each product from the db to each list
+        initializeLists();
 
         setSpinner(root);
 
@@ -82,36 +83,44 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     @Override
     public void onResume() {
         hideKeyboard();
-        setLists();
+
+        // After modifications lists must be updated
+        initializeLists();
+        setRecyclerView();
+
         setSpinnerSelection();
 
         super.onResume();
     }
 
-    public void setLists() {
+    public void initializeLists() {
         productsListDate.clear();
         productsListDate.addAll(getAllProductsSortedByTimestamp());
+        adapterDate.notifyDataSetChanged();
 
         productsListTitle.clear();
         productsListTitle.addAll(getProductsSortedByTitle());
+        adapterNutriScore.notifyDataSetChanged();
 
         productsListNutriScore.clear();
         productsListNutriScore.addAll(getProductsSortedByNutriscore());
+        adapterNutriScore.notifyDataSetChanged();
 
         productsListEcoScore.clear();
         productsListEcoScore.addAll(getProductsSortedByEcoscore());
+        adapterEcoScore.notifyDataSetChanged();
 
         productsListNovaGroup.clear();
         productsListNovaGroup.addAll(getProductsSortedByNovaGroup());
+        adapterNovaGroup.notifyDataSetChanged();
 
         productsListFavorites.clear();
         productsListFavorites.addAll(getProductsFavorites());
+        adapterFavorites.notifyDataSetChanged();
     }
 
     /*--------------------------------LAYOUT------------------------------------*/
-    public void setRecyclerView(View view) {
-        recyclerView = view.findViewById(R.id.recyclerView_products);
-
+    public void setRecyclerView() {
         // Item helper for swipe events
         new ItemTouchHelper((itemTouchHelperCallback)).attachToRecyclerView(recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -348,28 +357,6 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    /*--------------------------------SEARCH------------------------------------*/
-    public void searchItem(View view) {
-        searchView = view.findViewById(R.id.searchView_products);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapterDate.getFilter().filter(newText);
-                adapterTitle.getFilter().filter(newText);
-                adapterNutriScore.getFilter().filter(newText);
-                adapterEcoScore.getFilter().filter(newText);
-                adapterNovaGroup.getFilter().filter(newText);
-                adapterFavorites.getFilter().filter(newText);
-                return false;
-            }
-        });
-    }
-
     /*-----------------------------INTERFACES----------------------------------*/
     // View Product
     @Override
@@ -378,6 +365,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         intent.putExtra("extra_products_code", value);
         startActivity(intent);
     }
+
     // Show snackbar for deletion
     @Override
     public boolean itemLongClicked(View v, int pos, String value) {
@@ -495,7 +483,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         }
         if (checkStar)
             Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
-        setLists();
+        initializeLists();
     }
 
     // Delete Item on Swipe

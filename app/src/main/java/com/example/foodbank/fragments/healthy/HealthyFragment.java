@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.healthy;
+package com.example.foodbank.fragments.healthy;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

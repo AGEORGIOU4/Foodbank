@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.share;
+package com.example.foodbank.fragments.share;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

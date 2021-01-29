@@ -34,17 +34,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.categories.ProductsInCategoryActivity"
+            android:name=".ProductsInCategoryActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.products.ViewProductActivity"
+            android:name=".ViewProductActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Foodbank.NoActionBar" />
         <activity
-            android:name=".ui.products.EditProductActivity"
+            android:name=".EditProductActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

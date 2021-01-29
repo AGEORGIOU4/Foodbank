@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.home;
+package com.example.foodbank.fragments.home;
 
 import android.content.Context;
 import android.os.Bundle;

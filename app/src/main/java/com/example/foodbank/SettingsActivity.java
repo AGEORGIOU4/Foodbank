@@ -9,6 +9,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.SettingsRoomDatabase;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 

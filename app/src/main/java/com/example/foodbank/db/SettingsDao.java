@@ -6,8 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.foodbank.Settings;
-import com.example.foodbank.ui.products.Product;
+import com.example.foodbank.classes.Settings;
 
 import java.util.List;
 

@@ -7,49 +7,49 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.foodbank.ui.home.HomeFragment"
+        android:name="com.example.foodbank.fragments.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/b1_fragment_home" />
 
     <fragment
         android:id="@+id/nav_categories"
-        android:name="com.example.foodbank.ui.categories.CategoriesFragment"
+        android:name="com.example.foodbank.fragments.categories.CategoriesFragment"
         android:label="@string/menu_categories"
         tools:layout="@layout/c1_fragment_categories" />
 
     <fragment
         android:id="@+id/nav_products"
-        android:name="com.example.foodbank.ui.products.MyProductsFragment"
+        android:name="com.example.foodbank.fragments.products.MyProductsFragment"
         android:label="@string/menu_products"
         tools:layout="@layout/d1_fragment_my_products" />
 
     <fragment
         android:id="@+id/nav_add_product"
-        android:name="com.example.foodbank.ui.addProduct.AddProductFragment"
+        android:name="com.example.foodbank.fragments.addProduct.AddProductFragment"
         android:label="@string/menu_add_product"
         tools:layout="@layout/e1_fragment_add_product" />
 
     <fragment
         android:id="@+id/nav_favorites"
-        android:name="com.example.foodbank.ui.favorites.FavoritesFragment"
+        android:name="com.example.foodbank.fragments.favorites.FavoritesFragment"
         android:label="@string/menu_favorites"
         tools:layout="@layout/f1_fragment_favorites" />
 
     <fragment
         android:id="@+id/nav_healthy"
-        android:name="com.example.foodbank.ui.healthy.HealthyFragment"
+        android:name="com.example.foodbank.fragments.healthy.HealthyFragment"
         android:label="@string/menu_healthy"
         tools:layout="@layout/g1_fragment_healthy" />
 
     <fragment
         android:id="@+id/nav_avoid"
-        android:name="com.example.foodbank.ui.avoid.AvoidFragment"
+        android:name="com.example.foodbank.fragments.avoid.AvoidFragment"
         android:label="@string/menu_avoid"
         tools:layout="@layout/h1_fragment_avoid" />
 
     <fragment
         android:id="@+id/nav_share"
-        android:name="com.example.foodbank.ui.share.ShareFragment"
+        android:name="com.example.foodbank.fragments.share.ShareFragment"
         android:label="@string/menu_share"
         tools:layout="@layout/i1_fragment_share" />
 </navigation>

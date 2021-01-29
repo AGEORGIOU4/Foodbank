@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.addProduct;
+package com.example.foodbank.fragments.addProduct;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -37,8 +37,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.foodbank.MainActivity;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
-import com.example.foodbank.ui.products.Product;
-import com.example.foodbank.ui.products.ViewProductActivity;
+import com.example.foodbank.classes.Product;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;

@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.avoid;
+package com.example.foodbank.fragments.avoid;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

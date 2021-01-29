@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.share;
+package com.example.foodbank.fragments.share;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

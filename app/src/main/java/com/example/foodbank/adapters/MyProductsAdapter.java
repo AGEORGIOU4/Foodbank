@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.products;
+package com.example.foodbank.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
+import com.example.foodbank.classes.Product;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -263,8 +264,10 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
                 filteredList.addAll(listItemsAll);
             } else {
                 for (Product product : listItemsAll) {
-                    if (product.getTitle().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-                        filteredList.add(product);
+                    if (product.getTitle() != null && !product.getTitle().equals("")) {
+                        if (product.getTitle().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                            filteredList.add(product);
+                        }
                     }
                 }
             }
@@ -276,8 +279,12 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         // run on background thread
         @Override
         protected void publishResults(CharSequence constraint, FilterResults filterResults) {
-            listItems.clear();
-            listItems.addAll((Collection<? extends Product>) filterResults.values);
+            try {
+                listItems.clear();
+                listItems.addAll((Collection<? extends Product>) filterResults.values);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             notifyDataSetChanged();
         }
     };

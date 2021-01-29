@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.categories;
+package com.example.foodbank.classes;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;

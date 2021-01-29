@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.products;
+package com.example.foodbank;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.classes.Product;
 
 import java.util.List;
 

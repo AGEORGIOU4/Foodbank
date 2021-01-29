@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.categories;
+package com.example.foodbank.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
+import com.example.foodbank.classes.ProductInCategory;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;

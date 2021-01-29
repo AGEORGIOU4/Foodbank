@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.categories;
+package com.example.foodbank;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,8 +20,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.foodbank.R;
-import com.example.foodbank.ui.products.ViewProductActivity;
+import com.example.foodbank.classes.ProductInCategory;
+import com.example.foodbank.adapters.ProductsInCategoryAdapter;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;

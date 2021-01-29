@@ -1,4 +1,4 @@
-package com.example.foodbank.ui.favorites;
+package com.example.foodbank.fragments.favorites;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
-import com.example.foodbank.ui.products.EditProductActivity;
-import com.example.foodbank.ui.products.Product;
-import com.example.foodbank.ui.products.MyProductsAdapter;
-import com.example.foodbank.ui.products.ViewProductActivity;
+import com.example.foodbank.EditProductActivity;
+import com.example.foodbank.classes.Product;
+import com.example.foodbank.adapters.MyProductsAdapter;
+import com.example.foodbank.ViewProductActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -54,9 +54,6 @@ public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnI
         productsList.addAll(getFavoriteProductsSortedByTimestamp());
 
         setRecyclerView(root);
-
-        // Search
-        searchItem(root);
 
         setSpinner(root);
 
@@ -146,23 +143,6 @@ public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnI
                     });
                 });
         snackbar.show();
-    }
-
-    /*--------------------------------SEARCH------------------------------------*/
-    public void searchItem(View view) {
-        SearchView searchView = view.findViewById(R.id.searchView_products);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
     }
 
     /*-------------------------------SPINNER-----------------------------------*/

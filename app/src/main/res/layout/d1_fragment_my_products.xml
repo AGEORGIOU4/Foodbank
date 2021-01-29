@@ -3,21 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.products.MyProductsFragment">
-
-    <SearchView
-        android:id="@+id/searchView_products"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="10dp"
-        android:iconifiedByDefault="false" />
+    tools:context=".fragments.products.MyProductsFragment">
 
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner_productsOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/searchView_products"
         android:layout_alignParentEnd="true" />
 
     <androidx.recyclerview.widget.RecyclerView
