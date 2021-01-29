@@ -71,7 +71,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
         setActionBar();
 
-        setContentView(R.layout.c2_activity_products_in_category);
+        setContentView(R.layout.activity_products_in_category);
 
         // Fetch all products using API call
         getResponse();

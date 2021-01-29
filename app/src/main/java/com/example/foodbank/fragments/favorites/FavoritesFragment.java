@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,7 +46,7 @@ public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnI
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.d1_fragment_my_products, container, false);
+        View root = inflater.inflate(R.layout.fragment_my_products, container, false);
 
         // Initialize each products from the db to the productsList
         productsList.clear();

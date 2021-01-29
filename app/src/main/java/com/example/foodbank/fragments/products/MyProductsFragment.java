@@ -66,7 +66,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.d1_fragment_my_products, container, false);
+        View root = inflater.inflate(R.layout.fragment_my_products, container, false);
 
         //Set recycler view and adapters
         recyclerView = root.findViewById(R.id.recyclerView_products);

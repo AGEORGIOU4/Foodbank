@@ -73,7 +73,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
     public MyProductsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.d2_card_product, parent, false);
+                .inflate(R.layout.card_product, parent, false);
         return new ViewHolder(v);
     }
 

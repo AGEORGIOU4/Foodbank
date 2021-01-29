@@ -64,7 +64,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.c1_fragment_categories, container, false);
+        View root = inflater.inflate(R.layout.fragment_categories, container, false);
 
         // Fetch all categories using API call
         getResponse();

@@ -17,7 +17,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.foodbank.R;
 import com.example.foodbank.classes.Product;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.squareup.picasso.Picasso;
@@ -72,7 +71,7 @@ public class ViewProductActivity extends AppCompatActivity {
         // Implement an HTTP request using Volley library
         this.mQueue = Volley.newRequestQueue(this);
 
-        setContentView(R.layout.d3_activity_view_product);
+        setContentView(R.layout.activity_view_product);
         View root = findViewById(R.id.root);
 
         checkBox_viewStarred = root.findViewById(R.id.checkBox_viewStarred);

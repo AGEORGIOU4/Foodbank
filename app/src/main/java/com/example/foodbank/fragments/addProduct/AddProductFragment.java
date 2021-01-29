@@ -97,7 +97,7 @@ public class AddProductFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.e1_fragment_add_product, container, false);
+        View root = inflater.inflate(R.layout.fragment_add_product, container, false);
         // Set product attributes on create
         clearData();
 

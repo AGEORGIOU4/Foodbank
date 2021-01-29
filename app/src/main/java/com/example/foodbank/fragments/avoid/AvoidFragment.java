@@ -14,7 +14,7 @@ public class AvoidFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.h1_fragment_avoid, container, false);
+        View root = inflater.inflate(R.layout.fragment_avoid, container, false);
 
         return root;
     }

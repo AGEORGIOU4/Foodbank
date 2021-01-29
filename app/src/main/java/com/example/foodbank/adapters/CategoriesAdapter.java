@@ -50,7 +50,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public CategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.c3_card_category, parent, false);
+                .inflate(R.layout.card_category, parent, false);
         return new ViewHolder(v);
     }
 

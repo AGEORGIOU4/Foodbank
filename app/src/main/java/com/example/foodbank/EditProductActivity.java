@@ -35,7 +35,7 @@ public class EditProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.d4_activity_edit_product);
+        setContentView(R.layout.activity_edit_product);
 
         editText_Title = findViewById(R.id.editText_Title);
         editText_NutriScore = findViewById(R.id.editText_NutriScore);
