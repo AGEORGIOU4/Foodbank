@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
-import com.example.foodbank.adapters.CustomListAdapter;
+import com.example.foodbank.adapters.SelectListAdapter;
 import com.example.foodbank.classes.CustomList;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.main_activities.ViewProductActivity;
@@ -23,13 +23,12 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.List;
 import java.util.Vector;
 
-public class CustomListsFragment extends Fragment implements CustomListAdapter.OnItemClickListener, CustomListAdapter.OnItemLongClickListener {
+public class CustomListsFragment extends Fragment implements SelectListAdapter.OnItemClickListener, SelectListAdapter.OnItemLongClickListener {
 
     // Recycler View
     RecyclerView recyclerView;
     private final Vector<CustomList> lists = new Vector<>();
-
-    private CustomListAdapter customListAdapter;
+    private SelectListAdapter selectListAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,12 +40,16 @@ public class CustomListsFragment extends Fragment implements CustomListAdapter.O
 
         //Set recycler view and adapters
         recyclerView = root.findViewById(R.id.recyclerView_customLists);
-        setRecyclerView();
+     //   setRecyclerView();
 
+        // Set list name on each tab
         TabLayout tabLayout_customLists = root.findViewById(R.id.tabLayout_customLists);
-        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 1"));
-        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 2"));
-        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 3"));
+        for (int i = 0; i < getCustomLists().size(); i++) {
+            tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText(lists.get(i).getName()));
+        }
+//        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 1"));
+//        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 2"));
+//        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 3"));
 
         return root;
     }
@@ -60,8 +63,8 @@ public class CustomListsFragment extends Fragment implements CustomListAdapter.O
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // Set adapters for each sorting selection
-        customListAdapter = new CustomListAdapter(lists, this, this);
-        recyclerView.setAdapter(customListAdapter);
+        selectListAdapter = new SelectListAdapter(lists, this, this);
+        recyclerView.setAdapter(selectListAdapter);
     }
 
     public void setTabs() {}
@@ -71,7 +74,7 @@ public class CustomListsFragment extends Fragment implements CustomListAdapter.O
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getCustomLists();
     }
 
-    /*-----------------------------INTERFACES----------------------------------*/
+    /*------------------------------INTERFACES----------------------------------*/
     // View Product
     @Override
     public void itemClicked(View v, int pos, String value) {

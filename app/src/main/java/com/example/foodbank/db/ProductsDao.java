@@ -8,6 +8,7 @@ import androidx.room.Update;
 
 import com.example.foodbank.classes.CustomList;
 import com.example.foodbank.classes.Product;
+import com.example.foodbank.classes.ProductToList;
 
 import java.util.List;
 
@@ -71,4 +72,14 @@ public interface ProductsDao {
 
     @Query("SELECT * FROM customLists ORDER BY name")
     List<CustomList> getCustomLists();
+
+    /*-------------LIST TO PRODUCT-------------*/
+    @Insert
+    void insert(ProductToList... productToLists);
+
+    @Delete
+    void delete(ProductToList productToList);
+
+    @Query("SELECT * FROM products_to_lists")
+    List<ProductToList> getProductsToLists();
 }

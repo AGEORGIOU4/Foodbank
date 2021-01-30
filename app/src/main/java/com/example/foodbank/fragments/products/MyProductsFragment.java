@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodbank.main_activities.EditProductActivity;
 import com.example.foodbank.main_activities.ProductsInCategoryActivity;
 import com.example.foodbank.R;
+import com.example.foodbank.main_activities.SelectListActivity;
 import com.example.foodbank.main_activities.ViewProductActivity;
 import com.example.foodbank.adapters.MyProductsAdapter;
 import com.example.foodbank.classes.Product;
@@ -418,8 +419,12 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
                 startActivity(intent);
                 return true;
             }
+            // Add to list - start select list activity and pass product barcode
             if (item.getItemId() == R.id.menu_addToList) {
                 Toast.makeText(requireContext(), "Add to list clicked item " + pos, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(requireActivity(), SelectListActivity.class);
+                intent.putExtra("extra_product_code", code);
+                startActivity(intent);
                 return true;
             }
             if (item.getItemId() == R.id.menu_editProduct) {

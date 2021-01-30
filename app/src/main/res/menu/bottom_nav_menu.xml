@@ -6,18 +6,22 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_menu_home"
         android:title="@string/menu_home"
-        app:showAsAction="never"/>
-
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/nav_products"
         android:icon="@drawable/ic_menu_products"
         android:title="@string/menu_products"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/nav_custom_lists"
+        android:icon="@drawable/ic_menu_custom_lists"
+        android:title="@string/menu_custom_lists" />
 
     <item
         android:id="@+id/nav_add_product"
         android:icon="@drawable/ic_menu_add"
         android:title="@string/menu_add_product"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

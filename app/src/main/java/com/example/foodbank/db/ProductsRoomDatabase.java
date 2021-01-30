@@ -10,13 +10,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.foodbank.classes.CustomList;
 import com.example.foodbank.classes.Product;
+import com.example.foodbank.classes.ProductToList;
 
 import java.util.concurrent.Executors;
 
 /**
  * The database used by Room persistence library to manage the notes database.
  */
-@Database(entities = {Product.class, CustomList.class}, version = 1)
+@Database(entities = {Product.class, CustomList.class, ProductToList.class}, version = 1)
 public abstract class ProductsRoomDatabase extends RoomDatabase {
 
     private static final Product[] INITIAL_PRODUCTS = new Product[]{
@@ -41,7 +42,8 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
                     "https://static.openfoodfacts.org/images/products/073/762/806/4502/front_en.6.200.jpg")};
 
     private static final CustomList[] INITIAL_LISTS = new CustomList[]{
-            new CustomList("My Snacks", "Less structured meal that are not eaten during regular meal times", 0, System.currentTimeMillis())};
+            new CustomList("My Snacks", "Less structured meal that are not eaten during regular meal times", 0, System.currentTimeMillis()),
+            new CustomList("My Beverages", "Favorite beverages", 0, System.currentTimeMillis()),};
 
 
     private static volatile ProductsRoomDatabase INSTANCE;

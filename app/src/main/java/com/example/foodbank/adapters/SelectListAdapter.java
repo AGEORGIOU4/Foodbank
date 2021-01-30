@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.ViewHolder> {
+public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.ViewHolder> {
 
     private final Vector<CustomList> listItems;
 
@@ -26,7 +26,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
     private OnItemLongClickListener onItemLongClickListener;
 
     // Constructor
-    public CustomListAdapter(final Vector<CustomList> listItems, OnItemClickListener onItemClickListener,
+    public SelectListAdapter(final Vector<CustomList> listItems, OnItemClickListener onItemClickListener,
                              OnItemLongClickListener onItemLongClickListener) {
         this.listItems = listItems;
         this.onItemClickListener = onItemClickListener;
@@ -52,7 +52,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
     // Create new views (invoked by the layout manager)
     @NotNull
     @Override
-    public CustomListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SelectListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_list, parent, false);
