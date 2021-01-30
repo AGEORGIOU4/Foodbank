@@ -12,31 +12,6 @@ public class Product {
     private int id;
     private String barcode;
     private String title;
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setNutriScore(String nutriScore) {
-        this.nutriScore = nutriScore;
-    }
-
-    public void setNovaGroup(String novaGroup) {
-        this.novaGroup = novaGroup;
-    }
-
-    public void setEcoScore(String ecoScore) {
-        this.ecoScore = ecoScore;
-    }
-
-    public void setStarred(boolean starred) {
-        this.starred = starred;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
     private String nutriScore;
     private String novaGroup;
     private String ecoScore;
@@ -126,4 +101,28 @@ public class Product {
     public long getTimestamp() { return timestamp; }
 
     public String getImageUrl() { return imageUrl; }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setNutriScore(String nutriScore) {
+        this.nutriScore = nutriScore;
+    }
+
+    public void setNovaGroup(String novaGroup) {
+        this.novaGroup = novaGroup;
+    }
+
+    public void setEcoScore(String ecoScore) {
+        this.ecoScore = ecoScore;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

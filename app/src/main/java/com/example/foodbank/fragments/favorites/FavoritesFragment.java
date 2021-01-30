@@ -21,10 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodbank.R;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
-import com.example.foodbank.EditProductActivity;
+import com.example.foodbank.main_activities.EditProductActivity;
 import com.example.foodbank.classes.Product;
 import com.example.foodbank.adapters.MyProductsAdapter;
-import com.example.foodbank.ViewProductActivity;
+import com.example.foodbank.main_activities.ViewProductActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -83,7 +83,7 @@ public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnI
 
     /*-------------------------------DATABASE-----------------------------------*/
     List<Product> getProductsFavorites() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsFavorites();
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProducts();
     }
 
     List<Product> getFavoriteProductsSortedByTimestamp() {

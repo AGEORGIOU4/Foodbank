@@ -23,10 +23,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodbank.EditProductActivity;
-import com.example.foodbank.ProductsInCategoryActivity;
+import com.example.foodbank.main_activities.EditProductActivity;
+import com.example.foodbank.main_activities.ProductsInCategoryActivity;
 import com.example.foodbank.R;
-import com.example.foodbank.ViewProductActivity;
+import com.example.foodbank.main_activities.ViewProductActivity;
 import com.example.foodbank.adapters.MyProductsAdapter;
 import com.example.foodbank.classes.Product;
 import com.example.foodbank.db.ProductsDao;
@@ -101,6 +101,8 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         super.onResume();
     }
 
+
+    /*---------------------------------ITEMS------------------------------------*/
     public void initializeLists() {
         productsListDate.clear();
         productsListDate.addAll(getAllProductsSortedByTimestamp());
@@ -165,7 +167,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
 
     /*-------------------------------DATABASE-----------------------------------*/
     List<Product> getProductsFavorites() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsFavorites();
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getFavoriteProducts();
     }
 
     List<Product> getAllProductsSortedByTimestamp() {
@@ -256,7 +258,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
             productsListNutriScore.addAll(myDAO.getProductsSortedByNutriscore());
             productsListEcoScore.addAll(myDAO.getProductsSortedByEcoscore());
             productsListNovaGroup.addAll(myDAO.getProductsSortedByNovaGroup());
-            productsListFavorites.addAll(myDAO.getProductsFavorites());
+            productsListFavorites.addAll(myDAO.getFavoriteProducts());
 
             // Step 4 -  Notify each adapter
             requireActivity().runOnUiThread(() -> adapterDate.notifyDataSetChanged());
@@ -294,7 +296,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
                         productsListNutriScore.addAll(myDAO.getProductsSortedByNutriscore());
                         productsListEcoScore.addAll(myDAO.getProductsSortedByEcoscore());
                         productsListNovaGroup.addAll(myDAO.getProductsSortedByNovaGroup());
-                        productsListFavorites.addAll(myDAO.getProductsFavorites());
+                        productsListFavorites.addAll(myDAO.getFavoriteProducts());
 
                         // Step 4 - Notify each adapter
                         requireActivity().runOnUiThread(() -> adapterDate.notifyDataSetChanged());

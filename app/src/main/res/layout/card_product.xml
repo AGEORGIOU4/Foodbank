@@ -10,8 +10,8 @@
         android:id="@+id/cardView_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="4dp"
         android:layout_marginVertical="2dp"
         app:cardCornerRadius="4dp">
 
@@ -83,7 +83,7 @@
 
             <ImageView
                 android:id="@+id/imageView_popupMenu"
-                android:layout_width="50dp"
+                android:layout_width="36dp"
                 android:layout_height="27dp"
                 android:layout_alignParentEnd="true"
                 android:background="@null"
@@ -95,9 +95,9 @@
                 style="?android:attr/starStyle"
                 android:layout_width="33dp"
                 android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
                 android:layout_below="@id/imageView_popupMenu"
-                android:layout_marginTop="20dp"/>
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="20dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

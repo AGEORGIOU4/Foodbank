@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.main_activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.foodbank.R;
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.SettingsRoomDatabase;
 import com.google.android.material.switchmaterial.SwitchMaterial;

@@ -67,4 +67,7 @@
 
     <string name="nova_4">Nova: 4</string>
     <string name="your_list_is_empty">Your list is empty</string>
+    <string name="description">Description</string>
+    <string name="numOfProducts">Number of Products</string>
+    <string name="dateCreated">Date Created</string>
 </resources>

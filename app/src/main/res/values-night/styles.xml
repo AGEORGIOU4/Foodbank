@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Circular">
         <item name="cornerSize">10%</item>
     </style>
@@ -25,5 +26,6 @@
 
     <style name="BottomNavIconsColor">
         <item name="android:background">@color/grey_700</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

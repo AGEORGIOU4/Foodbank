@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.main_activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.foodbank.R;
 import com.example.foodbank.adapters.ProductsInCategoryAdapter;
 import com.example.foodbank.classes.ProductInCategory;
 import com.example.foodbank.classes.Settings;

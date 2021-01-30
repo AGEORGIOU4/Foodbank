@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.main_activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.foodbank.R;
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.classes.Product;
@@ -115,7 +116,7 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     List<Product> getProductsFavorites() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsFavorites();
+        return ProductsRoomDatabase.getDatabase(this).productsDao().getFavoriteProducts();
     }
 
     void update(Product product) {

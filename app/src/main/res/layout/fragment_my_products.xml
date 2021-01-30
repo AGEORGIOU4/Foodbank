@@ -43,7 +43,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/your_list_is_empty"
-                android:textSize="35sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <Button

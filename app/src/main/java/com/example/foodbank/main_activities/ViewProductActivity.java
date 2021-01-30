@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.main_activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.foodbank.R;
 import com.example.foodbank.classes.Product;
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;

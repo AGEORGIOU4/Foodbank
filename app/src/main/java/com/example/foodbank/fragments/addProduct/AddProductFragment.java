@@ -34,10 +34,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.foodbank.MainActivity;
 import com.example.foodbank.R;
-import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.classes.Product;
+import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.main_activities.MainActivity;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -75,7 +75,6 @@ public class AddProductFragment extends Fragment {
 
     // Barcode variables
     private String inputBarcode;
-    private String inputBarcodePutExtra;
 
     // Product attributes
     private String code;
@@ -253,11 +252,11 @@ public class AddProductFragment extends Fragment {
             try {
                 JSONObject productObject = response.getJSONObject("product");
                 // Check and get the available data
-                if(productObject.has("code"))
+                if (productObject.has("code"))
                     setCode(productObject.getString("code"));
                 else
                     setCode("Unknown");
-                if(productObject.has("product_name"))
+                if (productObject.has("product_name"))
                     setTitle(productObject.getString("product_name"));
                 else
                     setTitle("Unknown");
@@ -293,7 +292,7 @@ public class AddProductFragment extends Fragment {
                             tmpChar = Character.toUpperCase(tmpChar);
                             capitalizeFirst = 0;
                         }
-                        if(tmpChar == '{' || tmpChar == '"' || tmpChar == ',' || tmpChar == '}') {
+                        if (tmpChar == '{' || tmpChar == '"' || tmpChar == ',' || tmpChar == '}') {
                             capitalizeFirst++;
                         }
 
@@ -339,8 +338,6 @@ public class AddProductFragment extends Fragment {
                 } else {
                     setImageUrl("https://static.wixstatic.com/media/cd859f_11e62a8757e0440188f90ddc11af8230~mv2.png");
                 }
-
-                inputBarcodePutExtra = getCode();
 
                 // Check if the product is not already included on the Database and add it
                 addProduct();
@@ -602,6 +599,7 @@ public class AddProductFragment extends Fragment {
     public void switchLayout(View view, int state) {
         // Camera
         SurfaceView surfaceView_camera = view.findViewById(R.id.surfaceView_camera);
+        View view_surfaceView_divider = view.findViewById(R.id.view_surfaceView_divider);
 
         // Product card
         ScrollView scrollView_addedProduct = view.findViewById(R.id.scrollView_addedProduct);
@@ -615,19 +613,25 @@ public class AddProductFragment extends Fragment {
         switch (state) {
             case INITIAL_STATE:
                 surfaceView_camera.setVisibility(View.VISIBLE);
+                view_surfaceView_divider.setVisibility(View.VISIBLE);
+
+                // Gray frame layout
                 frameLayout_surface_view.setVisibility(View.INVISIBLE);
+
                 cardView_addedProduct.setVisibility(View.INVISIBLE);
                 button_scanProduct.setVisibility(View.INVISIBLE);
                 scrollView_addedProduct.scrollTo(0, 0);
                 break;
             case PRODUCT_FOUND_STATE:
                 surfaceView_camera.setVisibility(View.INVISIBLE);
+                view_surfaceView_divider.setVisibility(View.INVISIBLE);
                 frameLayout_surface_view.setVisibility(View.INVISIBLE);
                 cardView_addedProduct.setVisibility(View.VISIBLE);
                 button_scanProduct.setVisibility(View.VISIBLE);
                 break;
             case PRODUCT_NOT_FOUND_STATE:
                 surfaceView_camera.setVisibility(View.INVISIBLE);
+                view_surfaceView_divider.setVisibility(View.INVISIBLE);
                 frameLayout_surface_view.setVisibility(View.VISIBLE);
                 cardView_addedProduct.setVisibility(View.INVISIBLE);
                 button_scanProduct.setVisibility(View.VISIBLE);

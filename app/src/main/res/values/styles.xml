@@ -30,5 +30,8 @@
 
     <style name="BottomNavIconsColor">
         <item name="android:background">@color/grey_300</item>
+        <item name="android:textStyle">bold</item>
     </style>
+
+
 </resources>

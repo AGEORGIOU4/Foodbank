@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.foodbank.classes.CustomList;
 import com.example.foodbank.classes.Product;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public interface ProductsDao {
 
 
+    /*------------------PRODUCTS------------------*/
     @Insert
     void insert(Product... products);
 
@@ -38,8 +40,9 @@ public interface ProductsDao {
     @Query("SELECT * FROM products ORDER BY timestamp DESC")
     List<Product> getProductsSortedByTimestamp();
 
+    /*------------------FAVORITES------------------*/
     @Query("SELECT * FROM products WHERE starred IS 1")
-    List<Product> getProductsFavorites();
+    List<Product> getFavoriteProducts();
 
     @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY title ASC")
     List<Product> getFavoriteProductsSortedByTitle();
@@ -56,4 +59,16 @@ public interface ProductsDao {
     @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY timestamp DESC")
     List<Product> getFavoriteProductsSortedByTimestamp();
 
+    /*------------------LISTS------------------*/
+    @Insert
+    void insert(CustomList... customList);
+
+    @Update
+    void update(CustomList customList);
+
+    @Delete
+    void delete(CustomList customList);
+
+    @Query("SELECT * FROM customLists ORDER BY name")
+    List<CustomList> getCustomLists();
 }

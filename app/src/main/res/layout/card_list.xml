@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_categoryProducts"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginVertical="2dp"
+        app:cardCornerRadius="4dp">
+
+        <RelativeLayout
+            android:id="@+id/list_item_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textView_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:text="@string/title"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_title"
+                android:layout_marginStart="10dp"
+                android:text="@string/description"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textView_numOfProducts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_description"
+                android:layout_marginStart="10dp"
+                android:text="@string/numOfProducts"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textView_dateCreated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_numOfProducts"
+                android:layout_marginStart="10dp"
+                android:gravity="end"
+                android:text="@string/dateCreated"
+                android:textColor="@color/cyan_700"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

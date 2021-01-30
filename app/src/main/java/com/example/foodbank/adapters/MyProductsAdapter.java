@@ -88,7 +88,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         String ecoScore;
         String imageUrl;
 
-        // Capitalize First letter
+        //-----------------------GET VALUES-----------------------//
         if (listItem.getTitle() != null && !listItem.getTitle().equals("")) {
             title = listItem.getTitle().substring(0, 1).toUpperCase() + listItem.getTitle().substring(1);
         } else {
@@ -119,17 +119,7 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
             imageUrl = "Unknown";
         }
 
-        // Set listeners on Click, on Long Click Action Bar Menu
-        holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
-        holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, listItem.getTitle()));
-        holder.checkBox_star.setOnClickListener(v -> onStarClickListener.itemClicked(v, position, listItem.isStarred()));
-
-        try {
-            holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode(),
-                    listItem.getTitle(), nutriScore, ecoScore, novaGroup, listItem.isStarred()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //-------------------SET HOLDER VALUES--------------------//
         // Get element from your data set at this position
         // Replace the contents of the view with that element
         holder.textView_title.setText(title);
@@ -241,6 +231,18 @@ public class MyProductsAdapter extends RecyclerView.Adapter<MyProductsAdapter.Vi
         }
 
         holder.checkBox_star.setChecked(listItem.isStarred());
+
+        //------------------------ACTIONS------------------------//
+        // Set listeners on Click, on Long Click Action Bar Menu
+        holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem.getBarcode()));
+        holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, listItem.getTitle()));
+        holder.checkBox_star.setOnClickListener(v -> onStarClickListener.itemClicked(v, position, listItem.isStarred()));
+        try {
+            holder.imageView_popupMenu.setOnClickListener(view -> onActionBarMenuClickListener.onPopupMenuClick(view, position, listItem.getBarcode(),
+                    listItem.getTitle(), nutriScore, ecoScore, novaGroup, listItem.isStarred()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

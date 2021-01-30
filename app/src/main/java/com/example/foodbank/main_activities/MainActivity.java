@@ -1,4 +1,4 @@
-package com.example.foodbank;
+package com.example.foodbank.main_activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.foodbank.R;
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.SettingsRoomDatabase;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

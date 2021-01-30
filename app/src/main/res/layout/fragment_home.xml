@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginHorizontal="80dp"
         android:contentDescription="@string/foodbank_cover"
         android:src="@drawable/a_img_logo" />
 </RelativeLayout>
