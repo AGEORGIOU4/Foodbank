@@ -143,6 +143,9 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         ProductsRoomDatabase.getDatabase(this).productsDao().insert(customList);
     }
 
+    void delete(final CustomList customList) {
+        ProductsRoomDatabase.getDatabase(this).productsDao().delete(customList);
+    }
 
     public void createList(View view) {
         EditText editText_listTitle = findViewById(R.id.editText_listTitle);
@@ -169,8 +172,47 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
     }
 
+    // Delete list
+    void deleteItem(int pos) {
+        CustomList tmpCustomList;
+
+        // Create a temp product if user wants to undo, check the selected list and delete item
+
+        // Step 1 - Get item from selected list, delete it and set a tmpProduct for undo case
+        tmpCustomList = lists.get(pos);
+        delete(lists.get(pos));
+
+        // Step 2  Clear the list and update it
+        lists.clear();
+
+        // Step 3 -  Update list content
+        lists.addAll(getCustomLists());
+
+        // Step 4 -  Notify adapter
+        selectListAdapter.notifyDataSetChanged();
+
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.frameLayout_showSelectLists), "You have deleted '" + tmpCustomList.getName() + "'", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", v -> {
+                    // Step 1 - Replace (insert back the tmp product as the 'deleted')
+                    insert(tmpCustomList);
+
+                    // Clear the list and update it
+                    // Step 2 - Clear all lists
+                    lists.clear();
+
+                    // Step 3 -  Update list content
+                    lists.addAll(getCustomLists());
+
+                    // Step 4 - Notify adapter
+                    selectListAdapter.notifyDataSetChanged();
+
+                });
+        snackbar.show();
+    }
+
+
     /*------------------------------INTERFACES----------------------------------*/
-    // Insert product to list
+// Insert product to list
     @Override
     public void itemClicked(View v, int pos, String value) {
         // Get product code and list id on click
@@ -201,7 +243,7 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int pos = viewHolder.getAdapterPosition();
-            // deleteItem(pos);
+            deleteItem(pos);
         }
     };
 

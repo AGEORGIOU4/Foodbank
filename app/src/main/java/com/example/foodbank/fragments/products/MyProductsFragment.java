@@ -204,7 +204,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     }
 
     void deleteItem(int pos) {
-        // Create a temp note if user wants to undo, check the selected list and delete item
+        // Create a temp product if user wants to undo, check the selected list and delete item
 
         // Step 1 - Get item from selected list, delete it and set a tmpProduct for undo case
         Product tmpProduct;
