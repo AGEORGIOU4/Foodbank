@@ -8,9 +8,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.classes.Product;
+import com.example.foodbank.db.SettingsRoomDatabase;
 
 import java.util.List;
 
@@ -48,6 +51,12 @@ public class EditProductActivity extends AppCompatActivity {
         button_submitEdit = findViewById(R.id.button_submitEdit);
         button_submitEdit.setOnClickListener(v -> updateProduct());
 
+    }
+
+    @Override
+    protected void onResume() {
+        loadSettings();
+        super.onResume();
     }
 
     /*-------------------------------PASSED DATA---------------------------------*/
@@ -173,4 +182,28 @@ public class EditProductActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill up all the fields", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /*-------------------------------SETTINGS-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(this).settingsDao().getSettings();
+    }
+
+    public void loadSettings() {
+        List<Settings> settings = getSettings();
+        boolean theme = settings.get(0).isDarkMode();
+        System.out.println("theme is " + theme);
+
+        if (theme) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+        }
+    }
+
 }

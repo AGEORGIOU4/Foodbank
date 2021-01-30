@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.SearchView;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.EditProductActivity;
+import com.example.foodbank.ProductsInCategoryActivity;
 import com.example.foodbank.R;
 import com.example.foodbank.ViewProductActivity;
 import com.example.foodbank.adapters.MyProductsAdapter;
@@ -42,7 +44,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     // Layout
     AppCompatSpinner spinner_productsOptions;
     ArrayAdapter<String> spinnerAdapter;
-    SearchView searchView;
+    Button button_addProductsOnEmptyList;
 
     // Recycler View
     RecyclerView recyclerView;
@@ -63,17 +65,18 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     // Sort controller
     private int sortController = 1;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_products, container, false);
 
-        //Set recycler view and adapters
-        recyclerView = root.findViewById(R.id.recyclerView_products);
-        setRecyclerView();
+        button_addProductsOnEmptyList = root.findViewById(R.id.button_addProductsOnEmptyList);
 
         // Initialize each product from the db to each list
         initializeLists();
+
+        //Set recycler view and adapters
+        recyclerView = root.findViewById(R.id.recyclerView_products);
+        setRecyclerView();
 
         setSpinner(root);
 
@@ -84,11 +87,16 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     public void onResume() {
         hideKeyboard();
 
-        // After modifications lists must be updated
+        // After modifications lists must be updated a
         initializeLists();
         setRecyclerView();
 
+        // Update spinner selection on resume (keep the same as previous)
         setSpinnerSelection();
+
+        // Check if list is empty and display a meaningful message
+        setEmptyListNotification(requireView());
+
 
         super.onResume();
     }
@@ -96,26 +104,29 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     public void initializeLists() {
         productsListDate.clear();
         productsListDate.addAll(getAllProductsSortedByTimestamp());
-        adapterDate.notifyDataSetChanged();
 
         productsListTitle.clear();
         productsListTitle.addAll(getProductsSortedByTitle());
-        adapterNutriScore.notifyDataSetChanged();
 
         productsListNutriScore.clear();
         productsListNutriScore.addAll(getProductsSortedByNutriscore());
-        adapterNutriScore.notifyDataSetChanged();
 
         productsListEcoScore.clear();
         productsListEcoScore.addAll(getProductsSortedByEcoscore());
-        adapterEcoScore.notifyDataSetChanged();
 
         productsListNovaGroup.clear();
         productsListNovaGroup.addAll(getProductsSortedByNovaGroup());
-        adapterNovaGroup.notifyDataSetChanged();
 
         productsListFavorites.clear();
         productsListFavorites.addAll(getProductsFavorites());
+    }
+
+    public void resetAdapters() {
+        adapterDate.notifyDataSetChanged();
+        adapterTitle.notifyDataSetChanged();
+        adapterNutriScore.notifyDataSetChanged();
+        adapterEcoScore.notifyDataSetChanged();
+        adapterNovaGroup.notifyDataSetChanged();
         adapterFavorites.notifyDataSetChanged();
     }
 
@@ -134,6 +145,22 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         adapterEcoScore = new MyProductsAdapter(productsListEcoScore, this, this, this, this);
         adapterNovaGroup = new MyProductsAdapter(productsListNovaGroup, this, this, this, this);
         adapterFavorites = new MyProductsAdapter(productsListFavorites, this, this, this, this);
+    }
+
+    public void setEmptyListNotification(View view) {
+        FrameLayout frameLayout_emptyListNotification = view.findViewById(R.id.frameLayout_emptyListNotification);
+
+        if (getAllProductsSortedByTimestamp().size() == 0) {
+            frameLayout_emptyListNotification.setVisibility(View.VISIBLE);
+        } else {
+            frameLayout_emptyListNotification.setVisibility(View.INVISIBLE);
+        }
+
+        button_addProductsOnEmptyList = view.findViewById(R.id.button_addProductsOnEmptyList);
+        button_addProductsOnEmptyList.setOnClickListener(v -> {
+            Intent intent = new Intent(requireActivity(), ProductsInCategoryActivity.class);
+            startActivity(intent);
+        });
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
@@ -269,13 +296,14 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
                         productsListNovaGroup.addAll(myDAO.getProductsSortedByNovaGroup());
                         productsListFavorites.addAll(myDAO.getProductsFavorites());
 
-                        // Step 4 -  Notify each adapter
+                        // Step 4 - Notify each adapter
                         requireActivity().runOnUiThread(() -> adapterDate.notifyDataSetChanged());
                         requireActivity().runOnUiThread(() -> adapterTitle.notifyDataSetChanged());
                         requireActivity().runOnUiThread(() -> adapterNutriScore.notifyDataSetChanged());
                         requireActivity().runOnUiThread(() -> adapterEcoScore.notifyDataSetChanged());
                         requireActivity().runOnUiThread(() -> adapterNovaGroup.notifyDataSetChanged());
                         requireActivity().runOnUiThread(() -> adapterFavorites.notifyDataSetChanged());
+
                     });
                 });
         snackbar.show();
@@ -379,7 +407,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
                                  String ecoScore, String novaGroup, boolean isStarred) {
         PopupMenu popup = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_product_card, popup.getMenu());
+        inflater.inflate(R.menu.product_card_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
             //do your things in each of the following cases
             if (item.getItemId() == R.id.menu_viewProduct) {
@@ -483,6 +511,8 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         }
         if (checkStar)
             Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
+
+        resetAdapters();
         initializeLists();
     }
 

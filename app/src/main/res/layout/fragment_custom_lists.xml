@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.avoid.AvoidFragment">
+    tools:context=".fragments.custom_lists.CustomListsFragment">
 
     <TextView
         android:id="@+id/text_avoid"

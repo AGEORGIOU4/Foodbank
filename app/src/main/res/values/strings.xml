@@ -14,7 +14,7 @@
     <string name="menu_add_product">Add Product</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_healthy">Healthy</string>
-    <string name="menu_avoid">Avoid</string>
+    <string name="menu_custom_lists">Custom Lists</string>
     <string name="menu_share">Share</string>
     <string name="nav_lists_title">Lists</string>
     <string name="nav_social_media_title">Social Media</string>
@@ -66,4 +66,5 @@
 
 
     <string name="nova_4">Nova: 4</string>
+    <string name="your_list_is_empty">Your list is empty</string>
 </resources>

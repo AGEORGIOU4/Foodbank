@@ -28,6 +28,11 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
+                    android:id="@+id/nav_custom_lists"
+                    android:icon="@drawable/ic_menu_custom_lists"
+                    android:title="@string/menu_custom_lists" />
+
+                <item
                     android:id="@+id/nav_favorites"
                     android:icon="@drawable/ic_menu_star"
                     android:title="@string/menu_favorites" />
@@ -36,11 +41,6 @@
                     android:id="@+id/nav_healthy"
                     android:icon="@drawable/ic_menu_healthy"
                     android:title="@string/menu_healthy" />
-
-                <item
-                    android:id="@+id/nav_avoid"
-                    android:icon="@drawable/ic_menu_warning"
-                    android:title="@string/menu_avoid" />
             </group>
         </menu>
 

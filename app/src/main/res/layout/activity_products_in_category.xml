@@ -32,46 +32,47 @@
         android:id="@+id/textView_showPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:layout_below="@id/searchView_productsInCategories"
         android:layout_alignParentEnd="true"
+        android:layout_marginVertical="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_viewCategoryProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/textView_showPage"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="4dp"
-        android:layout_below="@id/textView_showPage"
         android:scrollbars="vertical" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="bottom|end"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginHorizontal="10dp">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/button_previousPage"
             android:layout_width="60dp"
             android:layout_height="50dp"
+            android:backgroundTint="@color/cyan_200"
             android:onClick="previousPage"
-            android:text="@string/arrow"
             android:rotation="180"
-            android:backgroundTint="@color/cyan_200"/>
+            android:text="@string/arrow" />
 
         <Button
             android:id="@+id/button_nextPage"
             android:layout_width="60dp"
             android:layout_height="50dp"
+            android:backgroundTint="@color/cyan_200"
             android:onClick="nextPage"
-            android:text="@string/arrow"
-            android:backgroundTint="@color/cyan_200"/>
-        </LinearLayout>
+            android:text="@string/arrow" />
+    </LinearLayout>
 </RelativeLayout>
 

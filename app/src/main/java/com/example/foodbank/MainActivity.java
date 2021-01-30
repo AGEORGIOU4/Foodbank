@@ -2,14 +2,11 @@ package com.example.foodbank;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,11 +20,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.SettingsRoomDatabase;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.List;
-import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,25 +34,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.a0_drawer_layout);
+        setContentView(R.layout.side_nav_bar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Navigation Menu
+        // Side Navigation Menu
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_categories, R.id.nav_products, R.id.nav_add_product, R.id.nav_favorites, R.id.nav_healthy, R.id.nav_avoid, R.id.nav_share
+                R.id.nav_home, R.id.nav_categories, R.id.nav_products, R.id.nav_add_product, R.id.nav_favorites, R.id.nav_healthy, R.id.nav_custom_lists, R.id.nav_share
         )
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Bottom Navigation Menu
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         // Hide keyboard
         hideKeyboard(drawer);
@@ -101,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*-------------------------------SETTINGS-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(this).settingsDao().getSettings();
+    }
+
     public void loadSettings() {
         List<Settings> settings = getSettings();
         boolean theme = settings.get(0).isDarkMode();
@@ -117,11 +122,6 @@ public class MainActivity extends AppCompatActivity {
                             AppCompatDelegate
                                     .MODE_NIGHT_NO);
         }
-    }
-
-    /*-------------------------------DATABASE-----------------------------------*/
-    List<Settings> getSettings() {
-        return SettingsRoomDatabase.getDatabase(this).settingsDao().getSettings();
     }
 
 }

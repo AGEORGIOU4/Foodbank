@@ -42,10 +42,10 @@
         tools:layout="@layout/fragment_healthy" />
 
     <fragment
-        android:id="@+id/nav_avoid"
-        android:name="com.example.foodbank.fragments.avoid.AvoidFragment"
-        android:label="@string/menu_avoid"
-        tools:layout="@layout/fragment_avoid" />
+        android:id="@+id/nav_custom_lists"
+        android:name="com.example.foodbank.fragments.custom_lists.CustomListsFragment"
+        android:label="@string/menu_custom_lists"
+        tools:layout="@layout/fragment_custom_lists" />
 
     <fragment
         android:id="@+id/nav_share"

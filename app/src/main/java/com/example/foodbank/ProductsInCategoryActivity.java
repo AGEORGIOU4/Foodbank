@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,8 +21,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.foodbank.classes.ProductInCategory;
 import com.example.foodbank.adapters.ProductsInCategoryAdapter;
+import com.example.foodbank.classes.ProductInCategory;
+import com.example.foodbank.classes.Settings;
+import com.example.foodbank.db.SettingsRoomDatabase;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -30,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 public class ProductsInCategoryActivity extends AppCompatActivity implements ProductsInCategoryAdapter.OnItemClickListener {
@@ -57,7 +61,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     private int selectedPage = 1;
 
     // Passed attributes
-    private String categoryId;
+    private String categoryId = "en:plant-based-foods-and-beverages";
     private String categoryName;
 
     @Override
@@ -65,7 +69,11 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         super.onCreate(savedInstanceState);
 
         // Get extras from categories fragment
-        categoryId = getIntent().getStringExtra("selected_item_id");
+        Intent intent = getIntent();
+        if (intent.hasExtra("selected_item_id")) {
+            categoryId = getIntent().getStringExtra("selected_item_id");
+        }
+
         categoryName = getIntent().getStringExtra("selected_item_name");
         totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 0);
 
@@ -92,6 +100,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     @Override
     protected void onResume() {
+        loadSettings();
         super.onResume();
     }
 
@@ -133,6 +142,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     /*----------------------------------RESPONSE--------------------------------------*/
     public String getFormedUrl() {
         return "https://world.openfoodfacts.org/category/" + categoryId + ".json?page_size=100&page=" + selectedPage;
+
     }
 
     public void getResponse() {
@@ -213,7 +223,8 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     /*--------------------------------SEARCH-----------------------------------*/
     public void searchItem(View view) {
         SearchView searchView = view.findViewById(R.id.searchView_productsInCategories);
-        searchView.setQuery("", true);
+        searchView.setQuery("", false);
+        searchView.clearFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -254,5 +265,29 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
             getResponse();
         });
     }
+
+    /*-------------------------------SETTINGS-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(this).settingsDao().getSettings();
+    }
+
+    public void loadSettings() {
+        List<Settings> settings = getSettings();
+        boolean theme = settings.get(0).isDarkMode();
+        System.out.println("theme is " + theme);
+
+        if (theme) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+        }
+    }
+
 
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/myProducts_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.products.MyProductsFragment">
@@ -9,7 +10,8 @@
         android:id="@+id/spinner_productsOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginVertical="10dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_products"
@@ -18,7 +20,41 @@
         android:layout_below="@id/spinner_productsOptions"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="72dp"
         android:scrollbars="vertical" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout_emptyListNotification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="10dp"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView_emptyListNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/your_list_is_empty"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/button_addProductsOnEmptyList"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_below="@id/textView_emptyListNotification"
+                android:layout_centerHorizontal="true"
+                android:layout_marginVertical="20dp"
+                android:text="@string/add_product" />
+        </RelativeLayout>
+    </FrameLayout>
 
 </RelativeLayout>

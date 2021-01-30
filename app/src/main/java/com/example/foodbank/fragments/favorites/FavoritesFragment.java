@@ -158,26 +158,32 @@ public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnI
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String selectedOption = parent.getItemAtPosition(position).toString();
         // Set recycler view adapter for each selection
-        if (selectedOption.equals("Date Added")) {
-            productsList.clear();
-            productsList.addAll(getFavoriteProductsSortedByTimestamp());
-            adapter.notifyDataSetChanged();
-        } else if (selectedOption.equals("Title")) {
-            productsList.clear();
-            productsList.addAll(getFavoriteProductsSortedByTitle());
-            adapter.notifyDataSetChanged();
-        } else if (selectedOption.equals("Nutriscore")) {
-            productsList.clear();
-            productsList.addAll(getFavoriteProductsSortedByNutriscore());
-            adapter.notifyDataSetChanged();
-        } else if (selectedOption.equals("Ecoscore")) {
-            productsList.clear();
-            productsList.addAll(getFavoriteProductsSortedByEcoscore());
-            adapter.notifyDataSetChanged();
-        } else if (selectedOption.equals("Novagroup")) {
-            productsList.clear();
-            productsList.addAll(getFavoriteProductsSortedByNovaGroup());
-            adapter.notifyDataSetChanged();
+        switch (selectedOption) {
+            case "Date Added":
+                productsList.clear();
+                productsList.addAll(getFavoriteProductsSortedByTimestamp());
+                adapter.notifyDataSetChanged();
+                break;
+            case "Title":
+                productsList.clear();
+                productsList.addAll(getFavoriteProductsSortedByTitle());
+                adapter.notifyDataSetChanged();
+                break;
+            case "Nutriscore":
+                productsList.clear();
+                productsList.addAll(getFavoriteProductsSortedByNutriscore());
+                adapter.notifyDataSetChanged();
+                break;
+            case "Ecoscore":
+                productsList.clear();
+                productsList.addAll(getFavoriteProductsSortedByEcoscore());
+                adapter.notifyDataSetChanged();
+                break;
+            case "Novagroup":
+                productsList.clear();
+                productsList.addAll(getFavoriteProductsSortedByNovaGroup());
+                adapter.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -226,7 +232,7 @@ public class FavoritesFragment extends Fragment implements MyProductsAdapter.OnI
         Product listItem = productsList.get(pos);
         PopupMenu popup = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_product_card, popup.getMenu());
+        inflater.inflate(R.menu.product_card_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
             //do your things in each of the following cases
             if (item.getItemId() == R.id.menu_viewProduct) {

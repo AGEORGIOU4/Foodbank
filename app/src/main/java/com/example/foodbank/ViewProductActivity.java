@@ -12,13 +12,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.foodbank.classes.Product;
+import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.db.SettingsRoomDatabase;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -86,6 +89,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        loadSettings();
         super.onResume();
     }
 
@@ -437,4 +441,28 @@ public class ViewProductActivity extends AppCompatActivity {
             startActivity(getIntent());
         });
     }
+
+    /*-------------------------------SETTINGS-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(this).settingsDao().getSettings();
+    }
+
+    public void loadSettings() {
+        List<Settings> settings = getSettings();
+        boolean theme = settings.get(0).isDarkMode();
+        System.out.println("theme is " + theme);
+
+        if (theme) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+        }
+    }
+
 }
