@@ -54,7 +54,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     // Response
     private String productsResponse = "";
     private String numberOfProductsInPage = "";
-    private int totalCategoryProducts = 0;
+    private int totalCategoryProducts = 200000;
 
     // Pages control
     int totalPages = 0;
@@ -75,7 +75,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         }
 
         categoryName = getIntent().getStringExtra("selected_item_name");
-        totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 0);
+        totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 200000);
 
         setActionBar();
 
