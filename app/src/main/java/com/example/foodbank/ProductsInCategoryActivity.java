@@ -62,20 +62,14 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     // Passed attributes
     private String categoryId = "en:plant-based-foods-and-beverages";
-    private String categoryName;
+    private String categoryName = "Plant based foods and beverages";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Get extras from categories fragment
-        Intent intent = getIntent();
-        if (intent.hasExtra("selected_item_id")) {
-            categoryId = getIntent().getStringExtra("selected_item_id");
-        }
-
-        categoryName = getIntent().getStringExtra("selected_item_name");
-        totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 200000);
+        getExtras();
 
         setActionBar();
 
@@ -259,6 +253,21 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
     }
 
     /*-------------------------------------------------------------------------*/
+    public void getExtras() {
+        Intent intent = getIntent();
+        if (intent.hasExtra("selected_item_id")) {
+            categoryId = getIntent().getStringExtra("selected_item_id");
+        }
+
+        if (intent.hasExtra("selected_item_name")) {
+            categoryId = getIntent().getStringExtra("selected_item_name");
+        }
+
+        if (intent.hasExtra("selected_item_total_products")) {
+            totalCategoryProducts = getIntent().getIntExtra("selected_item_total_products", 200000);
+        }
+    }
+
     public void tryAgain(View view) {
         Button button_categories_tryAgain = view.findViewById(R.id.button_tryAgain);
         button_categories_tryAgain.setOnClickListener(v -> {
