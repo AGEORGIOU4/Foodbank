@@ -29,6 +29,7 @@
                 android:id="@+id/editText_Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -46,6 +47,7 @@
                     android:id="@+id/editText_NutriScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -58,6 +60,7 @@
                     android:id="@+id/editText_EcoScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
@@ -70,6 +73,7 @@
                     android:id="@+id/editText_NovaGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 

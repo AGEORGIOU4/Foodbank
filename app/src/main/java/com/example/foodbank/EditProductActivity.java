@@ -65,17 +65,17 @@ public class EditProductActivity extends AppCompatActivity {
         edited_Title = intent.getStringExtra("clicked_item_title");
 
         if (intent.getStringExtra("clicked_item_nutri_score").toUpperCase().equals("UNKNOWN"))
-            edited_NutriScore = "-";
+            edited_NutriScore = "";
         else
             edited_NutriScore = intent.getStringExtra("clicked_item_nutri_score").toUpperCase();
 
         if (intent.getStringExtra("clicked_item_eco_score").toUpperCase().equals("UNKNOWN"))
-            edited_EcoScore = "-";
+            edited_EcoScore = "";
         else
             edited_EcoScore = intent.getStringExtra("clicked_item_eco_score").toUpperCase();
 
         if (intent.getStringExtra("clicked_item_nova_group").toUpperCase().equals("UNKNOWN"))
-            edited_NovaGroup = "-";
+            edited_NovaGroup = "";
         else
             edited_NovaGroup = intent.getStringExtra("clicked_item_nova_group").toUpperCase();
 
@@ -137,9 +137,8 @@ public class EditProductActivity extends AppCompatActivity {
         edited_NovaGroup = editText_NovaGroup.getText().toString();
         edited_Starred = checkBox_editStarred.isChecked();
 
-        if (!edited_NutriScore.equals("") && !edited_NutriScore.equals("") && !edited_EcoScore.equals("")
+        if (!edited_Title.equals("") && !edited_NutriScore.equals("") && !edited_NutriScore.equals("") && !edited_EcoScore.equals("")
                 && !edited_NovaGroup.equals("")) {
-
             // Check position of which list the edited product comes from
             Product currentProduct;
             switch (optionsController) {
