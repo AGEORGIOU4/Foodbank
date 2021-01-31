@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,17 +32,25 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 import java.util.Vector;
 
-public class SelectListActivity extends AppCompatActivity implements SelectListAdapter.OnItemClickListener, SelectListAdapter.OnItemLongClickListener {
+public class SelectListActivity extends AppCompatActivity implements SelectListAdapter.OnItemClickListener, SelectListAdapter.OnItemLongClickListener,
+        AdapterView.OnItemSelectedListener {
     // Activity states for switching layouts
     private static final int INITIAL_STATE = 1001;
     private static final int CREATE_LIST_STATE = 1002;
     private int CURRENT_STATE = INITIAL_STATE;
 
+    // Layout
+    AppCompatSpinner spinner_listsOptions;
+
     // Recycler View
     RecyclerView recyclerView;
-    private final Vector<CustomList> lists = new Vector<>();
-    private SelectListAdapter selectListAdapter;
+    private final Vector<CustomList> listsByDateCreated = new Vector<>();
+    private final Vector<CustomList> listsByName = new Vector<>();
+    private SelectListAdapter selectListAdapterByDateCreated;
+    private SelectListAdapter selectListAdapterByName;
 
+    // Lists controller
+    private int LISTS_CONTROLLER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +59,9 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
         setActionBar();
 
-        // Initialize each list from the db
-        lists.clear();
-        lists.addAll(getCustomLists());
+        // Initialize lists
+        initializeLists();
+
 
         //Set recycler view and adapters
         recyclerView = findViewById(R.id.recyclerView_customLists);
@@ -62,15 +73,26 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         // Change state if user wants to create a list (extras from custom list to switch frame layout)
         getExtras();
 
+        setSpinner();
+
     }
 
     @Override
     protected void onResume() {
         // Change state if user wants to create a list (extras from custom list to switch frame layout)
+        initializeLists();
         getExtras();
         super.onResume();
     }
 
+    /*---------------------------------LISTS------------------------------------*/
+    public void initializeLists() {
+        // Initialize each list from the db
+        listsByDateCreated.clear();
+        listsByDateCreated.addAll(getCustomListsSortedByTimestamp());
+        listsByName.clear();
+        listsByName.addAll(getCustomListsSortedByName());
+    }
     /*--------------------------------LAYOUT------------------------------------*/
     public void setActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -89,8 +111,9 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // Set adapters for each sorting selection
-        selectListAdapter = new SelectListAdapter(lists, this, this);
-        recyclerView.setAdapter(selectListAdapter);
+        selectListAdapterByDateCreated = new SelectListAdapter(listsByDateCreated, this, this);
+        selectListAdapterByName = new SelectListAdapter(listsByName, this, this);
+        recyclerView.setAdapter(selectListAdapterByDateCreated);
     }
 
     public void switchLayouts() {
@@ -133,9 +156,43 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         });
     }
 
+    /*-------------------------------SPINNER-----------------------------------*/
+    public void setSpinner() {
+        spinner_listsOptions = findViewById(R.id.spinner_listsOptions);
+        String[] spinnerOptions = {"Date Created", "Title"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
+        spinner_listsOptions.setAdapter(spinnerAdapter);
+        spinner_listsOptions.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selectedOption = parent.getItemAtPosition(position).toString();
+        // Set recycler view adapter for each selection
+        if (selectedOption.equals("Date Created")) {
+            recyclerView.setAdapter(selectListAdapterByDateCreated);
+            // Set controller to keep track of the order for deletion of list
+            LISTS_CONTROLLER = 1;
+
+        } else if (selectedOption.equals("Title")) {
+            recyclerView.setAdapter(selectListAdapterByName);
+            // Set controller to keep track of the order for deletion of list
+            LISTS_CONTROLLER = 2;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     /*-------------------------------DATABASE-----------------------------------*/
-    List<CustomList> getCustomLists() {
+    List<CustomList> getCustomListsSortedByTimestamp() {
         return ProductsRoomDatabase.getDatabase(this).productsDao().getCustomListsSortedByTimestamp();
+    }
+
+    List<CustomList> getCustomListsSortedByName() {
+        return ProductsRoomDatabase.getDatabase(this).productsDao().getCustomListsSortedByName();
     }
 
     List<ProductToList> getProductsToLists(int list_id, String code) {
@@ -170,9 +227,13 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
             CustomList customList = new CustomList(name, description, 0, System.currentTimeMillis());
             insert(customList);
 
-            lists.clear();
-            lists.addAll(getCustomLists());
-            selectListAdapter.notifyDataSetChanged();
+            listsByDateCreated.clear();
+            listsByDateCreated.addAll(getCustomListsSortedByTimestamp());
+            selectListAdapterByDateCreated.notifyDataSetChanged();
+
+            listsByName.clear();
+            listsByName.addAll(getCustomListsSortedByName());
+            selectListAdapterByName.notifyDataSetChanged();
 
             // Change controller state and switch layout
             CURRENT_STATE = INITIAL_STATE;
@@ -197,17 +258,33 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         // Create a temp product if user wants to undo, check the selected list and delete item
 
         // Step 1 - Get item from selected list, delete it and set a tmpProduct for undo case
-        tmpCustomList = lists.get(pos);
-        delete(lists.get(pos));
+        switch (LISTS_CONTROLLER) {
+            case 1:
+                tmpCustomList = listsByDateCreated.get(pos);
+                delete(listsByDateCreated.get(pos));
+                break;
+            case 2:
+                tmpCustomList = listsByName.get(pos);
+                delete(listsByName.get(pos));
+                break;
+
+            default:
+                tmpCustomList = listsByDateCreated.get(pos);
+                break;
+        }
+
 
         // Step 2  Clear the list and update it
-        lists.clear();
+        listsByDateCreated.clear();
+        listsByName.clear();
 
         // Step 3 -  Update list content
-        lists.addAll(getCustomLists());
+        listsByDateCreated.addAll(getCustomListsSortedByTimestamp());
+        listsByName.addAll(getCustomListsSortedByName());
 
         // Step 4 -  Notify adapter
-        selectListAdapter.notifyDataSetChanged();
+        selectListAdapterByDateCreated.notifyDataSetChanged();
+        selectListAdapterByName.notifyDataSetChanged();
 
         Snackbar snackbar = Snackbar.make(findViewById(R.id.frameLayout_showSelectLists), "You have deleted '" + tmpCustomList.getName() + "'", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", v -> {
@@ -216,13 +293,16 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
                     // Clear the list and update it
                     // Step 2 - Clear all lists
-                    lists.clear();
+                    listsByDateCreated.clear();
+                    listsByName.clear();
 
                     // Step 3 -  Update list content
-                    lists.addAll(getCustomLists());
+                    listsByDateCreated.addAll(getCustomListsSortedByTimestamp());
+                    listsByName.addAll(getCustomListsSortedByName());
 
                     // Step 4 - Notify adapter
-                    selectListAdapter.notifyDataSetChanged();
+                    selectListAdapterByDateCreated.notifyDataSetChanged();
+                    selectListAdapterByName.notifyDataSetChanged();
 
                 });
         snackbar.show();
@@ -258,10 +338,10 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
                 ProductToList productToList = new ProductToList(code, list_id);
                 insert(productToList);
                 Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
+                selectListAdapterByDateCreated.notifyDataSetChanged();
             }
         }
     }
-
 
     // Show snackbar for deletion
     @Override

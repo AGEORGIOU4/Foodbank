@@ -73,6 +73,9 @@ public interface ProductsDao {
     @Query("SELECT * FROM customLists ORDER BY timestamp")
     List<CustomList> getCustomListsSortedByTimestamp();
 
+    @Query("SELECT * FROM customLists ORDER BY name")
+    List<CustomList> getCustomListsSortedByName();
+
     /*-------------LIST TO PRODUCT-------------*/
     @Insert
     void insert(ProductToList... productToLists);
@@ -80,6 +83,11 @@ public interface ProductsDao {
     @Delete
     void delete(ProductToList productToList);
 
+    // Get each list from product_to_lists
+    @Query("SELECT * FROM products_to_lists WHERE list_id =:list_id")
+    List<ProductToList> getLists(int list_id);
+
+    // Get each unique relationship
     @Query("SELECT * FROM products_to_lists WHERE list_id =:list_id AND product_code=:product_code")
     List<ProductToList> getProductsToLists(int list_id, String product_code);
 }

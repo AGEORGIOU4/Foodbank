@@ -10,11 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
 import com.example.foodbank.classes.CustomList;
+import com.example.foodbank.classes.ProductToList;
+import com.example.foodbank.db.ProductsRoomDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.ViewHolder> {
@@ -71,8 +74,7 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
 
         String title;
         String description;
-        int numOfProducts;
-        String dateCreated;
+        int numOfProducts = 0;
 
         //-----------------------GET VALUES-----------------------//
         if (listItem.getName() != null && !listItem.getName().equals("")) {
@@ -87,13 +89,15 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
             description = "Unknown";
         }
 
-        numOfProducts = listItem.getNumOfProducts();
-
+        // Set number of products for each list
+        for(int i = 0; i < getLists(listItem.getId()).size(); i++) {
+            numOfProducts++;
+        }
 
         //-------------------SET HOLDER VALUES--------------------//
         holder.textView_title.setText(title);
         holder.textView_description.setText(description);
-        holder.textView_numOfProducts.setText(String.valueOf(numOfProducts));
+        holder.textView_numOfProducts.setText(String.valueOf(numOfProducts) + " items");
         holder.textView_dateCreated.setText(sdf.format(resultDate));
 
         // Set listeners on Click, on Long Click Action Bar Menu
@@ -113,6 +117,11 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
 
     public interface OnItemLongClickListener {
         boolean itemLongClicked(View v, int pos, int list_id);
+    }
+
+    /*-------------------------------DATABASE-----------------------------------*/
+    List<ProductToList> getLists(int list_id) {
+        return ProductsRoomDatabase.getDatabase(context).productsDao().getLists(list_id);
     }
 
 }
