@@ -22,7 +22,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Delete;
 
+import com.example.foodbank.classes.ProductToList;
 import com.example.foodbank.main_activities.EditProductActivity;
 import com.example.foodbank.main_activities.ProductsInCategoryActivity;
 import com.example.foodbank.R;

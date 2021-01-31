@@ -38,6 +38,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
     // Layout
     Button button_addProductsOnEmptyList;
+    TabLayout tabLayout_customLists;
 
     // Recycler View
     RecyclerView recyclerView;
@@ -48,9 +49,17 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     // Tab Controller
     private int TAB_SELECTION = 1001;
 
+    // Variables
+    private int SELECTED_LIST_ID = 0;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_custom_lists, container, false);
+
+        tabLayout_customLists = root.findViewById(R.id.tabLayout_customLists);
+
+        // Default selected list
+        SELECTED_LIST_ID = getCustomLists().get(0).getId();
 
         // Get data from DB and populate lists vector
         initializeLists(root);
@@ -60,7 +69,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
         setRecyclerView(root);
 
-        populateProductsForEachList();
+        populateProductsForEachList(root);
 
         // Floating button for creating a custom list
         addListAction(root);
@@ -75,6 +84,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
         // re-initialize lists, notify adapter
         initializeLists(requireView());
+        setTabLayout(requireView());
         setRecyclerView(requireView());
         super.onResume();
     }
@@ -86,10 +96,22 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         lists.addAll(getCustomLists());
     }
 
-    public void populateProductsForEachList() {
+    public void populateProductsForEachList(View view) {
+        // Clear products list
+        productsInLists.clear();
 
+        // Click must be currentListIDd
+        for (int i = 0; i < getLists(SELECTED_LIST_ID).size(); i++) {
 
-        // setRecyclerView();
+            // Check if product is in the main list
+            for (int j = 0; j < getProductsSortedByTimestamp().size(); j++) {
+                if (getLists(SELECTED_LIST_ID).get(i).getProduct_code().equals(getProductsSortedByTimestamp().get(j).getBarcode())) {
+                    Product product = getProductsSortedByTimestamp().get(j);
+                    productsInLists.add(product);
+                }
+            }
+        }
+        setRecyclerView(view);
     }
 
     public void addListAction(View view) {
@@ -120,8 +142,10 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     }
 
     public void setTabLayout(View view) {
+        // Clear tab layout
+        tabLayout_customLists.removeAllTabs();
+
         // Set list name on each tab
-        TabLayout tabLayout_customLists = view.findViewById(R.id.tabLayout_customLists);
         try {
             for (int i = 0; i < getCustomLists().size(); i++) {
                 tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText(lists.get(i).getName()));
@@ -133,7 +157,10 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         tabLayout_customLists.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                TAB_SELECTION = tab.getPosition();
+                int counter = tab.getPosition();
+                SELECTED_LIST_ID = getCustomLists().get(counter).getId();
+
+                populateProductsForEachList(view);
             }
 
             @Override
@@ -148,7 +175,6 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         });
     }
 
-
     /*-------------------------------DATABASE-----------------------------------*/
     List<CustomList> getCustomLists() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getCustomListsSortedByTimestamp();
@@ -160,6 +186,14 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
     List<ProductToList> getProductsToLists(int list_id, String code) {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsToLists(list_id, code);
+    }
+
+    List<ProductToList> getLists(int list_id) {
+        return ProductsRoomDatabase.getDatabase(requireContext()).productsDao().getLists(list_id);
+    }
+
+    List<ProductToList> getLists() {
+        return ProductsRoomDatabase.getDatabase(requireContext()).productsDao().getLists();
     }
 
     /*------------------------------INTERFACES----------------------------------*/

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
 import com.example.foodbank.classes.CustomList;
+import com.example.foodbank.classes.Product;
 import com.example.foodbank.classes.ProductToList;
 import com.example.foodbank.db.ProductsRoomDatabase;
 
@@ -91,7 +92,13 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
 
         // Set number of products for each list
         for(int i = 0; i < getLists(listItem.getId()).size(); i++) {
-            numOfProducts++;
+            for(int j = 0; j < getAllProductsSortedByTimestamp().size(); j++) {
+                // Check if product is still in the Main products list
+                if(getLists(listItem.getId()).get(i).getProduct_code().equals(getAllProductsSortedByTimestamp().get(j).getBarcode())) {
+                    numOfProducts++;
+                }
+            }
+
         }
 
         //-------------------SET HOLDER VALUES--------------------//
@@ -122,6 +129,10 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
     /*-------------------------------DATABASE-----------------------------------*/
     List<ProductToList> getLists(int list_id) {
         return ProductsRoomDatabase.getDatabase(context).productsDao().getLists(list_id);
+    }
+
+    List<Product> getAllProductsSortedByTimestamp() {
+        return ProductsRoomDatabase.getDatabase(context).productsDao().getProductsSortedByTimestamp();
     }
 
 }

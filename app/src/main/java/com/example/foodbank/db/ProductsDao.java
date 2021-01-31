@@ -84,6 +84,10 @@ public interface ProductsDao {
     void delete(ProductToList productToList);
 
     // Get each list from product_to_lists
+    @Query("SELECT * FROM products_to_lists")
+    List<ProductToList> getLists();
+
+    // Get each list from product_to_lists
     @Query("SELECT * FROM products_to_lists WHERE list_id =:list_id")
     List<ProductToList> getLists(int list_id);
 
