@@ -45,10 +45,8 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     private final Vector<Product> productsInLists = new Vector<>();
     private MyProductsAdapter selectListAdapter;
 
-
-    // Tab controller
+    // Tab Controller
     private int TAB_SELECTION = 1001;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -74,10 +72,14 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     @Override
     public void onResume() {
         loadSettings();
+
+        // re-initialize lists, notify adapter
+        initializeLists(requireView());
+        setRecyclerView(requireView());
         super.onResume();
     }
 
-    /*---------------------------------ITEMS------------------------------------*/
+    /*---------------------------------LISTS------------------------------------*/
     public void initializeLists(View view) {
         // Initialize each list from the db and set tab layout
         lists.clear();
@@ -96,6 +98,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireActivity(), SelectListActivity.class);
+                intent.putExtra("extra_set_create_list_view", 1002);
                 startActivity(intent);
             }
         });

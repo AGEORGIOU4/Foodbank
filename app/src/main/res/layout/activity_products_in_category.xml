@@ -28,51 +28,58 @@
         android:layout_marginVertical="10dp"
         android:iconifiedByDefault="false" />
 
-    <TextView
-        android:id="@+id/textView_showPage"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/searchView_productsInCategories"
         android:layout_alignParentEnd="true"
-        android:layout_marginVertical="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:textStyle="bold" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView_showPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/searchView_productsInCategories"
+            android:layout_alignParentEnd="true"
+            android:layout_marginVertical="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toStartOf="@id/button_previousPage"
+            android:text="1/1455 page"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_previousPage"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:backgroundTint="@color/cyan_200"
+            android:onClick="previousPage"
+            android:rotation="90"
+            android:text="@string/arrow" />
+
+        <Button
+            android:id="@+id/button_nextPage"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:backgroundTint="@color/cyan_200"
+            android:onClick="nextPage"
+            android:rotation="-90"
+            android:text="@string/arrow" />
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_viewCategoryProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/textView_showPage"
+        android:layout_below="@id/linearLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="4dp"
         android:scrollbars="vertical" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginHorizontal="10dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/button_previousPage"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:backgroundTint="@color/cyan_200"
-            android:onClick="previousPage"
-            android:rotation="180"
-            android:text="@string/arrow" />
-
-        <Button
-            android:id="@+id/button_nextPage"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:backgroundTint="@color/cyan_200"
-            android:onClick="nextPage"
-            android:text="@string/arrow" />
-    </LinearLayout>
 </RelativeLayout>
 

@@ -56,32 +56,18 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         recyclerView = findViewById(R.id.recyclerView_customLists);
         setRecyclerView();
 
+        // Switch layout when user wants to create a new list
+        createListView();
 
-        // Create a new list form
-        FloatingActionButton floatingActionButton_AddList = findViewById(R.id.floatingActionButton_AddList);
-        floatingActionButton_AddList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CURRENT_STATE = CREATE_LIST_STATE;
+        // Change state if user wants to create a list (extras from custom list to switch frame layout)
+        getExtras();
 
-                // Switch layout if user wants to create a list
-                switchLayouts();
-            }
-        });
-
-        // Go back button
-        Button button_goBack = findViewById(R.id.button_goBack);
-        button_goBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CURRENT_STATE = INITIAL_STATE;
-                switchLayouts();
-            }
-        });
     }
 
     @Override
     protected void onResume() {
+        // Change state if user wants to create a list (extras from custom list to switch frame layout)
+        getExtras();
         super.onResume();
     }
 
@@ -121,6 +107,30 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
                 frameLayout_showCreateList.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    public void createListView() {
+        // Create a new list form
+        FloatingActionButton floatingActionButton_AddList = findViewById(R.id.floatingActionButton_AddList);
+        floatingActionButton_AddList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CURRENT_STATE = CREATE_LIST_STATE;
+
+                // Switch layout if user wants to create a list
+                switchLayouts();
+            }
+        });
+
+        // Go back button
+        Button button_goBack = findViewById(R.id.button_goBack);
+        button_goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CURRENT_STATE = INITIAL_STATE;
+                switchLayouts();
+            }
+        });
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
@@ -218,6 +228,16 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         snackbar.show();
     }
 
+    /*--------------------------------EXTRAS------------------------------------*/
+    public void getExtras() {
+        // Change state if user wants to create a list
+        Intent intent = getIntent();
+        if (intent.hasExtra("extra_set_create_list_view")) {
+            CURRENT_STATE = intent.getIntExtra("extra_set_create_list_view", 1001);
+        }
+
+        switchLayouts();
+    }
 
     /*------------------------------INTERFACES----------------------------------*/
     // Insert product to list
@@ -232,14 +252,14 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
             int counter = 0;
 
             //Check if this product is not already added on the clicked list
-                if(getProductsToLists(list_id, code).size() > 0) {
-                    Toast.makeText(this, "This item is already added on this list", Toast.LENGTH_SHORT).show();
-                } else {
-                    ProductToList productToList = new ProductToList(code, list_id);
-                    insert(productToList);
-                    Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
-                }
+            if (getProductsToLists(list_id, code).size() > 0) {
+                Toast.makeText(this, "This item is already added on this list", Toast.LENGTH_SHORT).show();
+            } else {
+                ProductToList productToList = new ProductToList(code, list_id);
+                insert(productToList);
+                Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
             }
+        }
     }
 
 
