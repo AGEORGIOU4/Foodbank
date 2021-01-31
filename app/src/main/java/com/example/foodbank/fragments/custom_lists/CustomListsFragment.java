@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -24,6 +25,7 @@ import com.example.foodbank.classes.ProductToList;
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;
 import com.example.foodbank.db.SettingsRoomDatabase;
+import com.example.foodbank.main_activities.EditProductActivity;
 import com.example.foodbank.main_activities.SelectListActivity;
 import com.example.foodbank.main_activities.ViewProductActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,7 +49,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     private MyProductsAdapter selectListAdapter;
 
     // Tab Controller
-    private int TAB_SELECTION = 1001;
+    private int CURRENT_TAB_SELECTION = 0;
 
     // Variables
     private int SELECTED_LIST_ID = 0;
@@ -86,6 +88,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         initializeLists(requireView());
         setTabLayout(requireView());
         setRecyclerView(requireView());
+
         super.onResume();
     }
 
@@ -159,7 +162,6 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
             public void onTabSelected(TabLayout.Tab tab) {
                 int counter = tab.getPosition();
                 SELECTED_LIST_ID = getCustomLists().get(counter).getId();
-
                 populateProductsForEachList(view);
             }
 
@@ -176,14 +178,21 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
-    List<CustomList> getCustomLists() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getCustomListsSortedByTimestamp();
-    }
-
+    // Products
     List<Product> getProductsSortedByTimestamp() {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
     }
 
+    void update(Product product) {
+        ProductsRoomDatabase.getDatabase(getContext()).productsDao().update(product);
+    }
+
+    // Custom Lists
+    List<CustomList> getCustomLists() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getCustomListsSortedByTimestamp();
+    }
+
+    // Products in Lists
     List<ProductToList> getProductsToLists(int list_id, String code) {
         return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsToLists(list_id, code);
     }
@@ -194,6 +203,35 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
     List<ProductToList> getLists() {
         return ProductsRoomDatabase.getDatabase(requireContext()).productsDao().getLists();
+    }
+
+    void insert(ProductToList productToList) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().insert(productToList);
+    }
+
+    void delete(final ProductToList productToList) {
+        ProductsRoomDatabase.getDatabase(requireContext()).productsDao().delete(productToList);
+    }
+
+    void deleteItem(int pos) {
+        Product tmpProduct = productsInLists.get(pos);
+        ProductToList tmpProductToList = getProductsToLists(SELECTED_LIST_ID, tmpProduct.getBarcode()).get(0);
+        delete(tmpProductToList);
+
+
+        // Step 2 - CLear the recycler view list and update it
+        populateProductsForEachList(requireView());
+
+        Snackbar snackbar = Snackbar.make(requireView(), "You have deleted '" + tmpProduct.getTitle() + "'", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", v -> {
+                    // Step 1 - Replace (insert back the tmp product as the 'deleted')
+                    insert(tmpProductToList);
+
+                    // Clear the list and update it
+                    // Step 2 - Clear all lists
+                    populateProductsForEachList(requireView());
+                });
+        snackbar.show();
     }
 
     /*------------------------------INTERFACES----------------------------------*/
@@ -220,6 +258,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.product_card_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
+            // Option One
             // set actions for each case on the popup menu
             if (item.getItemId() == R.id.menu_viewProduct) {
                 Intent intent = new Intent(getActivity(), ViewProductActivity.class);
@@ -227,6 +266,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
                 startActivity(intent);
                 return true;
             }
+            // Option Two
             // Add to list - start select list activity and pass product barcode
             if (item.getItemId() == R.id.menu_addToList) {
                 Intent intent = new Intent(requireActivity(), SelectListActivity.class);
@@ -234,17 +274,34 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
                 startActivity(intent);
                 return true;
             }
+            // Option Three
             if (item.getItemId() == R.id.menu_editProduct) {
-
+                Intent intent = new Intent(getActivity(), EditProductActivity.class);
+                intent.putExtra("extra_products_code", code);
+                startActivity(intent);
             }
-
+            // Option Four
             if (item.getItemId() == R.id.menu_deleteProduct) {
-                //deleteItem(pos);
+                deleteItem(pos);
                 return true;
             }
             return false;
         });
         popup.show();
+    }
+
+    // Handle checkbox(star) clicks
+    @Override
+    public void itemClicked(View v, int pos, boolean checked) {
+        boolean checkStar = false;
+
+        checkStar = productsInLists.get(pos).isStarred();
+        checkStar = !checkStar;
+        productsInLists.get(pos).setStarred(checkStar);
+        update(productsInLists.get(pos));
+
+        if (checkStar)
+            Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -258,15 +315,9 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int pos = viewHolder.getAdapterPosition();
-            // deleteItem(pos);
+            deleteItem(pos);
         }
     };
-
-    // Handle checkbox(star) clicks
-    @Override
-    public void itemClicked(View v, int pos, boolean checked) {
-
-    }
 
     /*-------------------------------SETTINGS-----------------------------------*/
     List<Settings> getSettings() {

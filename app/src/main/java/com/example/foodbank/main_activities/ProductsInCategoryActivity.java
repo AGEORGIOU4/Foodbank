@@ -1,10 +1,12 @@
 package com.example.foodbank.main_activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.SearchView;
@@ -95,6 +97,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
 
     @Override
     protected void onResume() {
+        getExtras();
         loadSettings();
         super.onResume();
     }
@@ -104,6 +107,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null && categoryName != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+
             actionBar.setTitle(categoryName);
             actionBar.setBackgroundDrawable(getDrawable(R.drawable.action_bar_bc));
         }
@@ -261,7 +265,7 @@ public class ProductsInCategoryActivity extends AppCompatActivity implements Pro
         }
 
         if (intent.hasExtra("selected_item_name")) {
-            categoryId = getIntent().getStringExtra("selected_item_name");
+            categoryName = getIntent().getStringExtra("selected_item_name");
         }
 
         if (intent.hasExtra("selected_item_total_products")) {

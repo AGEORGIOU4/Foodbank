@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.foodbank.R;
+import com.example.foodbank.classes.Product;
 import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;
-import com.example.foodbank.classes.Product;
 import com.example.foodbank.db.SettingsRoomDatabase;
 
 import java.util.List;
@@ -35,6 +35,7 @@ public class EditProductActivity extends AppCompatActivity {
     Button button_submitEdit;
 
     private int optionsController = 1;
+    private String passedBarcode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class EditProductActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        getExtras();
         loadSettings();
         super.onResume();
     }
@@ -63,72 +65,47 @@ public class EditProductActivity extends AppCompatActivity {
     /*-------------------------------PASSED DATA---------------------------------*/
     private void getExtras() {
         Intent intent = getIntent();
-        edited_Title = intent.getStringExtra("clicked_item_title");
+        passedBarcode = intent.getStringExtra("extra_products_code");
+        Product tmpProduct = getProduct(passedBarcode).get(0);
 
-        if (intent.getStringExtra("clicked_item_nutri_score").toUpperCase().equals("UNKNOWN"))
+        // Set input field values
+        if(tmpProduct.getTitle() == null || tmpProduct.getTitle().equals(""))
+            edited_Title = "Unknown";
+        else
+            edited_Title = tmpProduct.getTitle();
+
+        if (tmpProduct.getNutriScore() == null || tmpProduct.getNutriScore().toUpperCase().equals("UNKNOWN"))
             edited_NutriScore = "";
         else
-            edited_NutriScore = intent.getStringExtra("clicked_item_nutri_score").toUpperCase();
+            edited_NutriScore = tmpProduct.getNutriScore().toUpperCase();
 
-        if (intent.getStringExtra("clicked_item_eco_score").toUpperCase().equals("UNKNOWN"))
+        if (tmpProduct.getEcoScore() ==  null  || tmpProduct.getEcoScore().toUpperCase().equals("UNKNOWN"))
             edited_EcoScore = "";
         else
-            edited_EcoScore = intent.getStringExtra("clicked_item_eco_score").toUpperCase();
+            edited_EcoScore = tmpProduct.getEcoScore().toUpperCase();
 
-        if (intent.getStringExtra("clicked_item_nova_group").toUpperCase().equals("UNKNOWN"))
+        if (tmpProduct.getNovaGroup() == null  || tmpProduct.getNovaGroup().toUpperCase().equals("UNKNOWN".toUpperCase()))
             edited_NovaGroup = "";
         else
-            edited_NovaGroup = intent.getStringExtra("clicked_item_nova_group").toUpperCase();
+            edited_NovaGroup = tmpProduct.getNovaGroup().toUpperCase();
 
-        edited_Starred = intent.getBooleanExtra("clicked_item_starred", false);
+        edited_Starred = tmpProduct.isStarred();
+
 
         editText_Title.setText(edited_Title);
         editText_NutriScore.setText(edited_NutriScore);
         editText_EcoScore.setText(edited_EcoScore);
         editText_NovaGroup.setText(edited_NovaGroup);
         checkBox_editStarred.setChecked(edited_Starred);
-
-        itemPosition = intent.getIntExtra("clicked_item_position", 0);
-
-        optionsController = intent.getIntExtra("extra_sort_controller", 1);
-        System.out.println("controller "  + optionsController);
     }
 
     /*-------------------------------DATABASE-----------------------------------*/
-    List<Product> getAllProductsSortedByTimestamp() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByTimestamp();
-    }
-
-    List<Product> getProductsSortedByTitle() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByTitle();
-    }
-
-    List<Product> getProductsSortedByNutriscore() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByNutriscore();
-    }
-
-    List<Product> getProductsSortedByEcoscore() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByEcoscore();
-    }
-
-    List<Product> getProductsSortedByNovaGroup() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsSortedByNovaGroup();
-    }
-
-    List<Product> getProductsFavorites() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getFavoriteProducts();
+    List<Product> getProduct(String product_code) {
+        return ProductsRoomDatabase.getDatabase(this).productsDao().getProduct(product_code);
     }
 
     void update(Product product) {
         ProductsRoomDatabase.getDatabase(this).productsDao().update(product);
-    }
-
-    void insert(Product product) {
-        ProductsRoomDatabase.getDatabase(this).productsDao().insert(product);
-    }
-
-    void delete(final Product product) {
-        ProductsRoomDatabase.getDatabase(this).productsDao().delete(product);
     }
 
     public void updateProduct() {
@@ -138,45 +115,18 @@ public class EditProductActivity extends AppCompatActivity {
         edited_NovaGroup = editText_NovaGroup.getText().toString();
         edited_Starred = checkBox_editStarred.isChecked();
 
+        Product tmpProduct = getProduct(passedBarcode).get(0);
+
         if (!edited_Title.equals("") && !edited_NutriScore.equals("") && !edited_NutriScore.equals("") && !edited_EcoScore.equals("")
                 && !edited_NovaGroup.equals("")) {
             // Check position of which list the edited product comes from
-            Product currentProduct;
-            switch (optionsController) {
-                case 1:
-                    currentProduct = getAllProductsSortedByTimestamp().get(itemPosition);
-                    delete(getAllProductsSortedByTimestamp().get(itemPosition));
-                    break;
-                case 2:
-                    currentProduct = (getProductsSortedByTitle()).get(itemPosition);
-                    delete(getProductsSortedByTitle().get(itemPosition));
-                    break;
-                case 3:
-                    currentProduct = getProductsSortedByNutriscore().get(itemPosition);
-                    delete(getProductsSortedByNutriscore().get(itemPosition));
-                    break;
-                case 4:
-                    currentProduct = getProductsSortedByEcoscore().get(itemPosition);
-                    delete(getProductsSortedByEcoscore().get(itemPosition));
-                    break;
-                case 5:
-                    currentProduct = getProductsSortedByNovaGroup().get(itemPosition);
-                    delete(getProductsSortedByNovaGroup().get(itemPosition));
-                    break;
-                case 6:
-                    currentProduct = getProductsFavorites().get(itemPosition);
-                    delete(getProductsFavorites().get(itemPosition));
-                    break;
-                default:
-                    currentProduct = getAllProductsSortedByTimestamp().get(itemPosition);
-                    break;
-            }
-            Product tmpProduct = new Product(currentProduct.getBarcode(), edited_Title, edited_NutriScore, edited_NovaGroup,
-                    edited_EcoScore, currentProduct.getIngredients(), currentProduct.getNutriments(),
-                    currentProduct.getVegan(), currentProduct.getVegetarian(), currentProduct.getCategories(), edited_Starred,
-                    currentProduct.getTimestamp(), currentProduct.getImageUrl());
+            tmpProduct.setTitle(edited_Title);
+            tmpProduct.setNutriScore(edited_NutriScore);
+            tmpProduct.setEcoScore(edited_EcoScore);
+            tmpProduct.setNovaGroup(edited_NovaGroup);
 
-            insert(tmpProduct);
+            update(tmpProduct);
+
             finish();
         } else {
             Toast.makeText(this, "Please fill up all the fields", Toast.LENGTH_SHORT).show();

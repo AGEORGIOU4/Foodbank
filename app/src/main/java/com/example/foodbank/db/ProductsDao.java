@@ -26,6 +26,9 @@ public interface ProductsDao {
     @Delete
     void delete(Product product);
 
+    @Query("SELECT * FROM products WHERE barcode=:product_code")
+    List<Product> getProduct(String product_code);
+
     @Query("SELECT * FROM products ORDER BY title ASC")
     List<Product> getProductsSortedByTitle();
 
@@ -59,6 +62,11 @@ public interface ProductsDao {
 
     @Query("SELECT * FROM products WHERE starred IS 1 ORDER BY timestamp DESC")
     List<Product> getFavoriteProductsSortedByTimestamp();
+
+    /*-----------------HEALTHY------------------*/
+    @Query("SELECT * FROM products WHERE nutriScore IS 'A' OR nutriScore IS 'B'")
+    List<Product> getHealthyProducts();
+
 
     /*------------------LISTS------------------*/
     @Insert

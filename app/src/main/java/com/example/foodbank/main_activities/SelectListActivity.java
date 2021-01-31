@@ -202,7 +202,6 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
     // Insert product to list
     void insert(ProductToList productToList) {
         ProductsRoomDatabase.getDatabase(this).productsDao().insert(productToList);
-        Toast.makeText(this, "New item added to your list", Toast.LENGTH_LONG).show();
     }
 
     // Insert list
@@ -328,8 +327,6 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         if (intent.hasExtra("extra_product_code")) {
             // Get code from clicked product
             String code = intent.getStringExtra("extra_product_code");
-            int counterForEmptyList = 0;
-            int counter = 0;
 
             //Check if this product is not already added on the clicked list
             if (getProductsToLists(list_id, code).size() > 0) {

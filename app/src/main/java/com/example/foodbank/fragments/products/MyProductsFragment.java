@@ -22,18 +22,16 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Delete;
 
-import com.example.foodbank.classes.ProductToList;
-import com.example.foodbank.main_activities.EditProductActivity;
-import com.example.foodbank.main_activities.ProductsInCategoryActivity;
 import com.example.foodbank.R;
-import com.example.foodbank.main_activities.SelectListActivity;
-import com.example.foodbank.main_activities.ViewProductActivity;
 import com.example.foodbank.adapters.MyProductsAdapter;
 import com.example.foodbank.classes.Product;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.main_activities.EditProductActivity;
+import com.example.foodbank.main_activities.ProductsInCategoryActivity;
+import com.example.foodbank.main_activities.SelectListActivity;
+import com.example.foodbank.main_activities.ViewProductActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -275,7 +273,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.detach(MyProductsFragment.this).attach(MyProductsFragment.this).commit();
         });
-        Snackbar snackbar = Snackbar.make(getView(), "You have deleted '" + tmpProduct.getTitle() + "'", Snackbar.LENGTH_LONG)
+        Snackbar snackbar = Snackbar.make(requireView(), "You have deleted '" + tmpProduct.getTitle() + "'", Snackbar.LENGTH_LONG)
                 .setAction("UNDO", v -> {
                     // Step 1 - Replace (insert back the tmp product as the 'deleted')
                     insert(tmpProduct);
@@ -437,39 +435,12 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
             if (item.getItemId() == R.id.menu_editProduct) {
                 Intent intent = new Intent(getActivity(), EditProductActivity.class);
                 intent.putExtra("extra_products_code", code);
-                intent.putExtra("extra_sort_controller", sortController);
 
-                // Check for nulls
-                if (title != null) {
-                    intent.putExtra("clicked_item_title", title);
-                } else {
-                    intent.putExtra("clicked_item_title", "Unknown");
-                }
-
-                if (nutriScore != null) {
-                    intent.putExtra("clicked_item_nutri_score", nutriScore);
-                } else {
-                    intent.putExtra("clicked_item_nutri_score", "Unknown");
-                }
-
-                if (ecoScore != null) {
-                    intent.putExtra("clicked_item_eco_score", ecoScore);
-                } else {
-                    intent.putExtra("clicked_item_eco_score", "Unknown");
-                }
-
-                if (novaGroup != null) {
-                    intent.putExtra("clicked_item_nova_group", novaGroup);
-                } else {
-                    intent.putExtra("clicked_item_nova_group", "Unknown");
-                }
-
-                intent.putExtra("clicked_item_starred", isStarred);
-                intent.putExtra("clicked_item_position", pos);
                 startActivity(intent);
                 return true;
             }
 
+            // Option Four
             if (item.getItemId() == R.id.menu_deleteProduct) {
                 deleteItem(pos);
                 return true;
