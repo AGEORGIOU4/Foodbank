@@ -28,7 +28,6 @@ import com.example.foodbank.db.SettingsRoomDatabase;
 import com.example.foodbank.main_activities.EditProductActivity;
 import com.example.foodbank.main_activities.SelectListActivity;
 import com.example.foodbank.main_activities.ViewProductActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -74,7 +73,7 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         populateProductsForEachList(root);
 
         // Floating button for creating a custom list
-        addListAction(root);
+        listButtonActions(root);
 
 
         return root;
@@ -117,13 +116,26 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         setRecyclerView(view);
     }
 
-    public void addListAction(View view) {
-        FloatingActionButton floatingActionButton_AddList = view.findViewById(R.id.floatingActionButton_AddList);
-        floatingActionButton_AddList.setOnClickListener(new View.OnClickListener() {
+    public void listButtonActions(View view) {
+        // Bottom buttons to view or create a list
+        Button button_createList = view.findViewById(R.id.button_createList);
+        Button button_myLists = view.findViewById(R.id.button_myLists);
+
+
+        button_createList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireActivity(), SelectListActivity.class);
                 intent.putExtra("extra_set_create_list_view", 1002);
+                startActivity(intent);
+            }
+        });
+
+        button_myLists.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireActivity(), SelectListActivity.class);
+                intent.putExtra("extra_set_create_list_view", 1001);
                 startActivity(intent);
             }
         });

@@ -20,23 +20,34 @@
         android:layout_below="@id/tabLayout_customLists"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="4dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="122dp"
         android:scrollbars="vertical" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="72dp">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton_AddList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tabLayout_customLists"
-            android:layout_alignParentEnd="true"
+        <Button
+            android:id="@+id/button_createList"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="78dp"
-            android:src="@android:drawable/ic_input_add" />
+            android:backgroundTint="@color/cyan_200"
+            android:src="@android:drawable/ic_input_add"
+            android:text="@string/create_list" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <Button
+            android:id="@+id/button_myLists"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/cyan_200"
+            android:src="@android:drawable/ic_input_add"
+            android:text="@string/my_lists" />
+    </FrameLayout>
 </RelativeLayout>
