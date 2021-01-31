@@ -70,8 +70,8 @@ public interface ProductsDao {
     @Delete
     void delete(CustomList customList);
 
-    @Query("SELECT * FROM customLists ORDER BY name")
-    List<CustomList> getCustomLists();
+    @Query("SELECT * FROM customLists ORDER BY timestamp")
+    List<CustomList> getCustomListsSortedByTimestamp();
 
     /*-------------LIST TO PRODUCT-------------*/
     @Insert
@@ -80,6 +80,6 @@ public interface ProductsDao {
     @Delete
     void delete(ProductToList productToList);
 
-    @Query("SELECT * FROM products_to_lists")
-    List<ProductToList> getProductsToLists();
+    @Query("SELECT * FROM products_to_lists WHERE list_id =:list_id AND product_code=:product_code")
+    List<ProductToList> getProductsToLists(int list_id, String product_code);
 }

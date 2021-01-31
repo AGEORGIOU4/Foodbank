@@ -125,11 +125,11 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
     /*-------------------------------DATABASE-----------------------------------*/
     List<CustomList> getCustomLists() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getCustomLists();
+        return ProductsRoomDatabase.getDatabase(this).productsDao().getCustomListsSortedByTimestamp();
     }
 
-    List<ProductToList> getProductsToLists() {
-        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsToLists();
+    List<ProductToList> getProductsToLists(int list_id, String code) {
+        return ProductsRoomDatabase.getDatabase(this).productsDao().getProductsToLists(list_id, code);
     }
 
     // Insert product to list
@@ -143,11 +143,8 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         ProductsRoomDatabase.getDatabase(this).productsDao().insert(customList);
     }
 
-    void delete(final CustomList customList) {
-        ProductsRoomDatabase.getDatabase(this).productsDao().delete(customList);
-    }
-
     public void createList(View view) {
+        // User form for creating a list
         EditText editText_listTitle = findViewById(R.id.editText_listTitle);
         EditText editText_listDescription = findViewById(R.id.editText_listDescription);
 
@@ -155,21 +152,32 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
                 editText_listDescription.getText().toString().equals("")) {
             Toast.makeText(this, "Please fill up all the fields", Toast.LENGTH_SHORT).show();
         } else {
+            // Get input values
             String name = editText_listTitle.getText().toString();
             String description = editText_listDescription.getText().toString();
+
+            // Create a new object of type Custom List
             CustomList customList = new CustomList(name, description, 0, System.currentTimeMillis());
             insert(customList);
+
             lists.clear();
             lists.addAll(getCustomLists());
             selectListAdapter.notifyDataSetChanged();
-            //
-            // setRecyclerView();
+
+            // Change controller state and switch layout
             CURRENT_STATE = INITIAL_STATE;
             switchLayouts();
+
             hideKeyboard(view);
+
+            // Clear input field data
+            editText_listTitle.setText("");
+            editText_listDescription.setText("");
         }
+    }
 
-
+    void delete(final CustomList customList) {
+        ProductsRoomDatabase.getDatabase(this).productsDao().delete(customList);
     }
 
     // Delete list
@@ -212,23 +220,32 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
 
     /*------------------------------INTERFACES----------------------------------*/
-// Insert product to list
+    // Insert product to list
     @Override
-    public void itemClicked(View v, int pos, String value) {
+    public void itemClicked(View v, int pos, int list_id) {
         // Get product code and list id on click
         Intent intent = getIntent();
-        String code = intent.getStringExtra("extra_product_code");
+        if (intent.hasExtra("extra_product_code")) {
+            // Get code from clicked product
+            String code = intent.getStringExtra("extra_product_code");
+            int counterForEmptyList = 0;
+            int counter = 0;
 
-        // Insert product to list
-        ProductToList productToList = new ProductToList(code, value);
-        insert(productToList);
-
-        Toast.makeText(this, "New item added to your list", Toast.LENGTH_SHORT).show();
+            //Check if this product is not already added on the clicked list
+                if(getProductsToLists(list_id, code).size() > 0) {
+                    Toast.makeText(this, "This item is already added on this list", Toast.LENGTH_SHORT).show();
+                } else {
+                    ProductToList productToList = new ProductToList(code, list_id);
+                    insert(productToList);
+                    Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
+                }
+            }
     }
+
 
     // Show snackbar for deletion
     @Override
-    public boolean itemLongClicked(View v, int pos, String value) {
+    public boolean itemLongClicked(View v, int pos, int list_id) {
         Snackbar.make(v, "Swipe to delete", Snackbar.LENGTH_SHORT).show();
         return true;
     }

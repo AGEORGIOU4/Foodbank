@@ -97,10 +97,8 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
         holder.textView_dateCreated.setText(sdf.format(resultDate));
 
         // Set listeners on Click, on Long Click Action Bar Menu
-        holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, String.valueOf(listItem.getId())));
-        holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, String.valueOf(listItem.getId())));
-
-
+        holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem.getId()));
+        holder.itemView.setOnLongClickListener(v -> onItemLongClickListener.itemLongClicked(v, position, listItem.getId()));
     }
 
     @Override
@@ -110,11 +108,11 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
 
     // Interfaces
     public interface OnItemClickListener {
-        void itemClicked(View v, int pos, String value);
+        void itemClicked(View v, int pos, int list_id);
     }
 
     public interface OnItemLongClickListener {
-        boolean itemLongClicked(View v, int pos, String value);
+        boolean itemLongClicked(View v, int pos, int list_id);
     }
 
 }

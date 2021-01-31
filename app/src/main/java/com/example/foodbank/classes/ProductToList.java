@@ -1,36 +1,21 @@
 package com.example.foodbank.classes;
 
 import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
 
 
-@Entity(tableName = "products_to_lists")
+@Entity(tableName = "products_to_lists", primaryKeys = {"product_code", "list_id"})
 public class ProductToList {
-    @PrimaryKey(autoGenerate = true)
-    private int product_to_list_id;
+
+    @NotNull
     private String product_code;
-    private String list_id;
+    private int list_id;
 
-    public ProductToList(int product_to_list_id, String product_code, String list_id) {
-        this.product_to_list_id = product_to_list_id;
+
+    public ProductToList(String product_code, int list_id) {
         this.product_code = product_code;
         this.list_id = list_id;
-    }
-
-
-    @Ignore
-    public ProductToList(String product_code, String list_id) {
-        this.product_code = product_code;
-        this.list_id = list_id;
-    }
-
-    public int getProduct_to_list_id() {
-        return product_to_list_id;
-    }
-
-    public void setProduct_to_list_id(int product_to_list_id) {
-        this.product_to_list_id = product_to_list_id;
     }
 
     public String getProduct_code() {
@@ -41,11 +26,11 @@ public class ProductToList {
         this.product_code = product_code;
     }
 
-    public String getList_id() {
+    public int getList_id() {
         return list_id;
     }
 
-    public void setList_id(String list_id) {
+    public void setList_id(int list_id) {
         this.list_id = list_id;
     }
 }

@@ -389,7 +389,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     }
 
     /*-----------------------------INTERFACES----------------------------------*/
-    // View Product
+    // View Product Individually
     @Override
     public void itemClicked(View v, int pos, String value) {
         Intent intent = new Intent(getActivity(), ViewProductActivity.class);
@@ -412,21 +412,26 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.product_card_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
-            //do your things in each of the following cases
+
+            // Option One
+            // set actions for each case on the popup menu
             if (item.getItemId() == R.id.menu_viewProduct) {
                 Intent intent = new Intent(getActivity(), ViewProductActivity.class);
                 intent.putExtra("extra_products_code", code);
                 startActivity(intent);
                 return true;
             }
+
+            // Option Two
             // Add to list - start select list activity and pass product barcode
             if (item.getItemId() == R.id.menu_addToList) {
-                Toast.makeText(requireContext(), "Add to list clicked item " + pos, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(requireActivity(), SelectListActivity.class);
                 intent.putExtra("extra_product_code", code);
                 startActivity(intent);
                 return true;
             }
+
+            // Option Three
             if (item.getItemId() == R.id.menu_editProduct) {
                 Intent intent = new Intent(getActivity(), EditProductActivity.class);
                 intent.putExtra("extra_products_code", code);

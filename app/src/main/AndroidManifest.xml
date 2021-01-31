@@ -51,5 +51,4 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Foodbank.NoActionBar" />
     </application>
-
 </manifest>

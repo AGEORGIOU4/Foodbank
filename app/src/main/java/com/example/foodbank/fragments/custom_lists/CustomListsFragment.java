@@ -3,59 +3,108 @@ package com.example.foodbank.fragments.custom_lists;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodbank.R;
-import com.example.foodbank.adapters.SelectListAdapter;
+import com.example.foodbank.adapters.MyProductsAdapter;
 import com.example.foodbank.classes.CustomList;
+import com.example.foodbank.classes.Product;
+import com.example.foodbank.classes.ProductToList;
+import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.db.SettingsRoomDatabase;
+import com.example.foodbank.main_activities.SelectListActivity;
 import com.example.foodbank.main_activities.ViewProductActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 import java.util.Vector;
 
-public class CustomListsFragment extends Fragment implements SelectListAdapter.OnItemClickListener, SelectListAdapter.OnItemLongClickListener {
+public class CustomListsFragment extends Fragment implements MyProductsAdapter.OnItemClickListener, MyProductsAdapter.OnItemLongClickListener,
+        MyProductsAdapter.OnActionBarMenuClickListener, MyProductsAdapter.OnStarClickListener {
+
+    // Layout
+    Button button_addProductsOnEmptyList;
 
     // Recycler View
     RecyclerView recyclerView;
     private final Vector<CustomList> lists = new Vector<>();
-    private SelectListAdapter selectListAdapter;
+    private final Vector<Product> productsInLists = new Vector<>();
+    private MyProductsAdapter selectListAdapter;
+
+
+    // Tab controller
+    private int TAB_SELECTION = 1001;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_custom_lists, container, false);
 
-        // Initialize each list from the db
-        lists.clear();
-        lists.addAll(getCustomLists());
+        // Get data from DB and populate lists vector
+        initializeLists(root);
 
-        //Set recycler view and adapters
-        recyclerView = root.findViewById(R.id.recyclerView_customLists);
-     //   setRecyclerView();
+        // Dynamically add each list on tab layout
+        setTabLayout(root);
 
-        // Set list name on each tab
-        TabLayout tabLayout_customLists = root.findViewById(R.id.tabLayout_customLists);
-        for (int i = 0; i < getCustomLists().size(); i++) {
-            tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText(lists.get(i).getName()));
-        }
-//        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 1"));
-//        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 2"));
-//        tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText("Tab 3"));
+        setRecyclerView(root);
+
+        populateProductsForEachList();
+
+        // Floating button for creating a custom list
+        addListAction(root);
+
 
         return root;
     }
 
+    @Override
+    public void onResume() {
+        loadSettings();
+        super.onResume();
+    }
+
+    /*---------------------------------ITEMS------------------------------------*/
+    public void initializeLists(View view) {
+        // Initialize each list from the db and set tab layout
+        lists.clear();
+        lists.addAll(getCustomLists());
+    }
+
+    public void populateProductsForEachList() {
+
+
+        // setRecyclerView();
+    }
+
+    public void addListAction(View view) {
+        FloatingActionButton floatingActionButton_AddList = view.findViewById(R.id.floatingActionButton_AddList);
+        floatingActionButton_AddList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireActivity(), SelectListActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     /*--------------------------------LAYOUT------------------------------------*/
-    public void setRecyclerView() {
+    public void setRecyclerView(View view) {
+        //Set recycler view and adapter
+        recyclerView = view.findViewById(R.id.recyclerView_customLists);
         // Item helper for swipe events
         new ItemTouchHelper((itemTouchHelperCallback)).attachToRecyclerView(recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -63,19 +112,55 @@ public class CustomListsFragment extends Fragment implements SelectListAdapter.O
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // Set adapters for each sorting selection
-        selectListAdapter = new SelectListAdapter(lists, this, this);
+        selectListAdapter = new MyProductsAdapter(productsInLists, this, this, this, this);
         recyclerView.setAdapter(selectListAdapter);
     }
 
-    public void setTabs() {}
+    public void setTabLayout(View view) {
+        // Set list name on each tab
+        TabLayout tabLayout_customLists = view.findViewById(R.id.tabLayout_customLists);
+        try {
+            for (int i = 0; i < getCustomLists().size(); i++) {
+                tabLayout_customLists.addTab(tabLayout_customLists.newTab().setText(lists.get(i).getName()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        tabLayout_customLists.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                TAB_SELECTION = tab.getPosition();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
 
     /*-------------------------------DATABASE-----------------------------------*/
     List<CustomList> getCustomLists() {
-        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getCustomLists();
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getCustomListsSortedByTimestamp();
+    }
+
+    List<Product> getProductsSortedByTimestamp() {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsSortedByTimestamp();
+    }
+
+    List<ProductToList> getProductsToLists(int list_id, String code) {
+        return ProductsRoomDatabase.getDatabase(getContext()).productsDao().getProductsToLists(list_id, code);
     }
 
     /*------------------------------INTERFACES----------------------------------*/
-    // View Product
+    // View Product Individually
     @Override
     public void itemClicked(View v, int pos, String value) {
         Intent intent = new Intent(getActivity(), ViewProductActivity.class);
@@ -90,6 +175,42 @@ public class CustomListsFragment extends Fragment implements SelectListAdapter.O
         return true;
     }
 
+    // Show options menu
+    @Override
+    public void onPopupMenuClick(View view, int pos, String code, final String title, String nutriScore,
+                                 String ecoScore, String novaGroup, boolean isStarred) {
+        PopupMenu popup = new PopupMenu(requireContext(), view);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.product_card_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(item -> {
+            // set actions for each case on the popup menu
+            if (item.getItemId() == R.id.menu_viewProduct) {
+                Intent intent = new Intent(getActivity(), ViewProductActivity.class);
+                intent.putExtra("extra_products_code", code);
+                startActivity(intent);
+                return true;
+            }
+            // Add to list - start select list activity and pass product barcode
+            if (item.getItemId() == R.id.menu_addToList) {
+                Intent intent = new Intent(requireActivity(), SelectListActivity.class);
+                intent.putExtra("extra_product_code", code);
+                startActivity(intent);
+                return true;
+            }
+            if (item.getItemId() == R.id.menu_editProduct) {
+
+            }
+
+            if (item.getItemId() == R.id.menu_deleteProduct) {
+                //deleteItem(pos);
+                return true;
+            }
+            return false;
+        });
+        popup.show();
+    }
+
+
     // Delete Item on Swipe
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
@@ -103,4 +224,33 @@ public class CustomListsFragment extends Fragment implements SelectListAdapter.O
             // deleteItem(pos);
         }
     };
+
+    // Handle checkbox(star) clicks
+    @Override
+    public void itemClicked(View v, int pos, boolean checked) {
+
+    }
+
+    /*-------------------------------SETTINGS-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(requireContext()).settingsDao().getSettings();
+    }
+
+    public void loadSettings() {
+        List<Settings> settings = getSettings();
+        boolean theme = settings.get(0).isDarkMode();
+        System.out.println("theme is " + theme);
+
+        if (theme) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+        }
+    }
 }
