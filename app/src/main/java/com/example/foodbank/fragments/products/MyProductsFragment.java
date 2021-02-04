@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
@@ -26,8 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodbank.R;
 import com.example.foodbank.adapters.MyProductsAdapter;
 import com.example.foodbank.classes.Product;
+import com.example.foodbank.classes.Settings;
 import com.example.foodbank.db.ProductsDao;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.example.foodbank.db.SettingsRoomDatabase;
 import com.example.foodbank.main_activities.EditProductActivity;
 import com.example.foodbank.main_activities.ProductsInCategoryActivity;
 import com.example.foodbank.main_activities.SelectListActivity;
@@ -98,7 +101,7 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
         // Check if list is empty and display a meaningful message
         setEmptyListNotification(requireView());
 
-
+        loadSettings();
         super.onResume();
     }
 
@@ -519,5 +522,28 @@ public class MyProductsFragment extends Fragment implements MyProductsAdapter.On
     public void hideKeyboard() {
         final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
+    }
+
+    /*-------------------------------SETTINGS-----------------------------------*/
+    List<Settings> getSettings() {
+        return SettingsRoomDatabase.getDatabase(requireContext()).settingsDao().getSettings();
+    }
+
+    public void loadSettings() {
+        List<Settings> settings = getSettings();
+        boolean theme = settings.get(0).isDarkMode();
+        System.out.println("theme is " + theme);
+
+        if (theme) {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate
+                    .setDefaultNightMode(
+                            AppCompatDelegate
+                                    .MODE_NIGHT_NO);
+        }
     }
 }

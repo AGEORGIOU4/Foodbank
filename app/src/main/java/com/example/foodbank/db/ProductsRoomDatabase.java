@@ -38,8 +38,8 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
                     "fiber serving:0.988\n" + "energy kcal unit:kcal\n" + "trans fat:0\n" + "iron:0.00069\n" + "fat value:7.69\n" + "iron value:0.69\n" +
                     "energy kcal serving:200\n" + "sugars serving:7\n" + "cholesterol value:0\n" + "carbohydrates serving:37\n" + "energy kcal 100g:385\n" +
                     "iron serving:0.000359\n" + "nova group serving:4\n" + "saturated fat unit:g\n" + "energy 100g:1611\n" + "fiber 100g:1.9\n" + "sodium:0.288\n" +
-                    "iron unit:mg\n" + "nova group:4\n" + "fiber value:1.9\n" + "sodium serving:0.15\n" + "fiber:1.9\n" + "trans fat unit:g\n" + "vitamin a unit:IU\n", "Yes", "Yes", "Plant-based foods and beverages, Plant-based foods, Cereals and potatoes, Cereals and their products, Noodles\n", false, System.currentTimeMillis(),
-                    "https://static.openfoodfacts.org/images/products/073/762/806/4502/front_en.6.200.jpg"),
+                    "iron unit:mg\n" + "nova group:4\n" + "fiber value:1.9\n" + "sodium serving:0.15\n" + "fiber:1.9\n" + "trans fat unit:g\n" + "vitamin a unit:IU\n", "Yes", "Yes", "Plant-based foods and beverages, Plant-based foods, Cereals and potatoes, Cereals and their products, Noodles\n",
+                    false, System.currentTimeMillis(), "https://static.openfoodfacts.org/images/products/073/762/806/4502/front_en.6.200.jpg"),
 
             new Product("3168930009078", "quater oats", "a", "b", "1", "100 % flocons d'avoine.", "magnesium:0.11\n" + "proteins_serving:4.4\n" +
                     "carbohydrates_100g:60\n" + "nova-group_100g:1\n" + "energy-kcal_100g:375\n" + "phosphorus:0.38\n" + "salt:0.01\n" +
@@ -62,7 +62,33 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
                     "nova-group_serving:1\n" + "nutrition-score-fr:-5\n" + "beta-glucan_label:0\n" + "saturated-fat_serving:0.6\n" +
                     "sugars_serving:0.44\n" + "sugars:1.1\n" + "vitamin-b1_100g:0.0009\n" + "magnesium_100g:0.11\n" + "saturated-fat_unit:g",
                     "Yes", "Yes", "Aliments et boissons à base de végétaux, Aliments d'origine végétale, Céréales et pommes de terre, Petit-déjeuners, Céréales et dérivés, Céréales pour petit-déjeuner, Flocons, Flocons de céréales, Flocons laminés, Flocons d'avoine",
-                    true, System.currentTimeMillis(), "https://static.openfoodfacts.org/images/products/316/893/000/9078/ingredients_fr.19.400.jpg")
+                    true, System.currentTimeMillis(), "https://static.openfoodfacts.org/images/products/316/893/000/9078/ingredients_fr.19.400.jpg"),
+
+
+            new Product("5053827111188", "Corn flakes", "B", "4", "c", "Maïs, sucre, arôme de malt d'_orge_, sel", "fat:0.9\n" +
+                    "vitamin-b1_unit:mg\n" + "vitamin-b12_unit:µg\n" + "vitamin-b9_label:0\n" + "vitamin-b9:0.000166\n" + "vitamin-d_serving:0.00000126\n" +
+                    "iron_value:8\n" + "fruits-vegetables-nuts-estimate-from-ingredients_100g:0\n" + "fiber_100g:3\n" + "vitamin-b2:0.0012\n" +
+                    "vitamin-d:0.0000042\n" + "saturated-fat_serving:0.06\n" + "vitamin-b1_serving:0.000273\n" + "vitamin-pp_100g:0.013\n" +
+                    "fiber:3\n" + "sugars_value:8\n" + "sugars_100g:8\n" + "vitamin-b1_100g:0.00091\n" + "vitamin-b2_label:0\n" +
+                    "carbohydrates_100g:84\n" + "nova-group_100g:4\n" + "vitamin-b12_serving:6.3e-7\n" + "vitamin-d_unit:µg\n" +
+                    "carbohydrates_serving:25.2\n" + "iron:0.008\n" + "fiber_unit:g\n" + "fat_unit:g\n" + "sodium:0.44\n" +
+                    "nova-group_serving:4\n" + "vitamin-b9_100g:0.000166\n" + "vitamin-d_100g:0.0000042\n" + "vitamin-b12:0.0000021\n" +
+                    "carbohydrates_unit:g\n" + "proteins_serving:2.1\n" + "fat_serving:0.27\n" + "vitamin-b1:0.00091\n" + "nutrition-score-fr_100g:2\n" +
+                    "vitamin-d_value:4.2\n" + "iron_serving:0.0024\n" + "salt_serving:0.33\n" + "vitamin-pp_value:13\n" + "salt:1.1\n" +
+                    "proteins_100g:7\n" + "iron_unit:mg\n" + "vitamin-b1_value:0.91\n" + "nova-group:4\n" + "vitamin-pp_unit:mg\n" +
+                    "proteins:7\n" + "salt_100g:1.1\n" + "energy_serving:475\n" + "sugars_serving:2.4\n" + "vitamin-pp_serving:0.0039\n" +
+                    "carbohydrates_value:84\n" + "saturated-fat_value:0.2\n" + "carbohydrates:84\n" + "sugars:8\n" + "nutrition-score-fr:2\n" +
+                    "fiber_serving:0.9\n" + "energy-kcal_100g:378\n" + "fat_100g:0.9\n" + "energy_100g:1582\n" + "vitamin-b2_serving:0.00036\n" +
+                    "vitamin-b12_value:2.1\n" + "energy-kcal_value:378\n" + "vitamin-b9_serving:0.0000498\n" + "energy-kcal:378\n" +
+                    "fiber_value:3\n" + "vitamin-d_label:0\n" + "sodium_serving:0.132\n" + "saturated-fat_100g:0.2\n" +
+                    "sodium_unit:g\n" + "vitamin-pp_label:0\n" + "energy_unit:kcal\n" + "saturated-fat:0.2\n" + "energy_value:378\n" +
+                    "sodium_100g:0.44\n" + "vitamin-b2_unit:mg\n" + "vitamin-pp:0.013\n" + "proteins_unit:g\n" + "energy:1582\n" +
+                    "vitamin-b1_label:0\n" + "proteins_value:7\n" + "vitamin-b9_value:166\n" + "vitamin-b12_100g:0.0000021\n" +
+                    "energy-kcal_serving:113\n" + "saturated-fat_unit:g\n" + "vitamin-b9_unit:µg\n" + "sodium_value:0.44\n" +
+                    "iron_100g:0.008\n" + "vitamin-b12_label:0\n" + "energy-kcal_unit:kcal\n" + "fat_value:0.9\n" + "vitamin-b2_value:1.2\n" +
+                    "iron_label:0\n" + "salt_unit:g\n" + "salt_value:1.1\n" + "sugars_unit:g\n" +
+                    "vitamin-b2_100g:0.0012", "Yes", "Yes", "Aliments et boissons à base de végétaux, Aliments d'origine végétale, Céréales et pommes de terre, Petit-déjeuners, Céréales et dérivés, Céréales pour petit-déjeuner, Flocons, Flocons de céréales, Flocons extrudés, Corn-flakes",
+                    false, System.currentTimeMillis(), "https://static.openfoodfacts.org/images/products/505/382/711/1188/front_fr.53.200.jpg"),
     };
 
     private static final CustomList[] INITIAL_LISTS = new CustomList[]{
@@ -71,7 +97,9 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
 
     private static final ProductToList[] INITIAL_PRODUCTS_TO_LISTS = new ProductToList[]{
             new ProductToList("0737628064502", 1),
-            new ProductToList("3168930009078", 1)};
+            new ProductToList("3168930009078", 1),
+            new ProductToList("5053827111188", 2),
+            new ProductToList("3168930009078", 2)};
 
 
     private static volatile ProductsRoomDatabase INSTANCE;
