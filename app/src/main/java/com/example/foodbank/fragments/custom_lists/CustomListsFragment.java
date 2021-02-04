@@ -59,11 +59,11 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
         tabLayout_customLists = root.findViewById(R.id.tabLayout_customLists);
 
-        // Default selected list
-        SELECTED_LIST_ID = getCustomLists().get(0).getId();
-
         // Get data from DB and populate lists vector
         initializeLists(root);
+
+        // Default selected list
+        SELECTED_LIST_ID = getCustomLists().get(0).getId();
 
         // Dynamically add each list on tab layout
         setTabLayout(root);
