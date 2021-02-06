@@ -2,6 +2,8 @@ package com.example.foodbank.main_activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         hideKeyboard(drawer);
         loadSettings();
+
         super.onResume();
     }
 

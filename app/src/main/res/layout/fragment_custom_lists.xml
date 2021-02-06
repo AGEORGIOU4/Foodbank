@@ -11,6 +11,7 @@
         android:id="@+id/tabLayout_customLists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
         app:tabMode="scrollable" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -50,4 +51,5 @@
             android:src="@android:drawable/ic_input_add"
             android:text="@string/my_lists" />
     </FrameLayout>
+
 </RelativeLayout>

@@ -73,4 +73,5 @@
     <string name="goBack">BACK</string>
     <string name="create_list">CREATE LIST</string>
     <string name="my_lists">MY LISTS</string>
+    <string name="color">Color</string>
 </resources>

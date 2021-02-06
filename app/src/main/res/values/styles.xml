@@ -33,5 +33,25 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ListDefaultBackgroundColor">
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
+    <style name="ListRedBackgroundColor">
+        <item name="android:backgroundTint">@color/red</item>
+    </style>
+
+    <style name="ListBlueBackgroundColor">
+        <item name="android:backgroundTint">@color/blue</item>
+    </style>
+
+    <style name="ListGreenBackgroundColor">
+        <item name="android:backgroundTint">@color/green</item>
+    </style>
+
+    <style name="ListYellowBackgroundColor">
+        <item name="android:backgroundTint">@color/yellow</item>
+    </style>
+
 
 </resources>

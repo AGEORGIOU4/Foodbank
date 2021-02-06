@@ -13,6 +13,7 @@ import com.example.foodbank.classes.CustomList;
 import com.example.foodbank.classes.Product;
 import com.example.foodbank.classes.ProductToList;
 import com.example.foodbank.db.ProductsRoomDatabase;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +44,7 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
         public TextView textView_description;
         public TextView textView_numOfProducts;
         public TextView textView_dateCreated;
+        public ShapeableImageView imageView_selectedColor;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -50,6 +52,7 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
             this.textView_description = itemView.findViewById(R.id.textView_description);
             this.textView_numOfProducts = itemView.findViewById(R.id.textView_numOfProducts);
             this.textView_dateCreated = itemView.findViewById(R.id.textView_dateCreated);
+            this.imageView_selectedColor = itemView.findViewById(R.id.imageView_selectedColor);
         }
     }
 
@@ -76,6 +79,8 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
         String title;
         String description;
         int numOfProducts = 0;
+        String color = "default";
+        int colorInteger = 0;
 
         //-----------------------GET VALUES-----------------------//
         if (listItem.getName() != null && !listItem.getName().equals("")) {
@@ -91,13 +96,37 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
         }
 
         // Set number of products for each list
-        for(int i = 0; i < getLists(listItem.getId()).size(); i++) {
-            for(int j = 0; j < getAllProductsSortedByTimestamp().size(); j++) {
+        for (int i = 0; i < getLists(listItem.getId()).size(); i++) {
+            for (int j = 0; j < getAllProductsSortedByTimestamp().size(); j++) {
                 // Check if product is still in the Main products list
-                if(getLists(listItem.getId()).get(i).getProduct_code().equals(getAllProductsSortedByTimestamp().get(j).getBarcode())) {
+                if (getLists(listItem.getId()).get(i).getProduct_code().equals(getAllProductsSortedByTimestamp().get(j).getBarcode())) {
                     numOfProducts++;
                 }
             }
+        }
+
+        if (listItem.getColor() != null && !listItem.getColor().equals("")) {
+            color = listItem.getColor();
+        } else {
+            color = "Default";
+        }
+
+        // Set colors
+        switch (color) {
+            case "Red":
+                colorInteger = 0xFFE57373;
+                break;
+            case "Blue":
+                colorInteger = 0xFF73B6E5;
+                break;
+            case "Green":
+                colorInteger = 0xFF93E7A4;
+                break;
+            case "Yellow":
+                colorInteger = 0xFFEFE29B;
+                break;
+            default:
+                colorInteger = 0;
 
         }
 
@@ -106,6 +135,7 @@ public class SelectListAdapter extends RecyclerView.Adapter<SelectListAdapter.Vi
         holder.textView_description.setText(description);
         holder.textView_numOfProducts.setText(String.valueOf(numOfProducts) + " items");
         holder.textView_dateCreated.setText(sdf.format(resultDate));
+        holder.imageView_selectedColor.setBackgroundColor(colorInteger);
 
         // Set listeners on Click, on Long Click Action Bar Menu
         holder.itemView.setOnClickListener(v -> onItemClickListener.itemClicked(v, position, listItem.getId()));

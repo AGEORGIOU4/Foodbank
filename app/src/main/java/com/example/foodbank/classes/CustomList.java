@@ -14,21 +14,32 @@ public class CustomList {
     private String description;
     private int numOfProducts;
     private long timestamp;
+    private String color;
 
-    public CustomList(int id, String name, String description, int numOfProducts, long timestamp) {
+    public CustomList(int id, String name, String description, int numOfProducts, long timestamp, String color) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.numOfProducts = numOfProducts;
         this.timestamp = timestamp;
+        this.color = color;
     }
 
     @Ignore
-    public CustomList(String name, String description, int numOfProducts, long timestamp) {
+    public CustomList(String name, String description, int numOfProducts, long timestamp, String color) {
         this.name = name;
         this.description = description;
         this.numOfProducts = numOfProducts;
         this.timestamp = timestamp;
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public long getTimestamp() {

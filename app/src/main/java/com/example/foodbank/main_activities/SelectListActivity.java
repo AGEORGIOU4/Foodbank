@@ -41,6 +41,8 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
     // Layout
     AppCompatSpinner spinner_listsOptions;
+    AppCompatSpinner spinner_selectColor;
+
 
     // Recycler View
     RecyclerView recyclerView;
@@ -51,6 +53,9 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
 
     // Lists controller
     private int LISTS_CONTROLLER = 1;
+
+    // Create list
+    String selectedColor = "Default";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +78,9 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         // Change state if user wants to create a list (extras from custom list to switch frame layout)
         getExtras();
 
-        setSpinner();
+        setFilteringSpinner();
+
+        setColorSpinner();
 
     }
 
@@ -82,6 +89,8 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         // Change state if user wants to create a list (extras from custom list to switch frame layout)
         initializeLists();
         getExtras();
+
+        setColorSpinner();
         super.onResume();
     }
 
@@ -93,6 +102,7 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         listsByName.clear();
         listsByName.addAll(getCustomListsSortedByName());
     }
+
     /*--------------------------------LAYOUT------------------------------------*/
     public void setActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -156,8 +166,8 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         });
     }
 
-    /*-------------------------------SPINNER-----------------------------------*/
-    public void setSpinner() {
+    /*-------------------------------SPINNERS----------------------------------*/
+    public void setFilteringSpinner() {
         spinner_listsOptions = findViewById(R.id.spinner_listsOptions);
         String[] spinnerOptions = {"Date Created", "Title"};
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
@@ -165,10 +175,18 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
         spinner_listsOptions.setOnItemSelectedListener(this);
     }
 
+    public void setColorSpinner() {
+        spinner_selectColor = findViewById(R.id.spinner_selectColor);
+        String[] spinnerOptions = {"Default", "Red", "Blue", "Green", "Yellow"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerOptions);
+        spinner_selectColor.setAdapter(spinnerAdapter);
+        spinner_selectColor.setOnItemSelectedListener(this);
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String selectedOption = parent.getItemAtPosition(position).toString();
-        // Set recycler view adapter for each selection
+        // Set recycler view adapter for each selection (Filtering spinner)
         if (selectedOption.equals("Date Created")) {
             recyclerView.setAdapter(selectListAdapterByDateCreated);
             // Set controller to keep track of the order for deletion of list
@@ -179,6 +197,24 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
             // Set controller to keep track of the order for deletion of list
             LISTS_CONTROLLER = 2;
         }
+
+        // Set colors spinner
+        if (selectedOption.equals("Default")) {
+            selectedColor = "Default";
+        }
+        if (selectedOption.equals("Red")) {
+            selectedColor = "Red";
+        }
+        if (selectedOption.equals("Blue")) {
+            selectedColor = "Blue";
+        }
+        if (selectedOption.equals("Green")) {
+            selectedColor = "Green";
+        }
+        if (selectedOption.equals("Yellow")) {
+            selectedColor = "Yellow";
+        }
+
     }
 
     @Override
@@ -223,7 +259,7 @@ public class SelectListActivity extends AppCompatActivity implements SelectListA
             String description = editText_listDescription.getText().toString();
 
             // Create a new object of type Custom List
-            CustomList customList = new CustomList(name, description, 0, System.currentTimeMillis());
+            CustomList customList = new CustomList(name, description, 0, System.currentTimeMillis(), selectedColor);
             insert(customList);
 
             listsByDateCreated.clear();

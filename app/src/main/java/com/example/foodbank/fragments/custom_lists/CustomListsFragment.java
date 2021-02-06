@@ -38,7 +38,6 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         MyProductsAdapter.OnActionBarMenuClickListener, MyProductsAdapter.OnStarClickListener {
 
     // Layout
-    Button button_addProductsOnEmptyList;
     TabLayout tabLayout_customLists;
 
     // Recycler View
@@ -46,9 +45,6 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
     private final Vector<CustomList> lists = new Vector<>();
     private final Vector<Product> productsInLists = new Vector<>();
     private MyProductsAdapter selectListAdapter;
-
-    // Tab Controller
-    private int CURRENT_TAB_SELECTION = 0;
 
     // Variables
     private int SELECTED_LIST_ID = 0;
@@ -172,9 +168,13 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
         tabLayout_customLists.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                int counter = tab.getPosition();
-                SELECTED_LIST_ID = getCustomLists().get(counter).getId();
+                int tabPosition = tab.getPosition();
+                SELECTED_LIST_ID = getCustomLists().get(tabPosition).getId();
                 populateProductsForEachList(view);
+
+                // Set list color programmatically
+                setListColor(tabPosition);
+
             }
 
             @Override
@@ -187,6 +187,31 @@ public class CustomListsFragment extends Fragment implements MyProductsAdapter.O
 
             }
         });
+    }
+
+    public void setListColor(int tabPosition) {
+        String listColor = "Default";
+        listColor = getCustomLists().get(tabPosition).getColor();
+        int colorInteger = 0;
+
+        // Set colors
+        switch (listColor) {
+            case "Red":
+                colorInteger = 0xFFE57373;
+                break;
+            case "Blue":
+                colorInteger = 0xFF73B6E5;
+                break;
+            case "Green":
+                colorInteger = 0xFF93E7A4;
+                break;
+            case "Yellow":
+                colorInteger = 0xFFEFE29B;
+                break;
+            default:
+                colorInteger = 0;
+        }
+        recyclerView.setBackgroundColor(colorInteger);
     }
 
     /*-------------------------------DATABASE-----------------------------------*/

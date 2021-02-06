@@ -92,8 +92,8 @@ public abstract class ProductsRoomDatabase extends RoomDatabase {
     };
 
     private static final CustomList[] INITIAL_LISTS = new CustomList[]{
-            new CustomList(1, "My Snacks", "Less structured meal that are not eaten during regular meal times", 0, System.currentTimeMillis()),
-            new CustomList(2, "My Beverages", "Favorite beverages", 0, System.currentTimeMillis())};
+            new CustomList(1, "My Snacks", "Less structured meal that are not eaten during regular meal times", 0, System.currentTimeMillis(), "Blue"),
+            new CustomList(2, "My Beverages", "Favorite beverages", 0, System.currentTimeMillis(), "Green")};
 
     private static final ProductToList[] INITIAL_PRODUCTS_TO_LISTS = new ProductToList[]{
             new ProductToList("0737628064502", 1),
