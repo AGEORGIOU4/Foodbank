@@ -71,7 +71,7 @@
     <string name="numOfProducts">Number of Products</string>
     <string name="dateCreated">Date Created</string>
     <string name="goBack">BACK</string>
-    <string name="create_list">CREATE LIST</string>
+    <string name="create_list">ADD LIST</string>
     <string name="my_lists">MY LISTS</string>
     <string name="color">Color</string>
 </resources>
